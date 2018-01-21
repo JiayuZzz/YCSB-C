@@ -1,3 +1,7 @@
+# clion
+.idea
+cmake*
+CMake*
 # Compiled Object files
 *.slo
 *.lo
