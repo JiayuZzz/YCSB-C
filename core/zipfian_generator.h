@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cassert>
 #include "utils.h"
+#include <iostream>
 
 namespace ycsbc {
 
@@ -25,6 +26,7 @@ class ZipfianGenerator : public Generator<uint64_t> {
                    double zipfian_const = kZipfianConst) :
       num_items_(max - min + 1), base_(min), theta_(zipfian_const),
       zeta_n_(0), n_for_zeta_(0) {
+    std::cerr<<"zipfian const: "<<zipfian_const<<std::endl;
     assert(num_items_ >= 2 && num_items_ < kMaxNumItems);
     zeta_2_ = Zeta(2, theta_);
     alpha_ = 1.0 / (1.0 - theta_);

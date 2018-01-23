@@ -76,26 +76,31 @@ int main(const int argc, const char *argv[]) {
     cerr << "# Loading records:\t" << sum << endl;
     cerr << "Load time: "<<timer.End()<<"us"<<endl;
     actual_ops.clear();
-  }
-  // Performs transactions
-  total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
-  timer.Start();
-  for (int i = 0; i < num_threads; ++i) {
-    actual_ops.emplace_back(async(launch::async,
-        DelegateClient, db, &wl, total_ops / num_threads, false));
-  }
-  assert((int)actual_ops.size() == num_threads);
+  } else {
+    // Performs transactions
+    total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
+    timer.Start();
+    for (int i = 0; i < num_threads; ++i) {
+      actual_ops.emplace_back(async(launch::async,
+                                    DelegateClient, db, &wl, total_ops / num_threads, false));
+    }
+    assert((int) actual_ops.size() == num_threads);
 
-  int sum = 0;
-  for (auto &n : actual_ops) {
-    assert(n.valid());
-    sum += n.get();
+    int sum = 0;
+    for (auto &n : actual_ops) {
+      assert(n.valid());
+      sum += n.get();
+    }
+    double duration = timer.End();
+    cerr << "# Transaction throughput (KTPS)" << endl;
+    cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
+    cerr << total_ops / duration / 1000000 / 1000 << endl;
+    cerr << "run time: " << duration << "us" << endl;
   }
-  double duration = timer.End();
-  cerr << "# Transaction throughput (KTPS)" << endl;
-  cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
-  cerr << total_ops / duration / 1000000 / 1000 << endl;
-  cerr << "run time: " << duration << "us" << endl;
+  if (props["dbname"] == "leveldb"){
+    cout << "============================leveldb statistics==========================="<<endl;
+    db->printStats();
+  }
 }
 
 string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) {

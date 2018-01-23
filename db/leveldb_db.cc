@@ -4,20 +4,34 @@
 
 #include "leveldb_db.h"
 #include <iostream>
+#include "leveldb/filter_policy.h"
 
 using namespace std;
 
 namespace ycsbc {
     LevelDB::LevelDB(const char *dbfilename) :noResult(0){
+        //get leveldb config
+        ConfigLevelDB config = ConfigLevelDB();
+        int bloomBits = config.getBloomBits();
+        bool seekCompaction = config.getSeekCompaction();
+        bool compression = config.getCompression();
+        bool directIO = config.getDirectIO();
+        //set options
         leveldb::Options options;
         options.create_if_missing = true;
-        options.compression = leveldb::kNoCompression;
+        if(!compression)
+            options.compression = leveldb::kNoCompression;
+        if(bloomBits>0)
+            options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
+        options.exp_ops.seekCompaction = seekCompaction;
+        options.exp_ops.directIO = directIO;
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
             cerr<<"Can't open leveldb "<<dbfilename<<endl;
             exit(0);
         }
+        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<endl;
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
@@ -76,6 +90,12 @@ namespace ycsbc {
             exit(0);
         }
         return DB::kOK;
+    }
+
+    void LevelDB::printStats() {
+        string stats;
+        db_->GetProperty("leveldb.stats",&stats);
+        cout<<stats<<endl;
     }
 
     LevelDB::~LevelDB() {
