@@ -27,12 +27,14 @@ namespace ycsbc {
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
             noResult++;
+            cout<<noResult<<endl;
             return DB::kOK;
         }else{
             cerr<<"read error"<<endl;
             exit(0);
         }
     }
+
 
     int LevelDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
@@ -56,13 +58,9 @@ namespace ycsbc {
             s = db_->Put(leveldb::WriteOptions(),key,p.second);
             ++cnt;
             if(!s.ok()){
-                cerr<<"insert error"<<endl;
+                cerr<<"insert error\n"<<endl;
                 exit(0);
             }
-        }
-        if(cnt != 1){
-            cerr<<"insert error\n"<<endl;
-            exit(0);
         }
         return DB::kOK;
     }

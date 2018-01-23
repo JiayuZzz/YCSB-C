@@ -51,15 +51,38 @@ int main(const int argc, const char *argv[]) {
 
   ycsbc::CoreWorkload wl;
   wl.Init(props);
+  vector<future<int>> actual_ops;
+  int total_ops;
+  utils::Timer timer;
+  bool skipLoad = utils::StrToBool(props["skipLoad"]);
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
 
   // Loads data
-  vector<future<int>> actual_ops;
-  int total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
+  if(!skipLoad) {
+    timer.Start();
+    total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
+    for (int i = 0; i < num_threads; ++i) {
+      actual_ops.emplace_back(async(launch::async,
+                                    DelegateClient, db, &wl, total_ops / num_threads, true));
+    }
+    assert((int) actual_ops.size() == num_threads);
+
+    int sum = 0;
+    for (auto &n : actual_ops) {
+      assert(n.valid());
+      sum += n.get();
+    }
+    cerr << "# Loading records:\t" << sum << endl;
+    cerr << "Load time: "<<timer.End()<<"us"<<endl;
+    actual_ops.clear();
+  }
+  // Performs transactions
+  total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
+  timer.Start();
   for (int i = 0; i < num_threads; ++i) {
     actual_ops.emplace_back(async(launch::async,
-        DelegateClient, db, &wl, total_ops / num_threads, true));
+        DelegateClient, db, &wl, total_ops / num_threads, false));
   }
   assert((int)actual_ops.size() == num_threads);
 
@@ -68,28 +91,11 @@ int main(const int argc, const char *argv[]) {
     assert(n.valid());
     sum += n.get();
   }
-  cerr << "# Loading records:\t" << sum << endl;
-
-  // Peforms transactions
-  actual_ops.clear();
-  total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
-  utils::Timer<double> timer;
-  timer.Start();
-  for (int i = 0; i < num_threads; ++i) {
-    actual_ops.emplace_back(async(launch::async,
-        DelegateClient, db, &wl, total_ops / num_threads, false));
-  }
-  assert((int)actual_ops.size() == num_threads);
-
-  sum = 0;
-  for (auto &n : actual_ops) {
-    assert(n.valid());
-    sum += n.get();
-  }
   double duration = timer.End();
   cerr << "# Transaction throughput (KTPS)" << endl;
   cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
-  cerr << total_ops / duration / 1000 << endl;
+  cerr << total_ops / duration / 1000000 / 1000 << endl;
+  cerr << "run time: " << duration << "us" << endl;
 }
 
 string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) {
@@ -128,6 +134,14 @@ string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) 
       }
       props.SetProperty("port", argv[argindex]);
       argindex++;
+    } else if(strcmp(argv[argindex],"-skipLoad")==0){
+      argindex++;
+      if(argindex >= argc){
+        UsageMessage(argv[0]);
+        exit(0);
+      }
+      props.SetProperty("skipLoad",argv[argindex]);
+      argindex++;
     } else if (strcmp(argv[argindex], "-slaves") == 0) {
       argindex++;
       if (argindex >= argc) {
@@ -135,6 +149,14 @@ string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) 
         exit(0);
       }
       props.SetProperty("slaves", argv[argindex]);
+      argindex++;
+    } else if(strcmp(argv[argindex],"-dbfilename")==0){
+      argindex++;
+      if (argindex >= argc) {
+        UsageMessage(argv[0]);
+        exit(0);
+      }
+      props.SetProperty("dbfilename", argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-P") == 0) {
       argindex++;
