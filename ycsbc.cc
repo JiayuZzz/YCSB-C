@@ -42,12 +42,14 @@ int DelegateClient(ycsbc::DB *db, ycsbc::CoreWorkload *wl, const int num_ops,
 int main(const int argc, const char *argv[]) {
   utils::Properties props;
   string file_name = ParseCommandLine(argc, argv, props);
-
+  cout<<"hi\n"<<endl;
   ycsbc::DB *db = ycsbc::DBFactory::CreateDB(props);
+  cout<<"hi\n"<<endl;
   if (!db) {
     cout << "Unknown database name " << props["dbname"] << endl;
     exit(0);
   }
+  cout<<"hi\n"<<endl;
 
   ycsbc::CoreWorkload wl;
   wl.Init(props);
@@ -61,6 +63,7 @@ int main(const int argc, const char *argv[]) {
   // Loads data
   if(!skipLoad) {
     timer.Start();
+    cout<<"hi\n"<<endl;
     total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     for (int i = 0; i < num_threads; ++i) {
       actual_ops.emplace_back(async(launch::async,

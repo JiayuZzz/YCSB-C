@@ -9,13 +9,16 @@
 using namespace std;
 
 namespace ycsbc {
-    LevelDB::LevelDB(const char *dbfilename) :noResult(0){
+    LevelDB::LevelDB() :noResult(0){
         //get leveldb config
         ConfigLevelDB config = ConfigLevelDB();
         int bloomBits = config.getBloomBits();
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
+        int diskNum = config.getDiskNum();
+        vector<string> dbnames = config.getDbNames();
+        const char* dbfilename = dbnames[0].c_str();
         //set options
         leveldb::Options options;
         options.create_if_missing = true;
@@ -25,6 +28,10 @@ namespace ycsbc {
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
+        options.exp_ops.diskNum = diskNum;
+        for(int i = 0;i<diskNum;i++){
+            options.exp_ops.dbNames.push_back(dbnames[i]);
+        }
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
@@ -32,6 +39,9 @@ namespace ycsbc {
             exit(0);
         }
         cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<endl;
+        for(int i = 0;i<diskNum;i++){
+            cout<<"disk"<<i<<": "<<options.exp_ops.dbNames[i]<<endl;
+        }
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
