@@ -22,19 +22,30 @@ using namespace std;
 void UsageMessage(const char *command);
 bool StrStartWith(const char *str, const char *pre);
 string ParseCommandLine(int argc, const char *argv[], utils::Properties &props);
+double ops_time[4]={0.0};
+long ops_cnt[4]={0};
 
 int DelegateClient(ycsbc::DB *db, ycsbc::CoreWorkload *wl, const int num_ops,
     bool is_loading) {
   db->Init();
   ycsbc::Client client(*db, *wl);
   int oks = 0;
+  if(is_loading){
+    cerr << "loading "<<num_ops<<" records..."<<endl;
+  } else {
+    cerr << "running on "<<num_ops<<" records..."<<endl;
+  }
   for (int i = 0; i < num_ops; ++i) {
+    if(i%10000==0){
+      cerr << "finished ops: "<<i<<"\r";
+    }
     if (is_loading) {
       oks += client.DoInsert();
     } else {
       oks += client.DoTransaction();
     }
   }
+  cerr << endl;
   db->Close();
   return oks;
 }
@@ -92,10 +103,14 @@ int main(const int argc, const char *argv[]) {
       sum += n.get();
     }
     double duration = timer.End();
-    cerr << "# Transaction throughput (KTPS)" << endl;
-    cerr << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
-    cerr << total_ops / duration / 1000000 / 1000 << endl;
-    cerr << "run time: " << duration << "us" << endl;
+    cout << "# Transaction throughput (KTPS)" << endl;
+    cout << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
+    cout << total_ops / duration / 1000000 / 1000 << endl;
+    cout << "run time: " << duration << "us\n\n" << endl;
+    cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ] << "us" <<endl;
+    cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ] << "us" <<endl;
+    cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT] << "us" <<endl;
+    cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT] << "us" <<endl;
   }
   if (props["dbname"] == "leveldb"){
     cout << "============================leveldb statistics==========================="<<endl;

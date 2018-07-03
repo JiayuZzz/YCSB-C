@@ -23,4 +23,7 @@ def load(dbfilename,workload,resultfile="-1"):
         os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad false > {2}".format(dbfilename,workload,resultfile))
 
 def run(dbfilename,workload,resultfile="-1"):
-    os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad true > {2}".format(dbfilename,workload,resultfile))
+    if resultfile=="-1":
+        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad true".format(dbfilename,workload))
+    else:
+        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad true > {2}".format(dbfilename,workload,resultfile))
