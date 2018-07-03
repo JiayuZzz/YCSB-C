@@ -14,6 +14,9 @@
 #include "core_workload.h"
 #include "utils.h"
 
+extern double ops_time[4];
+extern long ops_cnt[4];
+
 namespace ycsbc {
 
 class Client {
@@ -46,15 +49,23 @@ inline bool Client::DoInsert() {
 
 inline bool Client::DoTransaction() {
   int status = -1;
+  utils::Timer timer;
+  timer.Start();
   switch (workload_.NextOperation()) {
     case READ:
       status = TransactionRead();
+      ops_time[READ] += timer.End();
+      ops_cnt[READ]++;
       break;
     case UPDATE:
       status = TransactionUpdate();
+      ops_time[INSERT] += timer.End();
+      ops_cnt[INSERT]++;
       break;
     case INSERT:
       status = TransactionInsert();
+      ops_time[INSERT] += timer.End();
+      ops_cnt[INSERT]++;
       break;
     case SCAN:
       status = TransactionScan();
