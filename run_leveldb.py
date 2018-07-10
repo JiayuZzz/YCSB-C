@@ -10,7 +10,10 @@ configs = {
     "bloomBits":"4",
     "seekCompaction":"true",
     "directIO":"false",
-    "compression":"false"
+    "compression":"false",
+    "dbName0":"./test",
+    "dbName1":"./test1",
+    "diskNum":"2"
 }
 
 #set configs

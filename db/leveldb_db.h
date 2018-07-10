@@ -10,13 +10,16 @@
 #include <string>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <vector>
+
+using std::vector;
 
 using std::string;
 
 namespace ycsbc {
     class LevelDB : public DB{
     public:
-        LevelDB(const char *dbfilename);
+        LevelDB();
         int Read(const std::string &table, const std::string &key,
                  const std::vector<std::string> *fields,
                  std::vector<KVPair> &result);
@@ -50,6 +53,8 @@ namespace ycsbc {
         bool seekCompaction_;
         bool compression_;
         bool directIO_;
+        int diskNum_;
+        vector<string> dbNames_;
 
     public:
         ConfigLevelDB(){
@@ -58,6 +63,14 @@ namespace ycsbc {
             seekCompaction_=pt_.get<bool>("config.seekCompaction");
             compression_=pt_.get<bool>("config.compression");
             directIO_=pt_.get<bool>("config.directIO");
+            diskNum_=pt_.get<int>("config.diskNum");
+            for(int i=0;i<diskNum_;i++){
+                string cfg = "config.dbName";
+                std::ostringstream oss;
+                oss<<cfg<<i;
+                cfg = oss.str();
+                dbNames_.push_back(pt_.get<string>(cfg.c_str()));
+            }
         }
 
         int getBloomBits(){
@@ -74,6 +87,14 @@ namespace ycsbc {
 
         bool getDirectIO(){
             return directIO_;
+        }
+
+        vector<string> getDbNames(){
+            return dbNames_;
+        }
+
+        int getDiskNum(){
+            return diskNum_;
         }
     };
 }

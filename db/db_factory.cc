@@ -34,7 +34,7 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
   } else if (props["dbname"] == "tbb_scan") {
     return new TbbScanDB;
   } else if (props["dbname"] == "leveldb") {
-    return new LevelDB(props["dbfilename"].c_str());
+    return new LevelDB();
   } else return NULL;
 }
 
