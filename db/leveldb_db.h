@@ -50,6 +50,7 @@ namespace ycsbc {
         bool seekCompaction_;
         bool compression_;
         bool directIO_;
+        string vlogFilename_;
 
     public:
         ConfigLevelDB(){
@@ -58,6 +59,7 @@ namespace ycsbc {
             seekCompaction_=pt_.get<bool>("config.seekCompaction");
             compression_=pt_.get<bool>("config.compression");
             directIO_=pt_.get<bool>("config.directIO");
+            vlogFilename_=pt_.get<string>("vlog.vlogFilename");
         }
 
         int getBloomBits(){
@@ -74,6 +76,10 @@ namespace ycsbc {
 
         bool getDirectIO(){
             return directIO_;
+        }
+
+        string getVlogFilename(){
+            return vlogFilename_;
         }
     };
 }

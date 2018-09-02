@@ -84,8 +84,8 @@ int main(const int argc, const char *argv[]) {
       assert(n.valid());
       sum += n.get();
     }
-    cerr << "# Loading records:\t" << sum << endl;
-    cerr << "Load time: "<<timer.End()<<"us"<<endl;
+    cout << "# Loading records:\t" << sum << endl;
+    cout << "Load time: "<<timer.End()/1000000<<"s"<<endl;
     actual_ops.clear();
   } else {
     // Performs transactions
@@ -107,11 +107,12 @@ int main(const int argc, const char *argv[]) {
     cout << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
     cout << total_ops / duration / 1000000 / 1000 << endl;
     cout << "run time: " << duration << "us\n\n" << endl;
-    cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ] << "us" <<endl;
-    cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ] << "us" <<endl;
-    cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT] << "us" <<endl;
-    cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT] << "us" <<endl;
   }
+  
+  cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ]/1000000 << "s" <<endl;
+  cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ]/1000 << "ms" <<endl;
+  cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT]/1000000 << "s" <<endl;
+  cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
   if (props["dbname"] == "leveldb"){
     cout << "============================leveldb statistics==========================="<<endl;
     db->printStats();

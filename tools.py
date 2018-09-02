@@ -16,15 +16,15 @@ def modifyConfig(file,field,key,value):
     parser.write(open(file,'w'))
 
 
-def load(dbfilename,workload,resultfile="-1"):
+def load(db,dbfilename,workload,resultfile="-1"):
     os.system("sudo rm -rf {0}".format(dbfilename))
     if resultfile=="-1":
-        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad false".format(dbfilename,workload))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -skipLoad false".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad false > {2}".format(dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -skipLoad false > {3}".format(db,dbfilename,workload,resultfile))
 
-def run(dbfilename,workload,resultfile="-1"):
+def run(db,dbfilename,workload,resultfile="-1"):
     if resultfile=="-1":
-        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad true".format(dbfilename,workload))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -skipLoad true".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db leveldb -dbfilename {0} -threads 1 -P {1} -skipLoad true > {2}".format(dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -skipLoad true > {3}".format(db,dbfilename,workload,resultfile))
