@@ -3,7 +3,7 @@ import sys
 import os
 
 phase = sys.argv[1]
-dbfilename = "/mnt/datadisk/leveldb"
+dbfilename = "/mnt/datadisk/leveldb_vlog"
 workload = "./workloads/workloada.spec"
 resultfile = "-1"
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
         tools.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
     for vlog in vlogs:
         tools.modifyConfig("./configDir/leveldb_config.ini","vlog",vlog,vlogs[vlog])
-    resultfile = "/home/wujy/res/result"
+    resultfile = "./resultDir/vlog_result"
 
     if len(sys.argv) == 3:
         resultfile = sys.argv[2]

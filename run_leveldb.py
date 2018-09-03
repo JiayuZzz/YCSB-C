@@ -17,7 +17,7 @@ configs = {
 if __name__ == '__main__':
     for cfg in configs:
         tools.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
-    resultfile = "/home/wujy/res/result"
+    resultfile = "./resultDir/result"
 
     if len(sys.argv) == 3:
         resultfile = sys.argv[2]
