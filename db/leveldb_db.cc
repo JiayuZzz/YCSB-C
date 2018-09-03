@@ -67,10 +67,8 @@ namespace ycsbc {
     int LevelDB::Insert(const std::string &table, const std::string &key,
                std::vector<KVPair> &values){
         leveldb::Status s;
-        int cnt=0;
-        for(KVPair p:values){
+        for(KVPair &p:values){
             s = db_->Put(leveldb::WriteOptions(),key,p.second);
-            ++cnt;
             if(!s.ok()){
                 cerr<<"insert error\n"<<endl;
                 exit(0);
@@ -84,12 +82,8 @@ namespace ycsbc {
     }
 
     int LevelDB::Delete(const std::string &table, const std::string &key) {
-        leveldb::Status s = db_->Delete(leveldb::WriteOptions(),key);
-        if(!s.ok()){
-            cerr<<"delete error"<<endl;
-            exit(0);
-        }
-        return DB::kOK;
+        std::vector<KVPair> values;
+        return Insert(table,key,values);
     }
 
     void LevelDB::printStats() {
