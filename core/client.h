@@ -69,6 +69,8 @@ inline bool Client::DoTransaction() {
       break;
     case SCAN:
       status = TransactionScan();
+      ops_time[SCAN] += timer.End();
+      ops_cnt[SCAN]++;
       break;
     case READMODIFYWRITE:
       status = TransactionReadModifyWrite();

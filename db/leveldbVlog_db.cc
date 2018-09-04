@@ -54,6 +54,10 @@ namespace ycsbc {
 
     int LevelDBVlog::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
+        std::vector<std::string> keys(len);
+        std::vector<std::string> vals(len);
+        db_->Scan(leveldb::ReadOptions(),key,len,keys,vals);
+        return DB::kOK;
         /*
         leveldb::Iterator* it=db_->NewIterator(leveldb::ReadOptions());
         string value;
