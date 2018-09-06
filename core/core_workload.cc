@@ -109,6 +109,8 @@ void CoreWorkload::Init(const utils::Properties &p) {
   if (p.GetProperty(INSERT_ORDER_PROPERTY, INSERT_ORDER_DEFAULT) == "hashed") {
     ordered_inserts_ = false;
   } else {
+    std::cerr<<"ordered values"<<std::endl;
+    std::cout<<"ordered values"<<std::endl;
     ordered_inserts_ = true;
   }
   

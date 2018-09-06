@@ -1,10 +1,13 @@
 import funcs
 import sys
 
-phase = sys.argv[1]
-dbfilename = "/mnt/datadisk/leveldb"
-workload = "./workloads/workload1KB.spec"
-resultfile = "-1"
+dbPath = "/mnt/leveldb/"
+valueSize = "1KB"
+dbSize = "100GB"
+dbfilename = dbPath+"leveldb"+valueSize+dbSize
+workload = "./workloads/workload"+valueSize+dbSize+".spec"
+resultfile = "./resultDir/leveldb_"+valueSize+dbSize
+
 
 configs = {
     "bloomBits":"4",
@@ -13,11 +16,12 @@ configs = {
     "compression":"false"
 }
 
-#set configs
+phase = sys.argv[1]
+
 if __name__ == '__main__':
+    #set configs
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
-    resultfile = "./resultDir/result"
 
     if len(sys.argv) == 3:
         resultfile = sys.argv[2]
@@ -28,6 +32,7 @@ if __name__ == '__main__':
 
     if phase=="run":
         resultfile = resultfile+"_run"
+        print(resultfile)
         funcs.run("leveldb",dbfilename,workload,resultfile)
 
     if phase=="both":
