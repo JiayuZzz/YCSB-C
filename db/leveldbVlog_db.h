@@ -40,7 +40,7 @@ namespace ycsbc {
         ~LevelDBVlog();
 
     private:
-        leveldb::SepDB *db_;
+        leveldb::VlogDB *db_;
         unsigned noResult;
     };
 }

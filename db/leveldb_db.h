@@ -50,6 +50,7 @@ namespace ycsbc {
         bool seekCompaction_;
         bool compression_;
         bool directIO_;
+        int vlogThreads_;
         string vlogFilename_;
 
     public:
@@ -60,6 +61,7 @@ namespace ycsbc {
             compression_=pt_.get<bool>("config.compression");
             directIO_=pt_.get<bool>("config.directIO");
             vlogFilename_=pt_.get<string>("vlog.vlogFilename");
+            vlogThreads_=pt_.get<int>("vlog.scanThreads");
         }
 
         int getBloomBits(){
@@ -76,6 +78,10 @@ namespace ycsbc {
 
         bool getDirectIO(){
             return directIO_;
+        }
+
+        int getVlogThreads(){
+            return vlogThreads_;
         }
 
         string getVlogFilename(){

@@ -3,14 +3,14 @@ import sys
 
 dbPath = "/mnt/leveldb/"
 valueSize = "1KB"
-dbSize = "100GB"
+dbSize = "50GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/leveldb_"+valueSize+dbSize
 
 
 configs = {
-    "bloomBits":"4",
+    "bloomBits":"10",
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false"

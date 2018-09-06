@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/vlog/"
 valueSize = "1KB"
-dbSize = "100GB"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -18,7 +18,8 @@ configs = {
 }
 
 vlogs = {
-    "vlogFilename":vlogfilename
+    "vlogFilename":vlogfilename,
+    "scanThreads":"32",
 }
 
 phase = sys.argv[1]
@@ -39,15 +40,16 @@ if __name__ == '__main__':
     if phase=="load":
         os.system("rm -rf {0}".format(vlogs["vlogFilename"]))
         resultfile = resultfile+"_load"
-        funcs.load("leveldbvlog",dbfilename,workload,resultfile)
+        funcs.load("vlog",dbfilename,workload,resultfile)
 
     if phase=="run":
+        os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
         resultfile = resultfile+"_run"
-        funcs.run("leveldbvlog",dbfilename,workload,resultfile)
+        funcs.run("vlog",dbfilename,workload,resultfile)
 
     if phase =="both":
         os.system("rm -rf {0}".format(vlogfilename))
         resultfile1 = resultfile+"_load"
-        funcs.load("leveldbvlog",dbfilename,workload,resultfile1)
+        funcs.load("vlog",dbfilename,workload,resultfile1)
         resultfile2 = resultfile+"_run"
-        funcs.run("leveldbvlog",dbfilename,workload,resultfile2)
+        funcs.run("vlog",dbfilename,workload,resultfile2)
