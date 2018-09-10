@@ -51,7 +51,9 @@ namespace ycsbc {
         bool compression_;
         bool directIO_;
         int vlogThreads_;
+        int expThreads_;
         string vlogFilename_;
+        string vlogDir_;
 
     public:
         ConfigLevelDB(){
@@ -61,7 +63,9 @@ namespace ycsbc {
             compression_=pt_.get<bool>("config.compression");
             directIO_=pt_.get<bool>("config.directIO");
             vlogFilename_=pt_.get<string>("vlog.vlogFilename");
+            vlogDir_=pt_.get<string>("expdb.vlogDir");
             vlogThreads_=pt_.get<int>("vlog.scanThreads");
+            expThreads_=pt_.get<int>("expdb.expThreads");
         }
 
         int getBloomBits(){
@@ -86,6 +90,14 @@ namespace ycsbc {
 
         string getVlogFilename(){
             return vlogFilename_;
+        }
+
+        string getVlogDir(){
+            return vlogDir_;
+        }
+
+        int getExpThreads(){
+            return expThreads_;
         }
     };
 }
