@@ -115,9 +115,10 @@ int main(const int argc, const char *argv[]) {
   cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
   cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
   cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
-  if (props["dbname"] == "leveldb"||props["dbname"] == "leveldbvlog"){
+  if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"){
     cout << "============================leveldb statistics==========================="<<endl;
     db->printStats();
+    delete db;
   }
 }
 

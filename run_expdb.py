@@ -8,24 +8,26 @@ dbSize = "40GB"
 dbfilename = dbPath+"leveldb_exp"+valueSize+dbSize
 vlogDir = dbPath+"vlogDir"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/expdb_"+valueSize+dbSize
+resultfile = "./resultDir/expdb"+valueSize+dbSize
 
 configs = {
     "bloomBits":"4",
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
+    "blockCache":str(64*1024*1024)
 }
 
 exps = {
     "vlogDir":vlogDir,
-    "expThreads":"32",
+    "expThreads":"36",
 }
 
 phase = sys.argv[1]
 
 #set configs
 if __name__ == '__main__':
+    os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
     print(workload)
     print(vlogDir)
     print(dbfilename)
@@ -43,7 +45,6 @@ if __name__ == '__main__':
         funcs.load("expdb",dbfilename,workload,resultfile)
 
     if phase=="run":
-        os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
         resultfile = resultfile+"_run"
         funcs.run("expdb",dbfilename,workload,resultfile)
 

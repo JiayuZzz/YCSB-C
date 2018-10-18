@@ -6,6 +6,7 @@
 #include <iostream>
 #include "leveldb/filter_policy.h"
 #include "leveldb_db.h"
+#include "leveldb/cache.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ namespace ycsbc {
         bool directIO = config.getDirectIO();
         int expThreads = config.getExpThreads();
         string vlogDir = config.getVlogDir();
+        size_t blockCache = config.getBlockCache();
         //set options
         leveldb::ExpOptions options;
         options.create_if_missing = true;
@@ -29,6 +31,7 @@ namespace ycsbc {
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
         options.numThreads = expThreads;
+        options.block_cache = leveldb::NewLRUCache(blockCache);
 
         leveldb::Status s = leveldb::ExpDB::Open(options,dbfilename,vlogDir,&db_);
         cerr<<vlogDir<<endl;
@@ -46,7 +49,6 @@ namespace ycsbc {
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
             noResult++;
-            cout<<noResult<<endl;
             return DB::kOK;
         }else{
             cerr<<"read error"<<endl;
@@ -60,6 +62,11 @@ namespace ycsbc {
         std::vector<std::string> keys(len);
         std::vector<std::string> vals(len);
         db_->Scan(leveldb::ReadOptions(),key,len,keys,vals);
+	/*
+        for(string& s:vals){
+            cerr<<s<<endl;
+        }
+	*/
         return DB::kOK;
     }
 
@@ -93,6 +100,7 @@ namespace ycsbc {
     }
 
     LevelDBExp::~LevelDBExp() {
+        std::cerr<<"not found:"<<noResult<<std::endl;
         delete db_;
     }
 }

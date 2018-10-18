@@ -5,6 +5,7 @@
 #include "leveldb_db.h"
 #include <iostream>
 #include "leveldb/filter_policy.h"
+#include "leveldb/cache.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ namespace ycsbc {
         //get leveldb config
         ConfigLevelDB config = ConfigLevelDB();
         int bloomBits = config.getBloomBits();
+        size_t blockCache = config.getBlockCache();
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
@@ -25,6 +27,7 @@ namespace ycsbc {
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
+        options.block_cache = leveldb::NewLRUCache(blockCache);
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
@@ -54,9 +57,11 @@ namespace ycsbc {
                       std::vector<std::vector<KVPair>> &result) {
         auto it=db_->NewIterator(leveldb::ReadOptions());
         it->Seek(key);
-        std::string value;
+        std::string val;
+        std::string k;
         for(int i=0;i<len&&it->Valid();i++){
-                value = it->value().ToString();
+                k = it->key().ToString();
+                val = it->value().ToString();
                 it->Next();
             }
         return DB::kOK;

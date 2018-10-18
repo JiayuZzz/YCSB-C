@@ -1,25 +1,28 @@
 import funcs
 import sys
+import os
 
 dbPath = "/mnt/leveldb/"
 valueSize = "1KB"
-dbSize = "50GB"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb_"+valueSize+dbSize
+resultfile = "./resultDir/leveldb"+valueSize+dbSize
 
 
 configs = {
     "bloomBits":"10",
     "seekCompaction":"false",
     "directIO":"false",
-    "compression":"false"
+    "compression":"false",
+    "blockCache":str(128*1024*1024)
 }
 
 phase = sys.argv[1]
 
 if __name__ == '__main__':
     #set configs
+    os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 

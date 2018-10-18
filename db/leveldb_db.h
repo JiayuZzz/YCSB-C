@@ -52,6 +52,7 @@ namespace ycsbc {
         bool directIO_;
         int vlogThreads_;
         int expThreads_;
+        size_t blockCache_;
         string vlogFilename_;
         string vlogDir_;
 
@@ -62,6 +63,7 @@ namespace ycsbc {
             seekCompaction_=pt_.get<bool>("config.seekCompaction");
             compression_=pt_.get<bool>("config.compression");
             directIO_=pt_.get<bool>("config.directIO");
+            blockCache_=pt_.get<size_t>("config.blockCache");
             vlogFilename_=pt_.get<string>("vlog.vlogFilename");
             vlogDir_=pt_.get<string>("expdb.vlogDir");
             vlogThreads_=pt_.get<int>("vlog.scanThreads");
@@ -98,6 +100,10 @@ namespace ycsbc {
 
         int getExpThreads(){
             return expThreads_;
+        }
+
+        size_t getBlockCache(){
+            return blockCache_;
         }
     };
 }
