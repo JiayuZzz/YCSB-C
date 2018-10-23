@@ -21,6 +21,7 @@ namespace ycsbc {
         int expThreads = config.getExpThreads();
         string vlogDir = config.getVlogDir();
         size_t blockCache = config.getBlockCache();
+        size_t memtableSize = config.getExpdbMem();
         //set options
         leveldb::ExpOptions options;
         options.create_if_missing = true;
@@ -32,6 +33,7 @@ namespace ycsbc {
         options.exp_ops.directIO = directIO;
         options.numThreads = expThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
+        options.vlogMemSize = memtableSize;
 
         leveldb::Status s = leveldb::ExpDB::Open(options,dbfilename,vlogDir,&db_);
         cerr<<vlogDir<<endl;

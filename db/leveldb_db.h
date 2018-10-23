@@ -55,6 +55,7 @@ namespace ycsbc {
         size_t blockCache_;
         string vlogFilename_;
         string vlogDir_;
+        size_t expdbMem_;
 
     public:
         ConfigLevelDB(){
@@ -68,6 +69,7 @@ namespace ycsbc {
             vlogDir_=pt_.get<string>("expdb.vlogDir");
             vlogThreads_=pt_.get<int>("vlog.scanThreads");
             expThreads_=pt_.get<int>("expdb.expThreads");
+            expdbMem_=pt_.get<size_t>("expdb.memSize");
         }
 
         int getBloomBits(){
@@ -104,6 +106,10 @@ namespace ycsbc {
 
         size_t getBlockCache(){
             return blockCache_;
+        }
+
+        size_t getExpdbMem(){
+            return expdbMem_;
         }
     };
 }

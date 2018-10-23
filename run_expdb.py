@@ -3,8 +3,8 @@ import sys
 import os
 
 dbPath = "/mnt/expdb/"
-valueSize = "1KB"
-dbSize = "40GB"
+valueSize = "512B"
+dbSize = "100GB"
 dbfilename = dbPath+"leveldb_exp"+valueSize+dbSize
 vlogDir = dbPath+"vlogDir"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -20,7 +20,8 @@ configs = {
 
 exps = {
     "vlogDir":vlogDir,
-    "expThreads":"36",
+    "expThreads":"32",
+    "memSize":str(128*1024*1024),
 }
 
 phase = sys.argv[1]
@@ -28,6 +29,7 @@ phase = sys.argv[1]
 #set configs
 if __name__ == '__main__':
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
+    os.system("ulimit -n 50000")
     print(workload)
     print(vlogDir)
     print(dbfilename)
