@@ -4,9 +4,9 @@
 
 #include "leveldbVlog_db.h"
 #include <iostream>
-#include "leveldb/filter_policy.h"
+#include "pebblesdb/filter_policy.h"
 #include "leveldb_db.h"
-#include "leveldb/cache.h"
+#include "pebblesdb/cache.h"
 
 using namespace std;
 
@@ -21,6 +21,7 @@ namespace ycsbc {
         int scanThreads = config.getVlogThreads();
         string vlogFilename = config.getVlogFilename();
         size_t blockCache = config.getBlockCache();
+        std::cerr<<"hehe\n";
         //set options
         leveldb::VlogOptions options;
         options.create_if_missing = true;
@@ -28,9 +29,8 @@ namespace ycsbc {
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
-        options.exp_ops.seekCompaction = seekCompaction;
-        options.exp_ops.directIO = directIO;
         options.numThreads = scanThreads;
+        std::cerr<<"threads: "<<options.numThreads<<std::endl;
         options.block_cache = leveldb::NewLRUCache(blockCache);
 
         leveldb::Status s = leveldb::VlogDB::Open(options,dbfilename,vlogFilename,&db_);

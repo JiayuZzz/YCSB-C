@@ -6,7 +6,7 @@
 #define YCSB_C_LEVELDBSEP_DB_H
 
 
-#include "leveldb/vlog.h"
+#include "pebblesdb/vlog.h"
 #include "core/db.h"
 #include <string>
 #include <boost/property_tree/ptree.hpp>

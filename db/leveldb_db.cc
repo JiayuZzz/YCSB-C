@@ -4,8 +4,8 @@
 
 #include "leveldb_db.h"
 #include <iostream>
-#include "leveldb/filter_policy.h"
-#include "leveldb/cache.h"
+#include "pebblesdb/filter_policy.h"
+#include "pebblesdb/cache.h"
 
 using namespace std;
 
@@ -25,8 +25,6 @@ namespace ycsbc {
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
-        options.exp_ops.seekCompaction = seekCompaction;
-        options.exp_ops.directIO = directIO;
         options.block_cache = leveldb::NewLRUCache(blockCache);
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);

@@ -3,12 +3,12 @@ import sys
 import os
 
 dbPath = "/mnt/vlog/"
-valueSize = "512B"
+valueSize = "4KB"
 dbSize = "100GB"
-dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
-vlogfilename = dbPath+"vlog"+valueSize+dbSize
+dbfilename = dbPath+"pebbles_vlog"+valueSize+dbSize
+vlogfilename = dbPath+"pebblesvlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/vlog"+valueSize+dbSize
+resultfile = "./resultDir/pebblesvlog"+valueSize+dbSize
 
 configs = {
     "bloomBits":"4",
@@ -20,7 +20,7 @@ configs = {
 
 vlogs = {
     "vlogFilename":vlogfilename,
-    "scanThreads":"36",
+    "scanThreads":"32",
 }
 
 phase = sys.argv[1]
@@ -41,6 +41,7 @@ if __name__ == '__main__':
 
     if phase=="load":
         os.system("rm -rf {0}".format(vlogs["vlogFilename"]))
+        print("haha\n")
         resultfile = resultfile+"_load"
         funcs.load("vlog",dbfilename,workload,resultfile)
 
