@@ -5,8 +5,8 @@
 #include "expdb_db.h"
 #include <iostream>
 #include "leveldb/filter_policy.h"
-#include "leveldb_db.h"
 #include "leveldb/cache.h"
+#include "leveldb_config.h"
 
 using namespace std;
 
@@ -19,9 +19,11 @@ namespace ycsbc {
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
         int expThreads = config.getExpThreads();
+        int sizeRatio = config.getSizeRatio();
         string vlogDir = config.getVlogDir();
         size_t blockCache = config.getBlockCache();
         size_t memtableSize = config.getExpdbMem();
+        size_t gcSize = config.getGcSize();
         //set options
         leveldb::ExpOptions options;
         options.create_if_missing = true;
@@ -31,6 +33,8 @@ namespace ycsbc {
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
+        options.exp_ops.sizeRatio = sizeRatio;
+        options.gcAfterExe = gcSize;
         options.numThreads = expThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
         options.vlogMemSize = memtableSize;

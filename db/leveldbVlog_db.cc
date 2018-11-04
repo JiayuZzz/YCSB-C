@@ -5,8 +5,8 @@
 #include "leveldbVlog_db.h"
 #include <iostream>
 #include "leveldb/filter_policy.h"
-#include "leveldb_db.h"
 #include "leveldb/cache.h"
+#include "leveldb_config.h"
 
 using namespace std;
 
@@ -21,6 +21,7 @@ namespace ycsbc {
         int scanThreads = config.getVlogThreads();
         string vlogFilename = config.getVlogFilename();
         size_t blockCache = config.getBlockCache();
+        size_t gcSize = config.getGcSize();
         //set options
         leveldb::VlogOptions options;
         options.create_if_missing = true;
@@ -32,6 +33,7 @@ namespace ycsbc {
         options.exp_ops.directIO = directIO;
         options.numThreads = scanThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
+        options.gcAfterExe = gcSize;
 
         leveldb::Status s = leveldb::VlogDB::Open(options,dbfilename,vlogFilename,&db_);
         if(!s.ok()){

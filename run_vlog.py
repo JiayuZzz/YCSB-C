@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/vlog/"
 valueSize = "512B"
-dbSize = "100GB"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -15,12 +15,13 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(64*1024*1024)
+    "blockCache":str(64*1024*1024),
+    "gcSize":(20*1024*1024*1024)
 }
 
 vlogs = {
     "vlogFilename":vlogfilename,
-    "scanThreads":"36",
+    "scanThreads":"32",
 }
 
 phase = sys.argv[1]
@@ -28,9 +29,12 @@ phase = sys.argv[1]
 #set configs
 if __name__ == '__main__':
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
+    os.system("ulimit -n 50000")
     print(workload)
     print(vlogfilename)
     print(dbfilename)
+    if phase == "load":
+        configs["gcSize"] = "0"
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
     for vlog in vlogs:

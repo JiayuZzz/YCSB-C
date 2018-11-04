@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/expdb/"
 valueSize = "512B"
-dbSize = "100GB"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb_exp"+valueSize+dbSize
 vlogDir = dbPath+"vlogDir"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -15,13 +15,15 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(64*1024*1024)
+    "blockCache":str(64*1024*1024),
+    "sizeRatio":"10",
+    "gcSize":str(20*1024*1024*1024)
 }
 
 exps = {
     "vlogDir":vlogDir,
     "expThreads":"32",
-    "memSize":str(128*1024*1024),
+    "memSize":str(256*1024*1024),
 }
 
 phase = sys.argv[1]
@@ -33,6 +35,8 @@ if __name__ == '__main__':
     print(workload)
     print(vlogDir)
     print(dbfilename)
+    if phase == "load":
+        configs["gcSize"] = "0"
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
     for exp in exps:
