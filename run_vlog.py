@@ -3,12 +3,14 @@ import sys
 import os
 
 dbPath = "/mnt/vlog/"
-valueSize = "512B"
+valueSize = "8KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/vlog"+valueSize+dbSize
+#gcSize = 10*1024*1024*1024
+gcSize = 0
 
 configs = {
     "bloomBits":"4",
@@ -16,7 +18,7 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "blockCache":str(64*1024*1024),
-    "gcSize":(20*1024*1024*1024)
+    "gcSize":str(gcSize)
 }
 
 vlogs = {

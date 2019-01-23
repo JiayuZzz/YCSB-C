@@ -16,6 +16,7 @@
 #include "core/client.h"
 #include "core/core_workload.h"
 #include "db/db_factory.h"
+#include "unistd.h"
 
 using namespace std;
 
@@ -87,6 +88,8 @@ int main(const int argc, const char *argv[]) {
     cout << "# Loading records:\t" << sum << endl;
     cout << "Load time: "<<timer.End()/1000000<<"s"<<endl;
     actual_ops.clear();
+    cerr<< "done, sleep 10 minutes for compaction"<<endl;
+    sleep(600);
   } else {
     // Performs transactions
     total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);

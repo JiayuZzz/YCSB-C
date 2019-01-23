@@ -9,6 +9,8 @@ dbfilename = dbPath+"leveldb_exp"+valueSize+dbSize
 vlogDir = dbPath+"vlogDir"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/expdb"+valueSize+dbSize
+gcSize = 0
+#gcSize = 20*1024*1024*1024
 
 configs = {
     "bloomBits":"4",
@@ -17,7 +19,7 @@ configs = {
     "compression":"false",
     "blockCache":str(64*1024*1024),
     "sizeRatio":"10",
-    "gcSize":str(20*1024*1024*1024)
+    "gcSize":str(gcSize)
 }
 
 exps = {

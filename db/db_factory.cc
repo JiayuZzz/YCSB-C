@@ -17,6 +17,7 @@
 #include "db/leveldb_db.h"
 #include "db/leveldbVlog_db.h"
 #include "db/expdb_db.h"
+#include "db/rocksdb_db.h"
 
 using namespace std;
 using ycsbc::DB;
@@ -41,6 +42,8 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
     return new LevelDBVlog(props["dbfilename"].c_str());
   } else if (props["dbname"] == "expdb"){
     return new LevelDBExp(props["dbfilename"].c_str());
+  } else if (props["dbname"] == "rocksdb") {
+    return new RocksDB(props["dbfilename"].c_str());
   }
   else return NULL;
 }

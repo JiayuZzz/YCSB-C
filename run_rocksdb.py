@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/leveldb/"
+dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "8KB"
-dbSize = "40GB"
-dbfilename = dbPath+"leveldb"+valueSize+dbSize
+valueSize = "1KB"
+dbSize = "10GB"
+dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb"+valueSize+dbSize
+resultfile = "./resultDir/rocksdb"+valueSize+dbSize
 
 
 configs = {
@@ -30,18 +30,17 @@ if __name__ == '__main__':
     if len(sys.argv) == 3:
         resultfile = sys.argv[2]
 
-    if phase=="load": 
+    if phase=="load":
         resultfile = resultfile+"_load"
-        funcs.load("leveldb",dbfilename,workload,resultfile)
+        funcs.load("rocksdb",dbfilename,workload,resultfile)
 
     if phase=="run":
         resultfile = resultfile+"_run"
         print(resultfile)
-        funcs.run("leveldb",dbfilename,workload,resultfile)
+        funcs.run("rocksdb",dbfilename,workload,resultfile)
 
     if phase=="both":
         resultfile1 = resultfile+"_load"
-        funcs.load("leveldb",dbfilename,workload,resultfile1)
+        funcs.load("rocksdb",dbfilename,workload,resultfile1)
         resultfile2 = resultfile+"_run"
-        funcs.run("leveldb",dbfilename,workload,resultfile2)
-        
+        funcs.run("rocksdb",dbfilename,workload,resultfile2)
