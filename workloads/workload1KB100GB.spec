@@ -10,7 +10,7 @@
 
 recordcount=104857600
 #recordcount=4194304
-operationcount=2000
+operationcount=1000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true
@@ -23,4 +23,4 @@ insertproportion=0
 fieldlength=1000
 requestdistribution=zipfian
 scanlengthdistribution=constant
-maxscanlength=4000
+maxscanlength=2000

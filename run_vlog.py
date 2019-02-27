@@ -3,7 +3,7 @@ import sys
 import os
 
 dbPath = "/mnt/vlog/"
-valueSize = "8KB"
+valueSize = "1KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize

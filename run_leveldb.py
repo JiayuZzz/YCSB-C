@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/leveldb/"
-#dbPath = "/mnt/raidstore/"
-valueSize = "8KB"
+#dbPath = "/mnt/leveldb/"
+dbPath = "/mnt/raidstore/"
+valueSize = "1KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb"+valueSize+dbSize
+resultfile = "./resultDir/leveldb_raid0_"+valueSize+dbSize
 
 
 configs = {

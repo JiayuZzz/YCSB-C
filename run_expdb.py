@@ -25,7 +25,7 @@ configs = {
 exps = {
     "vlogDir":vlogDir,
     "expThreads":"32",
-    "memSize":str(256*1024*1024),
+    "memSize":str(512*1024*1024),
 }
 
 phase = sys.argv[1]

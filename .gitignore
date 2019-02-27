@@ -44,3 +44,4 @@ CMake*
 redis/sample
 ycsbc
 resultDir
+*latencies*

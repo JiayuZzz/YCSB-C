@@ -40,6 +40,9 @@ class Client {
   CoreWorkload &workload_;
 };
 
+//FILE* fw = fopen("write_latencies","a");
+//FILE* fr = fopen("read_latencies","a");
+
 inline bool Client::DoInsert() {
   std::string key = workload_.NextSequenceKey();
   std::vector<DB::KVPair> pairs;
@@ -56,16 +59,19 @@ inline bool Client::DoTransaction() {
       status = TransactionRead();
       ops_time[READ] += timer.End();
       ops_cnt[READ]++;
+//      fprintf(fr,"%.0f,",timer.End());
       break;
     case UPDATE:
       status = TransactionUpdate();
       ops_time[INSERT] += timer.End();
       ops_cnt[INSERT]++;
+//      fprintf(fw,"%.0f,",timer.End());
       break;
     case INSERT:
       status = TransactionInsert();
       ops_time[INSERT] += timer.End();
       ops_cnt[INSERT]++;
+//      fprintf(fw,"%.0f,",timer.End());
       break;
     case SCAN:
       status = TransactionScan();
