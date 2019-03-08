@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-#dbPath = "/mnt/leveldb/"
-dbPath = "/mnt/raidstore/"
+dbPath = "/mnt/vlog/"
+#dbPath = "/mnt/raidstore/"
 valueSize = "1KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb_raid0_"+valueSize+dbSize
+resultfile = "./resultDir/leveldb_vtable_"+valueSize+dbSize
 
 
 configs = {
@@ -16,7 +16,8 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(0)
+    "blockCache":str(0),
+    "writeBuffer":str(256*1024*1024),
 }
 
 phase = sys.argv[1]

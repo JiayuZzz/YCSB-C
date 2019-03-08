@@ -22,14 +22,9 @@ namespace ycsbc {
         bool seekCompaction_;
         bool compression_;
         bool directIO_;
-        int vlogThreads_;
-        int expThreads_;
         int sizeRatio_;
+        size_t writeBuffer_;
         size_t blockCache_;
-        string vlogFilename_;
-        string vlogDir_;
-        size_t expdbMem_;
-        size_t gcSize_;
 
     public:
         ConfigLevelDB() {
@@ -39,13 +34,8 @@ namespace ycsbc {
             compression_ = pt_.get<bool>("config.compression");
             directIO_ = pt_.get<bool>("config.directIO");
             blockCache_ = pt_.get<size_t>("config.blockCache");
-            vlogFilename_ = pt_.get<string>("vlog.vlogFilename");
-            vlogDir_ = pt_.get<string>("expdb.vlogDir");
-            vlogThreads_ = pt_.get<int>("vlog.scanThreads");
-            expThreads_ = pt_.get<int>("expdb.expThreads");
             sizeRatio_ = pt_.get<int>("config.sizeRatio");
-            expdbMem_ = pt_.get<size_t>("expdb.memSize");
-            gcSize_ = pt_.get<size_t>("config.gcSize");
+            writeBuffer_ = pt_.get<size_t>("config.writeBuffer");
         }
 
         int getBloomBits() {
@@ -64,36 +54,16 @@ namespace ycsbc {
             return directIO_;
         }
 
-        int getVlogThreads() {
-            return vlogThreads_;
-        }
-
-        string getVlogFilename() {
-            return vlogFilename_;
-        }
-
-        string getVlogDir() {
-            return vlogDir_;
-        }
-
-        int getExpThreads() {
-            return expThreads_;
-        }
-
         size_t getBlockCache() {
             return blockCache_;
-        }
-
-        size_t getExpdbMem() {
-            return expdbMem_;
         }
 
         int getSizeRatio() {
             return sizeRatio_;
         }
 
-        size_t getGcSize(){
-            return gcSize_;
+        size_t getWriteBuffer(){
+            return writeBuffer_;
         }
     };
 }

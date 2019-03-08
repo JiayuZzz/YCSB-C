@@ -4,11 +4,11 @@ import os
 
 dbPath = "/mnt/leveldb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "1KB"
+valueSize = "512B"
 dbSize = "40GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/rocksdb"+valueSize+dbSize
+resultfile = "./resultDir/rocksdb_raid0"+valueSize+dbSize
 
 
 configs = {

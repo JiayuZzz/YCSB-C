@@ -18,6 +18,7 @@ namespace ycsbc {
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
+        size_t writeBuffer = config.getWriteBuffer();
         //set options
         leveldb::Options options;
         options.create_if_missing = true;
@@ -28,6 +29,7 @@ namespace ycsbc {
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
         options.block_cache = leveldb::NewLRUCache(blockCache);
+        options.write_buffer_size = writeBuffer;
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
