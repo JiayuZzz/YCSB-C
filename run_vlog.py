@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/vlog/"
 valueSize = "1KB"
-dbSize = "40GB"
+dbSize = "100GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
