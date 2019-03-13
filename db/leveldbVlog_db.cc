@@ -22,6 +22,7 @@ namespace ycsbc {
         string vlogFilename = config.getVlogFilename();
         size_t blockCache = config.getBlockCache();
         size_t gcSize = config.getGcSize();
+        size_t gcAfter = config.getGcAfter();
         //set options
         leveldb::VlogOptions options;
         options.create_if_missing = true;
@@ -33,7 +34,8 @@ namespace ycsbc {
         options.exp_ops.directIO = directIO;
         options.numThreads = scanThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
-        options.gcAfterExe = gcSize;
+        options.gcAfterExe = gcAfter;
+        options.gcDuringExe = gcSize;
 
         leveldb::Status s = leveldb::VlogDB::Open(options,dbfilename,vlogFilename,&db_);
         if(!s.ok()){

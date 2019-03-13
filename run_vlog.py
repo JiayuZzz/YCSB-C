@@ -8,9 +8,10 @@ dbSize = "100GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
 vlogfilename = dbPath+"vlog"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/vlog"+valueSize+dbSize
 #gcSize = 10*1024*1024*1024
 gcSize = 0
+gcAfter = 0
+resultfile = "./resultDir/vlog"+valueSize+dbSize+"gc"+gcSize;
 
 configs = {
     "bloomBits":"4",
@@ -18,12 +19,13 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "blockCache":str(64*1024*1024),
-    "gcSize":str(gcSize)
 }
 
 vlogs = {
     "vlogFilename":vlogfilename,
     "scanThreads":"32",
+    "gcSize":str(gcSize),
+    "gcAfter":str(gcAfter),
 }
 
 phase = sys.argv[1]
