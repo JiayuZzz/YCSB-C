@@ -2,10 +2,10 @@ import funcs
 import sys
 import os
 
-#dbPath = "/mnt/leveldb/"
-dbPath = "/mnt/raidstore/"
-valueSize = "1KB"
-dbSize = "40GB"
+dbPath = "/mnt/leveldb/"
+#dbPath = "/mnt/raidstore/"
+valueSize = "48B"
+dbSize = "10GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/leveldb_raid0_"+valueSize+dbSize

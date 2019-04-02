@@ -3,10 +3,10 @@ import sys
 import os
 
 dbPath = "/mnt/expdb/"
-valueSize = "512B"
+valueSize = "3KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb_exp"+valueSize+dbSize
-vlogDir = dbPath+"vlogDir"+valueSize+dbSize
+vlogDir = dbPath+"/vlogs"
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/expdb"+valueSize+dbSize
 gcSize = 0
@@ -25,7 +25,7 @@ configs = {
 exps = {
     "vlogDir":vlogDir,
     "expThreads":"32",
-    "memSize":str(512*1024*1024),
+    "memSize":str(256*1024*1024),
 }
 
 phase = sys.argv[1]

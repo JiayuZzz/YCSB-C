@@ -3,10 +3,10 @@ import sys
 import os
 
 dbPath = "/mnt/vlog/"
-valueSize = "1KB"
-dbSize = "100GB"
+valueSize = "48B"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
-vlogfilename = dbPath+"vlog"+valueSize+dbSize
+vlogfilename = dbPath+"/vlogs"
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/vlog"+valueSize+dbSize
 #gcSize = 10*1024*1024*1024
