@@ -1,12 +1,12 @@
 import funcs
 import sys
 
-dbPath = "/mnt/leveldb/"
+dbPath = "/home/exp/workspace/DB"
 valueSize = "1KB"
 dbSize = "40GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb_"+valueSize+dbSize
+resultfile = "/home/exp/workspace/resultDir/leveldb_"+valueSize+dbSize
 
 
 configs = {
