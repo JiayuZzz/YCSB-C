@@ -3,7 +3,7 @@ import sys
 
 dbPath = "/mnt/leveldb/"
 valueSize = "1KB"
-dbSize = "50GB"
+dbSize = "40GB"
 dbfilename = dbPath+"leveldb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 resultfile = "./resultDir/leveldb_"+valueSize+dbSize
