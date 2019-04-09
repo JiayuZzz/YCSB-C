@@ -22,6 +22,7 @@ namespace ycsbc {
         bool seekCompaction_;
         bool compression_;
         bool directIO_;
+        bool noCompaction_;
         int vlogThreads_;
         int expThreads_;
         int sizeRatio_;
@@ -30,6 +31,7 @@ namespace ycsbc {
         string vlogDir_;
         size_t expdbMem_;
         size_t gcSize_;
+        size_t memtable_;
 
     public:
         ConfigLevelDB() {
@@ -46,6 +48,8 @@ namespace ycsbc {
             sizeRatio_ = pt_.get<int>("config.sizeRatio");
             expdbMem_ = pt_.get<size_t>("expdb.memSize");
             gcSize_ = pt_.get<size_t>("config.gcSize");
+            memtable_ = pt_.get<size_t>("config.memtable");
+            noCompaction_ = pt_.get<bool>("config.noCompaction");
         }
 
         int getBloomBits() {
@@ -94,6 +98,14 @@ namespace ycsbc {
 
         size_t getGcSize(){
             return gcSize_;
+        }
+
+        size_t getMemtable(){
+            return memtable_;
+        }
+
+        bool getNoCompaction(){
+            return noCompaction_;
         }
     };
 }

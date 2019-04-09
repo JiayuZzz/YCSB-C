@@ -18,10 +18,12 @@ namespace ycsbc {
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
+        bool noCompaction = config.getNoCompaction();
         int scanThreads = config.getVlogThreads();
         string vlogFilename = config.getVlogFilename();
         size_t blockCache = config.getBlockCache();
         size_t gcSize = config.getGcSize();
+        size_t memtable = config.getMemtable();
         //set options
         leveldb::VlogOptions options;
         options.create_if_missing = true;
@@ -31,9 +33,12 @@ namespace ycsbc {
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
+        options.exp_ops.noCompaction = noCompaction;
         options.numThreads = scanThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
         options.gcAfterExe = gcSize;
+        options.write_buffer_size = memtable;
+        cerr<<options.write_buffer_size<<endl;
 
         leveldb::Status s = leveldb::VlogDB::Open(options,dbfilename,vlogFilename,&db_);
         if(!s.ok()){

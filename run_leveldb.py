@@ -2,27 +2,28 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/leveldb/"
-#dbPath = "/mnt/raidstore/"
-valueSize = "48B"
-dbSize = "10GB"
-dbfilename = dbPath+"leveldb"+valueSize+dbSize
-workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/leveldb_raid0_"+valueSize+dbSize
+#dbPath = "/mnt/leveldb/"
+dbPath = "/mnt/HDD/"
+ValueSizes = ["1KB"]
+dbSize = "4GB"
+for valueSize in valueSizes:
+    dbfilename = dbPath+"leveldb"+valueSize+dbSize
+    workload = "./workloads/workload"+valueSize+dbSize+".spec"
+    memtable = 64
+    resultfile = "./resultDir/leveldb_HDD_"+valueSize+dbSize+"memtable"+str(memtable)
 
+    configs = {
+        "bloomBits":"10",
+        "seekCompaction":"false",
+        "directIO":"false",
+        "compression":"false",
+        "blockCache":str(64*1024*1024),
+        "memtable":str(memtable*1024*1024),
+        "noCompaction":"false",
+    }
 
-configs = {
-    "bloomBits":"10",
-    "seekCompaction":"false",
-    "directIO":"false",
-    "compression":"false",
-    "blockCache":str(0)
-}
+    phase = sys.argv[1]
 
-phase = sys.argv[1]
-
-if __name__ == '__main__':
-    #set configs
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])

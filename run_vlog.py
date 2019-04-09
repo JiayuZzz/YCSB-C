@@ -2,34 +2,38 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/vlog/"
-valueSize = "48B"
+dbPath = "/mnt/vlog/test/"
+#valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
+valueSizes = ["64B"]
 dbSize = "40GB"
-dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
-vlogfilename = dbPath+"/vlogs"
-workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/vlog"+valueSize+dbSize
-#gcSize = 10*1024*1024*1024
-gcSize = 0
+for valueSize in valueSizes:
+    dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
+    vlogfilename = "/mnt/expdb/vlogs"
+    #vlogfilename = dbfilename+"/vlogs"
+    workload = "./workloads/workload"+valueSize+dbSize+".spec"
+    #gcSize = 10*1024*1024*1024
+    gcSize = 0
+    memtable = 4
+    resultfile = "./resultDir/vlog"+valueSize+dbSize+"memtable"+str(memtable)
 
-configs = {
-    "bloomBits":"4",
-    "seekCompaction":"false",
-    "directIO":"false",
-    "compression":"false",
-    "blockCache":str(64*1024*1024),
-    "gcSize":str(gcSize)
-}
+    configs = {
+        "bloomBits":"10",
+        "seekCompaction":"false",
+        "directIO":"false",
+        "compression":"false",
+        "blockCache":str(64*1024*1024),
+        "gcSize":str(gcSize),
+        "memtable":str(memtable*1024*1024),
+        "noCompaction":"false",
+    }
 
-vlogs = {
-    "vlogFilename":vlogfilename,
-    "scanThreads":"32",
-}
+    vlogs = {
+        "vlogFilename":vlogfilename,
+        "scanThreads":"32",
+    }
+    
+    phase = sys.argv[1]
 
-phase = sys.argv[1]
-
-#set configs
-if __name__ == '__main__':
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
     os.system("ulimit -n 50000")
     print(workload)

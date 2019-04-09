@@ -18,12 +18,14 @@ namespace ycsbc {
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
+        bool noCompaction = config.getNoCompaction();
         int expThreads = config.getExpThreads();
         int sizeRatio = config.getSizeRatio();
         string vlogDir = config.getVlogDir();
         size_t blockCache = config.getBlockCache();
-        size_t memtableSize = config.getExpdbMem();
+        size_t expdbMem = config.getExpdbMem();
         size_t gcSize = config.getGcSize();
+        size_t memtable = config.getMemtable();
         //set options
         leveldb::ExpOptions options;
         options.create_if_missing = true;
@@ -34,10 +36,13 @@ namespace ycsbc {
         options.exp_ops.seekCompaction = seekCompaction;
         options.exp_ops.directIO = directIO;
         options.exp_ops.sizeRatio = sizeRatio;
+        options.exp_ops.noCompaction = noCompaction;
         options.gcAfterExe = gcSize;
         options.numThreads = expThreads;
         options.block_cache = leveldb::NewLRUCache(blockCache);
-        options.vlogMemSize = memtableSize;
+        options.vlogMemSize = expdbMem;
+        options.write_buffer_size = memtable;
+
 
         leveldb::Status s = leveldb::ExpDB::Open(options,dbfilename,vlogDir,&db_);
         cerr<<vlogDir<<endl;
