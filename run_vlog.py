@@ -2,18 +2,18 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/vlog/test/"
+dbPath = "/mnt/vlog/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["64B"]
+valueSizes = ["8KB"]
 dbSize = "40GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
-    vlogfilename = "/mnt/expdb/vlogs"
-    #vlogfilename = dbfilename+"/vlogs"
+    #vlogfilename = "/mnt/expdb/vlogs"
+    vlogfilename = dbfilename+"/vlogs"
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     #gcSize = 10*1024*1024*1024
     gcSize = 0
-    memtable = 4
+    memtable = 64
     resultfile = "./resultDir/vlog"+valueSize+dbSize+"memtable"+str(memtable)
 
     configs = {
@@ -24,12 +24,12 @@ for valueSize in valueSizes:
         "blockCache":str(64*1024*1024),
         "gcSize":str(gcSize),
         "memtable":str(memtable*1024*1024),
-        "noCompaction":"false",
+        "noCompaction":"true",
     }
 
     vlogs = {
         "vlogFilename":vlogfilename,
-        "scanThreads":"32",
+        "scanThreads":"1",
     }
     
     phase = sys.argv[1]

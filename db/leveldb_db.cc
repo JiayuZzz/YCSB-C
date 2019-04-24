@@ -12,6 +12,7 @@ using namespace std;
 namespace ycsbc {
     LevelDB::LevelDB(const char *dbfilename) :noResult(0){
         //get leveldb config
+        cerr<<"begin\n";
         ConfigLevelDB config = ConfigLevelDB();
         int bloomBits = config.getBloomBits();
         size_t blockCache = config.getBlockCache();
@@ -32,6 +33,8 @@ namespace ycsbc {
         options.exp_ops.noCompaction = noCompaction;
         options.block_cache = leveldb::NewLRUCache(blockCache);
         options.write_buffer_size = memtable;
+        cerr<<"write buffer: "<<options.write_buffer_size<<endl;
+        options.exp_ops.baseLevelSize = memtable*10.0/4;
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){

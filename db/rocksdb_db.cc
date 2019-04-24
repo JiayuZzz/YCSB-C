@@ -20,10 +20,27 @@ namespace ycsbc {
         bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
         bool directIO = config.getDirectIO();
-        //set options
+        size_t memtable = config.getMemtable();
+        //set optionssc
         rocksdb::Options options;
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
+        options.write_buffer_size = memtable;
+        /*
+        options.max_write_buffer_number = 2;
+        options.min_write_buffer_number_to_merge = options.max_write_buffer_number - 1;
+        options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
+        options.max_bytes_for_level_base = options.target_file_size_base*4;
+         */
+            options.max_write_buffer_number = 1;
+            options.min_write_buffer_number_to_merge = 1;
+            options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
+            options.max_bytes_for_level_base = options.target_file_size_base*4;
+        cerr<<"write buffer size"<<options.write_buffer_size<<endl;
+        cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
+        cerr<<"num compaction trigger"<<options.level0_file_num_compaction_trigger<<endl;
+        cerr<<"targe file size base"<<options.target_file_size_base<<endl;
+        cerr<<"level size base"<<options.max_bytes_for_level_base<<endl;
         if(!compression)
             options.compression = rocksdb::kNoCompression;
         if(bloomBits>0) {

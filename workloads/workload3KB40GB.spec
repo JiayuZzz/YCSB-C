@@ -22,4 +22,4 @@ insertproportion=0
 fieldlength=3048
 requestdistribution=uniform
 scanlengthdistribution=constant
-maxscanlength=700
+maxscanlength=1400

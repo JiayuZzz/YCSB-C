@@ -2,13 +2,14 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/leveldb/"
+dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "48B"
-dbSize = "10GB"
+valueSize = "1KB"
+dbSize = "40GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-resultfile = "./resultDir/rocksdb"+valueSize+dbSize
+memtable = 1024
+resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
 configs = {
@@ -16,7 +17,8 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(0)
+    "blockCache":str(0),
+    "memtable":str(memtable*1024*1024)
 }
 
 phase = sys.argv[1]

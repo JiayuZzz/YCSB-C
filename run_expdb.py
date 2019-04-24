@@ -3,7 +3,8 @@ import sys
 import os
 
 dbPath = "/mnt/expdb/"
-valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
+#valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
+valueSizes = ["4KB"]
 dbSize = "40GB"
 
 if __name__ == '__main__':
@@ -13,7 +14,7 @@ if __name__ == '__main__':
         vlogDir = dbfilename+"/vlogs"
         workload = "./workloads/workload"+valueSize+dbSize+".spec"
         gcSize = 0
-        memSize = 256
+        memSize = 1024
         memtable = 64
         resultfile = "./resultDir/expdb"+valueSize+dbSize+str(memSize)+"memtable"+str(memtable)
         #gcSize = 20*1024*1024*1024
@@ -27,7 +28,7 @@ if __name__ == '__main__':
             "sizeRatio":"10",
             "gcSize":str(gcSize),
             "noCompaction":"true",
-            "memtable":str(memtable*1024*1024);
+            "memtable":str(memtable*1024*1024),
         }
 
         exps = {
