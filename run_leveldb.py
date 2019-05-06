@@ -4,13 +4,14 @@ import os
 
 dbPath = "/mnt/leveldb/"
 #dbPath = "/mnt/HDD/"
-valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-dbSize = "40GB"
+#valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
+valueSizes = ["1KB"]
+dbSize = "10GB"
 for valueSize in valueSizes:
-    dbfilename = dbPath+"leveldb"+valueSize+dbSize
+    dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 64
-    resultfile = "./resultDir/leveldb"+valueSize+dbSize+"memtable"+str(memtable)+"modi_base"
+    memtable = 1024
+    resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"modi_base"
 
     configs = {
         "bloomBits":"10",

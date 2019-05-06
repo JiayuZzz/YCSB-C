@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/expdb/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["4KB"]
+valueSizes = ["1KB"]
 dbSize = "40GB"
 
 if __name__ == '__main__':

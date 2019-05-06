@@ -34,7 +34,7 @@ namespace ycsbc {
         options.block_cache = leveldb::NewLRUCache(blockCache);
         options.write_buffer_size = memtable;
         cerr<<"write buffer: "<<options.write_buffer_size<<endl;
-        options.exp_ops.baseLevelSize = memtable*10.0/4;
+        options.exp_ops.baseLevelSize = memtable*10.0/(4*32);
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
