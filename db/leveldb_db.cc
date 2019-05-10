@@ -15,12 +15,8 @@ namespace ycsbc {
         cerr<<"begin\n";
         ConfigLevelDB config = ConfigLevelDB();
         int bloomBits = config.getBloomBits();
-        size_t blockCache = config.getBlockCache();
-        bool seekCompaction = config.getSeekCompaction();
         bool compression = config.getCompression();
-        bool directIO = config.getDirectIO();
-        bool noCompaction = config.getNoCompaction();
-        size_t memtable = config.getMemtable();
+
         //set options
         leveldb::Options options;
         options.create_if_missing = true;
@@ -28,20 +24,23 @@ namespace ycsbc {
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
-        options.exp_ops.seekCompaction = seekCompaction;
-        options.exp_ops.directIO = directIO;
-        options.exp_ops.noCompaction = noCompaction;
-        options.block_cache = leveldb::NewLRUCache(blockCache);
-        options.write_buffer_size = memtable;
+        options.exp_ops.seekCompaction = config.getSeekCompaction();
+        options.exp_ops.directIO = config.getDirectIO();
+        options.exp_ops.noCompaction = config.getNoCompaction();
+        options.block_cache = leveldb::NewLRUCache(config.getBlockCache());
+        options.write_buffer_size = config.getMemtable();
+	    options.exp_ops.numThreads = config.getNumThreads();
+	    options.exp_ops.smallThreshold = config.getSmallThresh();
+	    options.exp_ops.mediumThreshold = config.getMidThresh();
         cerr<<"write buffer: "<<options.write_buffer_size<<endl;
-        options.exp_ops.baseLevelSize = memtable*10.0/(4*32);
+        options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/(4*32);
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
             cerr<<"Can't open leveldb "<<dbfilename<<endl;
             exit(0);
         }
-        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<endl;
+        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)options.exp_ops.directIO<<"\nseekCompaction:"<<(bool)options.exp_ops.seekCompaction<<endl;
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
@@ -62,6 +61,10 @@ namespace ycsbc {
 
     int LevelDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
+        vector<string> keys;
+        vector<string> values;
+        db_->Scan(leveldb::ReadOptions(),key,"",keys,values,len);
+        /*
         auto it=db_->NewIterator(leveldb::ReadOptions());
         it->Seek(key);
         std::string val;
@@ -71,6 +74,7 @@ namespace ycsbc {
                 val = it->value().ToString();
                 it->Next();
             }
+            */
         return DB::kOK;
     }
 
