@@ -133,6 +133,12 @@ class CoreWorkload {
   static const std::string RECORD_COUNT_PROPERTY;
   static const std::string OPERATION_COUNT_PROPERTY;
 
+  static const std::string LARGE_VALUE_PROPORTION_PROPERTY;
+  static const std::string LARGE_VALUE_PROPORTION_DEFAULT;
+
+  static const std::string MID_VALUE_PROPORTION_PROPERTY;
+  static const std::string SMALL_VALUE_PROPORTION_PROPERTY;
+
   ///
   /// Initialize the scenario.
   /// Called once, in the main client thread, before any operations are started.

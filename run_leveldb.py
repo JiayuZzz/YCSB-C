@@ -5,15 +5,15 @@ import os
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["1KB"]
+valueSizes = ["8KB"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 1024
-    threads = 16
+    threads = 30
     smallThresh = 40
-    midThresh = 9000
+    midThresh = 4000
     gcRatio = 0.3
     resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"modi_base"
 
