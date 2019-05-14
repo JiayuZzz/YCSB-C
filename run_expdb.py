@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/expdb/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["4KB"]
-dbSize = "40GB"
+valueSizes = ["ratio"]
+dbSize = "100GB"
 
 if __name__ == '__main__':
     for valueSize in valueSizes:
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
         exps = {
             "vlogDir":vlogDir,
-            "expThreads":"32",
+            "expThreads":"30",
             "memSize":str(memSize*1024*1024),
         }
 

@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/vlog/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["8KB"]
-dbSize = "40GB"
+valueSizes = ["ratio"]
+dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"leveldb_vlog"+valueSize+dbSize
     #vlogfilename = "/mnt/expdb/vlogs"
@@ -29,7 +29,7 @@ for valueSize in valueSizes:
 
     vlogs = {
         "vlogFilename":vlogfilename,
-        "scanThreads":"1",
+        "scanThreads":"30",
     }
     
     phase = sys.argv[1]

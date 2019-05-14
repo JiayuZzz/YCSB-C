@@ -4,8 +4,9 @@ import os
 
 dbPath = "/mnt/leveldb/"
 #dbPath = "/mnt/HDD/"
-valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-dbSize = "40GB"
+#valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
+valueSizes = ["1KB"]
+dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"leveldb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"

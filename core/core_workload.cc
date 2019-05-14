@@ -12,6 +12,7 @@
 #include "skewed_latest_generator.h"
 #include "const_generator.h"
 #include "core_workload.h"
+#include "ratio_generator.h"
 
 #include <string>
 
@@ -48,6 +49,12 @@ const string CoreWorkload::INSERT_PROPORTION_DEFAULT = "0.0";
 
 const string CoreWorkload::SCAN_PROPORTION_PROPERTY = "scanproportion";
 const string CoreWorkload::SCAN_PROPORTION_DEFAULT = "0.0";
+
+const string CoreWorkload::LARGE_VALUE_PROPORTION_PROPERTY = "largevalue";
+const string CoreWorkload::LARGE_VALUE_PROPORTION_DEFAULT = "1";
+
+const string CoreWorkload::MID_VALUE_PROPORTION_PROPERTY = "midvalue";
+const string CoreWorkload::SMALL_VALUE_PROPORTION_PROPERTY = "smallvalue";
 
 const string CoreWorkload::READMODIFYWRITE_PROPORTION_PROPERTY =
     "readmodifywriteproportion";
@@ -180,7 +187,13 @@ ycsbc::Generator<uint64_t> *CoreWorkload::GetFieldLenGenerator(
     return new UniformGenerator(1, field_len);
   } else if(field_len_dist == "zipfian") {
     return new ZipfianGenerator(1, field_len);
-  } else {
+  } else if(field_len_dist == "ratio"){
+    double small_ratio = std::stod(p.GetProperty(SMALL_VALUE_PROPORTION_PROPERTY));
+    double mid_ratio = std::stod(p.GetProperty(MID_VALUE_PROPORTION_PROPERTY));
+    double large_ratio = std::stod(p.GetProperty(LARGE_VALUE_PROPORTION_PROPERTY));
+    return new RatioGenerator(small_ratio, mid_ratio, large_ratio);
+  }
+  else {
     throw utils::Exception("Unknown field length distribution: " +
         field_len_dist);
   }
