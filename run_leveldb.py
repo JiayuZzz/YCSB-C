@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["8KB"]
+valueSizes = ["ratio"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize

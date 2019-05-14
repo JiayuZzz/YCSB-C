@@ -29,7 +29,7 @@ namespace ycsbc {
                 case 2:
                     return last_int_ = dists_[1](generator_);
                 case 3:
-                    return last_int_ = dists_[3](generator_);
+                    return last_int_ = dists_[2](generator_);
                 default:
                     return last_int_ = dists_[1](generator_);
             }
