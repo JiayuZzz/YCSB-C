@@ -30,6 +30,7 @@ namespace ycsbc {
         size_t memtable_;
         size_t smallThresh_;
         size_t midThresh_;
+        double gcRatio_;
 
     public:
         ConfigLevelDB() {
@@ -46,6 +47,7 @@ namespace ycsbc {
             numThreads_ = pt_.get<int>("config.numThreads");
             smallThresh_ = pt_.get<size_t>("config.smallThresh");
             midThresh_ = pt_.get<size_t >("config.midThresh");
+            gcRatio_ = pt_.get<double>("config.gcRatio");
         }
 
         int getBloomBits() {
@@ -94,6 +96,10 @@ namespace ycsbc {
 
         size_t getMidThresh(){
             return midThresh_;
+        }
+
+        double getGCRatio(){
+            return gcRatio_;
         }
     };
 }
