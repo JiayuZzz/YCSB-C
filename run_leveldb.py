@@ -8,14 +8,14 @@ dbPath = "/mnt/rocksdb/"
 valueSizes = ["ratio"]
 dbSize = "100GB"
 for valueSize in valueSizes:
-    dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 1024
-    threads = 30
-    smallThresh = 40
+    threads = 16
+    smallThresh = 256
     midThresh = 4000
     gcRatio = 0.3
-    resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"modi_base"
+    dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize+"small"+str(smallThresh)+"mid"+str(midThresh)
+    resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"small"+str(smallThresh)+"mid"+str(midThresh)
 
     configs = {
         "bloomBits":"10",
@@ -29,6 +29,7 @@ for valueSize in valueSizes:
         "smallThresh":str(smallThresh),
         "midThresh":str(midThresh),
         "gcRatio":str(gcRatio),
+        "preheat":"false",
     }
 
     phase = sys.argv[1]

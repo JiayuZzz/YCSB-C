@@ -42,6 +42,17 @@ namespace ycsbc {
             exit(0);
         }
         cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)options.exp_ops.directIO<<"\nseekCompaction:"<<(bool)options.exp_ops.seekCompaction<<endl;
+        if(config.getPreheat()){
+            cerr<<"preheat lsm-tree ... ";
+            auto iter = db_->NewIterator(leveldb::ReadOptions());
+            iter->SeekToFirst();
+            while(iter->Valid()){
+                iter->key();
+                iter->value();
+                iter->Next();
+            }
+            cerr<<"done\n";
+        }
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,

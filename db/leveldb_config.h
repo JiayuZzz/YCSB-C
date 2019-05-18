@@ -31,6 +31,7 @@ namespace ycsbc {
         size_t smallThresh_;
         size_t midThresh_;
         double gcRatio_;
+        bool preheat_;
 
     public:
         ConfigLevelDB() {
@@ -48,6 +49,7 @@ namespace ycsbc {
             smallThresh_ = pt_.get<size_t>("config.smallThresh");
             midThresh_ = pt_.get<size_t >("config.midThresh");
             gcRatio_ = pt_.get<double>("config.gcRatio");
+            preheat_ = pt_.get<bool>("config.preheat");
         }
 
         int getBloomBits() {
@@ -100,6 +102,10 @@ namespace ycsbc {
 
         double getGCRatio(){
             return gcRatio_;
+        }
+
+        bool getPreheat(){
+            return preheat_;
         }
     };
 }
