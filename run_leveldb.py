@@ -2,17 +2,17 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/rocksdb/"
+dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/HDD/"
-#valueSizes = ["128B","256B","512B","1KB","2KB","3KB","4KB"]
-valueSizes = ["ratio"]
+#valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
+valueSizes = ["512B"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 1024
+    memtable = 64
     threads = 16
-    smallThresh = 256
-    midThresh = 4000
+    smallThresh = 1
+    midThresh = 0
     gcRatio = 0.3
     dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize+"small"+str(smallThresh)+"mid"+str(midThresh)
     resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"small"+str(smallThresh)+"mid"+str(midThresh)
@@ -22,7 +22,7 @@ for valueSize in valueSizes:
         "seekCompaction":"false",
         "directIO":"false",
         "compression":"false",
-        "blockCache":str(64*1024*1024),
+        "blockCache":str(6*1024*1024*1024),
         "memtable":str(memtable*1024*1024),
         "noCompaction":"true",
         "numThreads":str(threads),
@@ -35,6 +35,10 @@ for valueSize in valueSizes:
     phase = sys.argv[1]
 
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
+
+    if phase=="load":
+        configs["noCompaction"]="false"
+
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 

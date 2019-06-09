@@ -22,7 +22,7 @@ insertproportion=0
 fieldlength=4072
 field_len_dist=ratio
 requestdistribution=uniform
-maxscanlength=3000
+maxscanlength=30000
 
 largevalue=0.1
 midvalue=0.5
