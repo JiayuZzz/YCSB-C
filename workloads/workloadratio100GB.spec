@@ -11,22 +11,25 @@
 recordcount=142029341
 #recordcount=30000000
 #operationcount=284058682
-operationcount=10000
+operationcount=1000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true
 
 readproportion=0
 updateproportion=0
-scanproportion=1
+scanproportion=1.0
 insertproportion=0
 
 fieldlength=4072
 field_len_dist=ratio
 requestdistribution=uniform
+scanlengthdistribution=constant
 maxscanlength=3000
 
 largevalue=0.1
 midvalue=0.5
 smallvalue=0.4
-
+largesize=8192
+midsize=4096
+smallsize=100

@@ -139,6 +139,10 @@ class CoreWorkload {
   static const std::string MID_VALUE_PROPORTION_PROPERTY;
   static const std::string SMALL_VALUE_PROPORTION_PROPERTY;
 
+  static const std::string LARGE_VALUE_SIZE_PROPERTY;
+  static const std::string MID_VALUE_SIZE_PROPERTY;
+  static const std::string SMALL_VALUE_SIZE_PROPERTY;
+
   ///
   /// Initialize the scenario.
   /// Called once, in the main client thread, before any operations are started.

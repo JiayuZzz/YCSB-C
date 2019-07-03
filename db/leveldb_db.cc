@@ -36,6 +36,8 @@ namespace ycsbc {
         //options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/(4*32);
         options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/4;
         options.exp_ops.gcRatio = config.getGCRatio();
+        options.exp_ops.gcLevel = config.getGCLevel();
+        options.exp_ops.mergeLevel = config.getMergeLevel();
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){

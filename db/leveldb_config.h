@@ -32,6 +32,8 @@ namespace ycsbc {
         size_t midThresh_;
         double gcRatio_;
         bool preheat_;
+        int gcLevel_;
+        int mergeLevel_;
 
     public:
         ConfigLevelDB() {
@@ -50,6 +52,8 @@ namespace ycsbc {
             midThresh_ = pt_.get<size_t >("config.midThresh");
             gcRatio_ = pt_.get<double>("config.gcRatio");
             preheat_ = pt_.get<bool>("config.preheat");
+            gcLevel_ = pt_.get<int>("config.gcLevel");
+            mergeLevel_ = pt_.get<int>("config.mergeLevel");
         }
 
         int getBloomBits() {
@@ -106,6 +110,14 @@ namespace ycsbc {
 
         bool getPreheat(){
             return preheat_;
+        }
+
+        int getGCLevel(){
+            return gcLevel_;
+        }
+
+        int getMergeLevel(){
+            return mergeLevel_;
         }
     };
 }

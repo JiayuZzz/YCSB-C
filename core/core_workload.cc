@@ -50,11 +50,16 @@ const string CoreWorkload::INSERT_PROPORTION_DEFAULT = "0.0";
 const string CoreWorkload::SCAN_PROPORTION_PROPERTY = "scanproportion";
 const string CoreWorkload::SCAN_PROPORTION_DEFAULT = "0.0";
 
-const string CoreWorkload::LARGE_VALUE_PROPORTION_PROPERTY = "largevalue";
+const string CoreWorkload::LARGE_VALUE_PROPORTION_PROPERTY = "largeproportion";
 const string CoreWorkload::LARGE_VALUE_PROPORTION_DEFAULT = "1";
 
-const string CoreWorkload::MID_VALUE_PROPORTION_PROPERTY = "midvalue";
-const string CoreWorkload::SMALL_VALUE_PROPORTION_PROPERTY = "smallvalue";
+const string CoreWorkload::MID_VALUE_PROPORTION_PROPERTY = "midproportion";
+const string CoreWorkload::SMALL_VALUE_PROPORTION_PROPERTY = "smallproportion";
+
+const string CoreWorkload::LARGE_VALUE_SIZE_PROPERTY = "largesize";
+const string CoreWorkload::MID_VALUE_SIZE_PROPERTY = "midsize";
+const string CoreWorkload::SMALL_VALUE_SIZE_PROPERTY = "smallsize";
+
 
 const string CoreWorkload::READMODIFYWRITE_PROPORTION_PROPERTY =
     "readmodifywriteproportion";
@@ -191,7 +196,10 @@ ycsbc::Generator<uint64_t> *CoreWorkload::GetFieldLenGenerator(
     double small_ratio = std::stod(p.GetProperty(SMALL_VALUE_PROPORTION_PROPERTY));
     double mid_ratio = std::stod(p.GetProperty(MID_VALUE_PROPORTION_PROPERTY));
     double large_ratio = std::stod(p.GetProperty(LARGE_VALUE_PROPORTION_PROPERTY));
-    return new RatioGenerator(small_ratio, mid_ratio, large_ratio);
+    int small_size = std::stoi(p.GetProperty(SMALL_VALUE_SIZE_PROPERTY));
+    int mid_size = std::stoi(p.GetProperty(MID_VALUE_SIZE_PROPERTY));
+    int large_size = std::stoi(p.GetProperty(LARGE_VALUE_SIZE_PROPERTY));
+    return new RatioGenerator(small_ratio, mid_ratio, large_ratio, small_size, mid_size, large_size);
   }
   else {
     throw utils::Exception("Unknown field length distribution: " +

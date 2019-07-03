@@ -12,10 +12,13 @@ namespace ycsbc {
 
     class RatioGenerator : public Generator<uint64_t> {
     public:
-        RatioGenerator(double smallratio, double midratio, double largeratio):dists_(3){
-            dists_[0] = std::uniform_int_distribution<uint64_t>(1,64);
-            dists_[1] = std::uniform_int_distribution<uint64_t>(65,1024);
-            dists_[2] = std::uniform_int_distribution<uint64_t>(1025,8192);
+        RatioGenerator(double smallratio, double midratio, double largeratio, int smallsize, int midsize, int largesize):dists_(3){
+            //dists_[0] = std::uniform_int_distribution<uint64_t>(1,100);
+            //dists_[1] = std::uniform_int_distribution<uint64_t>(101,1024);
+            //dists_[2] = std::uniform_int_distribution<uint64_t>(1025,8192);
+            dists_[0] = std::uniform_int_distribution<uint64_t>(1,smallsize);
+            dists_[1] = std::uniform_int_distribution<uint64_t>(smallsize+1,midsize);
+            dists_[2] = std::uniform_int_distribution<uint64_t>(midsize+1,largesize);
             d_.AddValue(1,smallratio);
             d_.AddValue(2,midratio);
             d_.AddValue(3,largeratio);
