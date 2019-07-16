@@ -26,16 +26,17 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
+        options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
         /*
         options.max_write_buffer_number = 2;
         options.min_write_buffer_number_to_merge = options.max_write_buffer_number - 1;
         options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
         options.max_bytes_for_level_base = options.target_file_size_base*4;
          */
-            options.max_write_buffer_number = 1;
-            options.min_write_buffer_number_to_merge = 1;
-            options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-            options.max_bytes_for_level_base = options.target_file_size_base*4;
+        //    options.max_write_buffer_number = 1;
+         //   options.min_write_buffer_number_to_merge = 1;
+          //  options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
+           // options.max_bytes_for_level_base = options.target_file_size_base*4;
         cerr<<"write buffer size"<<options.write_buffer_size<<endl;
         cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
         cerr<<"num compaction trigger"<<options.level0_file_num_compaction_trigger<<endl;
@@ -50,6 +51,7 @@ namespace ycsbc {
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
 
         rocksdb::Status s = rocksdb::DB::Open(options,dbfilename,&db_);
+		cerr<<"aa\n";
         if(!s.ok()){
             cerr<<"Can't open rocksdb "<<dbfilename<<endl;
             exit(0);

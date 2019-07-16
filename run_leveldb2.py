@@ -2,20 +2,21 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/rocksdb/"
+dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["large"]
+valueSizes = ["ratio3"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 16
-    smallThresh = 128
-    midThresh = 3000
+    smallThresh = 64
+    midThresh = 17000
     gcRatio = 0.3
-    dbfilename = dbPath+"leveldb_selective_update"+valueSize+dbSize+"small"+str(smallThresh)+"mid"+str(midThresh)
+    dbfilename = dbPath+"leveldb_selective"+valueSize+dbSize+"small"+str(smallThresh)+"mid"+str(midThresh)
     resultfile = "./resultDir/leveldb_selective"+valueSize+dbSize+"memtable"+str(memtable)+"small"+str(smallThresh)+"mid"+str(midThresh)
+    print(dbfilename)
 
     configs = {
         "bloomBits":"10",
@@ -30,6 +31,8 @@ for valueSize in valueSizes:
         "midThresh":str(midThresh),
         "gcRatio":str(gcRatio),
         "preheat":"false",
+        "mergeLevel":"1",
+        "gcLevel":"2",
     }
 
     phase = sys.argv[1]

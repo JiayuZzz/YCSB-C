@@ -27,9 +27,9 @@ requestdistribution=uniform
 scanlengthdistribution=constant
 maxscanlength=3000
 
-largevalue=0.1
-midvalue=0.5
-smallvalue=0.4
+largeproportion=0.1
+midproportion=0.5
+smallproportion=0.4
 largesize=8192
-midsize=4096
+midsize=1024
 smallsize=100

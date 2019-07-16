@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/rocksdb/"
+dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "1KB"
-dbSize = "40GB"
+valueSize = "ratio"
+dbSize = "100GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-memtable = 1024
+memtable = 64
 resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
