@@ -1,8 +1,8 @@
 //
-// Created by wujy on 1/23/19.
+// Created by 吴加禹 on 2019-07-17.
 //
 
-#include "rocksdb_db.h"
+#include "titandb_db.h"
 #include <iostream>
 #include "rocksdb/filter_policy.h"
 #include "rocksdb/cache.h"
@@ -12,8 +12,8 @@
 using namespace std;
 
 namespace ycsbc {
-        RocksDB::RocksDB(const char *dbfilename) :noResult(0){
-        //get rocksdb config
+    TitanDB::TitanDB(const char *dbfilename) :noResult(0){
+        //get leveldb config
         ConfigLevelDB config = ConfigLevelDB();
         int bloomBits = config.getBloomBits();
         size_t blockCache = config.getBlockCache();
@@ -22,26 +22,15 @@ namespace ycsbc {
         bool directIO = config.getDirectIO();
         size_t memtable = config.getMemtable();
         //set optionssc
-        rocksdb::Options options;
+        rocksdb::titandb::TitanOptions options;
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-        options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-        /*
-        options.max_write_buffer_number = 2;
-        options.min_write_buffer_number_to_merge = options.max_write_buffer_number - 1;
-        options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-        options.max_bytes_for_level_base = options.target_file_size_base*4;
-         */
-        //    options.max_write_buffer_number = 1;
-         //   options.min_write_buffer_number_to_merge = 1;
-          //  options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-           // options.max_bytes_for_level_base = options.target_file_size_base*4;
-        cerr<<"write buffer size"<<options.write_buffer_size<<endl;
-        cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
-        cerr<<"num compaction trigger"<<options.level0_file_num_compaction_trigger<<endl;
-        cerr<<"targe file size base"<<options.target_file_size_base<<endl;
-        cerr<<"level size base"<<options.max_bytes_for_level_base<<endl;
+		options.max_background_gc = 6;
+        options.min_blob_size = 256;
+        options.blob_file_discardable_ratio = 0.3;
+//		options.disable_background_gc = true;
+        // options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
         if(bloomBits>0) {
@@ -50,15 +39,15 @@ namespace ycsbc {
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
 
-        rocksdb::Status s = rocksdb::DB::Open(options,dbfilename,&db_);
+        rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){
-            cerr<<"Can't open rocksdb "<<dbfilename<<endl;
+            cerr<<"Can't open titandb "<<dbfilename<<endl;
             exit(0);
         }
         cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<endl;
     }
 
-    int RocksDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
+    int TitanDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
                       std::vector<KVPair> &result) {
         string value;
         rocksdb::Status s = db_->Get(rocksdb::ReadOptions(),key,&value);
@@ -74,7 +63,7 @@ namespace ycsbc {
     }
 
 
-    int RocksDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
+    int TitanDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
         auto it=db_->NewIterator(rocksdb::ReadOptions());
         it->Seek(key);
@@ -88,7 +77,7 @@ namespace ycsbc {
         return DB::kOK;
     }
 
-    int RocksDB::Insert(const std::string &table, const std::string &key,
+    int TitanDB::Insert(const std::string &table, const std::string &key,
                         std::vector<KVPair> &values){
         rocksdb::Status s;
         for(KVPair &p:values){
@@ -101,22 +90,22 @@ namespace ycsbc {
         return DB::kOK;
     }
 
-    int RocksDB::Update(const std::string &table, const std::string &key, std::vector<KVPair> &values) {
+    int TitanDB::Update(const std::string &table, const std::string &key, std::vector<KVPair> &values) {
         return Insert(table,key,values);
     }
 
-    int RocksDB::Delete(const std::string &table, const std::string &key) {
+    int TitanDB::Delete(const std::string &table, const std::string &key) {
         vector<DB::KVPair> values;
         return Insert(table,key,values);
     }
 
-    void RocksDB::printStats() {
+    void TitanDB::printStats() {
         string stats;
         db_->GetProperty("rocksdb.stats",&stats);
         cout<<stats<<endl;
     }
 
-    RocksDB::~RocksDB() {
+    TitanDB::~TitanDB() {
         delete db_;
     }
 }
