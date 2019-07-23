@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/expdb/"
+dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "ratio"
+valueSize = "1KB"
 dbSize = "100GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-memtable = 64
+memtable = 256
 resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
         resultfile = sys.argv[2]
 
     if phase=="load":
-        resultfile = resultfile+"_load"
+        resultfile = resultfile+"_load"+"_dynamic"
         funcs.load("rocksdb",dbfilename,workload,resultfile)
 
     if phase=="run":

@@ -34,6 +34,8 @@ namespace ycsbc {
         bool preheat_;
         int gcLevel_;
         int mergeLevel_;
+        bool runGC_;
+        bool gcWB_;
 
     public:
         ConfigLevelDB() {
@@ -54,6 +56,8 @@ namespace ycsbc {
             preheat_ = pt_.get<bool>("config.preheat");
             gcLevel_ = pt_.get<int>("config.gcLevel");
             mergeLevel_ = pt_.get<int>("config.mergeLevel");
+            runGC_ = pt_.get<bool>("config.runGC");
+            gcWB_ = pt_.get<bool>("config.gcWB");
         }
 
         int getBloomBits() {
@@ -118,6 +122,14 @@ namespace ycsbc {
 
         int getMergeLevel(){
             return mergeLevel_;
+        }
+
+        bool getRunGC(){
+            return runGC_;
+        }
+
+        bool getGCWB(){
+            return gcWB_;
         }
     };
 }

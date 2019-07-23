@@ -29,7 +29,9 @@ namespace ycsbc {
 		options.max_background_gc = 6;
         options.min_blob_size = 256;
         options.blob_file_discardable_ratio = 0.3;
-//		options.disable_background_gc = true;
+		options.gc_read_lsm = false;
+		options.gc_write_back_key = true;
+		options.disable_background_gc = false;
         // options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;

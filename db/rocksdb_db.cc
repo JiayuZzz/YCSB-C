@@ -27,6 +27,7 @@ namespace ycsbc {
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
         options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
+        options.level_compaction_dynamic_level_bytes = true;
         /*
         options.max_write_buffer_number = 2;
         options.min_write_buffer_number_to_merge = options.max_write_buffer_number - 1;

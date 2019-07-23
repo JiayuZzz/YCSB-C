@@ -18,7 +18,9 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "blockCache":str(0),
-    "memtable":str(memtable*1024*1024)
+    "memtable":str(memtable*1024*1024),
+    "runGC":"true",
+    "gcWB":"false",
 }
 
 phase = sys.argv[1]

@@ -27,4 +27,4 @@ def run(db,dbfilename,workload,resultfile="-1"):
     if resultfile=="-1":
         os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -skipLoad true".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads 64 -P {2} -skipLoad true > {3}".format(db,dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 6 -P {2} -skipLoad true > {3}".format(db,dbfilename,workload,resultfile))
