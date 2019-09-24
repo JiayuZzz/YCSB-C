@@ -2,10 +2,10 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/rocksdb/"
+dbPath = "/data1/titandbu/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "4KB"
-dbSize = "100GB"
+valueSize = "1KB"
+dbSize = "300GB"
 dbfilename = dbPath+"titandb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 memtable = 256
@@ -17,7 +17,7 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(0),
+    "blockCache":str(6*1024*1024),
     "memtable":str(memtable*1024*1024),
 }
 

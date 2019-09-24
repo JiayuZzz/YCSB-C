@@ -2,14 +2,14 @@ import funcs
 import sys
 import os
 
-dbPath = "/data1/rocksdbu/"
+dbPath = "/data3/vtableu/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "4KB"
-dbSize = "300GB"
-dbfilename = dbPath+"rocksdb"+valueSize+dbSize
+valueSize = "1KB"
+dbSize = "100GB"
+dbfilename = dbPath+"titandb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 memtable = 256
-resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
+resultfile = "./resultDir/vtitandb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
 configs = {
@@ -18,7 +18,7 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "blockCache":str(6*1024*1024),
-    "memtable":str(memtable*1024*1024)
+    "memtable":str(memtable*1024*1024),
 }
 
 phase = sys.argv[1]
@@ -33,16 +33,16 @@ if __name__ == '__main__':
         resultfile = sys.argv[2]
 
     if phase=="load":
-        resultfile = resultfile+"_load"+"_dynamic"
-        funcs.load("rocksdb",dbfilename,workload,resultfile)
+        resultfile = resultfile+"_load"
+        funcs.load("titandb",dbfilename,workload,resultfile)
 
     if phase=="run":
         resultfile = resultfile+"_run"
         print(resultfile)
-        funcs.run("rocksdb",dbfilename,workload,resultfile)
+        funcs.run("titandb",dbfilename,workload,resultfile)
 
     if phase=="both":
         resultfile1 = resultfile+"_load"
-        funcs.load("rocksdb",dbfilename,workload,resultfile1)
+        funcs.load("titandb",dbfilename,workload,resultfile1)
         resultfile2 = resultfile+"_run"
-        funcs.run("rocksdb",dbfilename,workload,resultfile2)
+        funcs.run("titandb",dbfilename,workload,resultfile2)

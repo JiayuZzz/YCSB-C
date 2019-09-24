@@ -7,6 +7,7 @@
 #include "rocksdb/filter_policy.h"
 #include "rocksdb/cache.h"
 #include "leveldb_config.h"
+#include "rocksdb/statistics.h"
 #include "rocksdb/flush_block_policy.h"
 
 using namespace std;
@@ -26,12 +27,18 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-		options.max_background_gc = 6;
+	options.max_background_gc = 6;
         options.min_blob_size = 256;
-        options.blob_file_discardable_ratio = 0.3;
-		options.gc_read_lsm = false;
-		options.gc_write_back_key = true;
-		options.disable_background_gc = false;
+        options.blob_file_discardable_ratio = 0.7;
+	options.disable_background_gc = false;
+        options.compaction_pri = rocksdb::kMinOverlappingRatio;
+	options.max_background_jobs = 16;
+        //options.max_background_compactions = 16;
+        //options.max_background_flushes = 2;
+        options.max_bytes_for_level_base = memtable;
+	options.target_file_size_base = 8<<20;
+	//options.level0_file_num_compaction_trigger = 16;
+    options.statistics = rocksdb::CreateDBStatistics();
         // options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
@@ -40,6 +47,9 @@ namespace ycsbc {
         }
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
+        options.blob_file_target_size = 8<<20;
+	options.level_compaction_dynamic_level_bytes = true;
+        options.level_merge = true;
 
         rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){
@@ -85,7 +95,8 @@ namespace ycsbc {
         for(KVPair &p:values){
             s = db_->Put(rocksdb::WriteOptions(),key,p.second);
             if(!s.ok()){
-                cerr<<"insert error\n"<<endl;
+                cerr<<"insert error\n";
+                cerr<<s.ToString()<<endl;
                 exit(0);
             }
         }
