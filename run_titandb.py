@@ -2,10 +2,10 @@ import funcs
 import sys
 import os
 
-dbPath = "/data1/titandbu/"
+dbPath = "/mnt/vlog/"
 #dbPath = "/mnt/raidstore/"
 valueSize = "1KB"
-dbSize = "300GB"
+dbSize = "100GB"
 dbfilename = dbPath+"titandb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 memtable = 256
@@ -19,6 +19,10 @@ configs = {
     "compression":"false",
     "blockCache":str(6*1024*1024),
     "memtable":str(memtable*1024*1024),
+    "numThreads":str(16),
+    "tiered":"false",
+    "level_merge":"false",
+    "range_merge":"false"
 }
 
 phase = sys.argv[1]

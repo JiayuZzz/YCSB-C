@@ -27,19 +27,15 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-	options.max_background_gc = 6;
+	    options.max_background_gc = 6;
         options.min_blob_size = 256;
         options.blob_file_discardable_ratio = 0.7;
-	options.disable_background_gc = false;
+	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
-	options.max_background_jobs = 16;
-        //options.max_background_compactions = 16;
-        //options.max_background_flushes = 2;
         options.max_bytes_for_level_base = memtable;
-	options.target_file_size_base = 8<<20;
+	    options.target_file_size_base = 8<<20;
 	//options.level0_file_num_compaction_trigger = 16;
-    options.statistics = rocksdb::CreateDBStatistics();
-        // options.statistics = rocksdb::CreateDBStatistics();
+        options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
         if(bloomBits>0) {
@@ -48,8 +44,11 @@ namespace ycsbc {
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
         options.blob_file_target_size = 8<<20;
-	options.level_compaction_dynamic_level_bytes = true;
-        options.level_merge = true;
+	    options.level_compaction_dynamic_level_bytes = true;
+        options.level_merge = config.getLevelMerge();
+	    options.range_merge = config.getRangeMerge();
+        if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
+        options.max_background_jobs = config.getNumThreads();
 
         rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){

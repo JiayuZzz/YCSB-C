@@ -2,10 +2,10 @@ import funcs
 import sys
 import os
 
-dbPath = "/data1/rocksdbu/"
+dbPath = "/mnt/tiered/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "4KB"
-dbSize = "300GB"
+valueSize = "1KB"
+dbSize = "100GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 memtable = 256
@@ -17,8 +17,10 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
-    "blockCache":str(6*1024*1024),
-    "memtable":str(memtable*1024*1024)
+    "blockCache":str(1*1024*1024),
+    "memtable":str(memtable*1024*1024),
+    "numThreads":str(16),
+    "tiered":"false"
 }
 
 phase = sys.argv[1]
@@ -33,7 +35,7 @@ if __name__ == '__main__':
         resultfile = sys.argv[2]
 
     if phase=="load":
-        resultfile = resultfile+"_load"+"_dynamic"
+        resultfile = resultfile+"_load"
         funcs.load("rocksdb",dbfilename,workload,resultfile)
 
     if phase=="run":

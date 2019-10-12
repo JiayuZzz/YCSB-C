@@ -2,7 +2,7 @@ import funcs
 import sys
 import os
 
-dbPath = "/data3/vtableu/"
+dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSize = "1KB"
 dbSize = "100GB"

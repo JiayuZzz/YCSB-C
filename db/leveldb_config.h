@@ -36,6 +36,9 @@ namespace ycsbc {
         int mergeLevel_;
         bool runGC_;
         bool gcWB_;
+        bool tiered_;
+        bool levelMerge_;
+        bool rangeMerge_;
 
     public:
         ConfigLevelDB() {
@@ -58,6 +61,9 @@ namespace ycsbc {
             mergeLevel_ = pt_.get<int>("config.mergeLevel");
             runGC_ = pt_.get<bool>("config.runGC");
             gcWB_ = pt_.get<bool>("config.gcWB");
+            tiered_ = pt_.get<bool>("config.tiered");
+            levelMerge_ = pt_.get<bool>("config.levelMerge");
+            rangeMerge_ = pt_.get<bool>("config.rangeMerge");
         }
 
         int getBloomBits() {
@@ -130,6 +136,18 @@ namespace ycsbc {
 
         bool getGCWB(){
             return gcWB_;
+        }
+
+        bool getTiered(){
+            return tiered_;
+        }
+
+        bool getLevelMerge(){
+            return levelMerge_;
+        }
+
+        bool getRangeMerge(){
+            return rangeMerge_;
         }
     };
 }
