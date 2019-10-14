@@ -49,6 +49,7 @@ namespace ycsbc {
 	    options.range_merge = config.getRangeMerge();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
+        options.disable_auto_compactions = config.getNoCompaction();
 
         rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){

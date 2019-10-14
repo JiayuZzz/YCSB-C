@@ -9,7 +9,7 @@ dbSize = "100GB"
 dbfilename = dbPath+"titandb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
 memtable = 256
-resultfile = "./resultDir/vtitandb"+valueSize+dbSize+"memtable"+str(memtable)
+resultfile = "./resultDir/expdb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
 configs = {
@@ -17,8 +17,13 @@ configs = {
     "seekCompaction":"false",
     "directIO":"false",
     "compression":"false",
+    "noCompaction":"true",
     "blockCache":str(6*1024*1024),
     "memtable":str(memtable*1024*1024),
+    "numThreads":str(16),
+    "tiered":"false",
+    "levelMerge":"true",
+    "rangeMerge":"false"
 }
 
 phase = sys.argv[1]
@@ -26,6 +31,13 @@ phase = sys.argv[1]
 if __name__ == '__main__':
     #set configs
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
+
+    if phase=="load":
+        configs["noCompaction"] = "false"
+        
+    for cfg in configs:
+        funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
+
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 

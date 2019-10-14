@@ -21,8 +21,8 @@ configs = {
     "memtable":str(memtable*1024*1024),
     "numThreads":str(16),
     "tiered":"false",
-    "level_merge":"false",
-    "range_merge":"false"
+    "levelMerge":"false",
+    "rangeMerge":"false"
 }
 
 phase = sys.argv[1]

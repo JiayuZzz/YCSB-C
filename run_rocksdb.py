@@ -2,7 +2,7 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/tiered/"
+dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
 valueSize = "1KB"
 dbSize = "100GB"
