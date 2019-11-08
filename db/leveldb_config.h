@@ -39,6 +39,7 @@ namespace ycsbc {
         bool tiered_;
         bool levelMerge_;
         bool rangeMerge_;
+        bool sep_before_flush_;
 
     public:
         ConfigLevelDB() {
@@ -64,6 +65,7 @@ namespace ycsbc {
             tiered_ = pt_.get<bool>("config.tiered");
             levelMerge_ = pt_.get<bool>("config.levelMerge");
             rangeMerge_ = pt_.get<bool>("config.rangeMerge");
+            sep_before_flush_ = pt_.get<bool>("config.sepBeforeFlush");
         }
 
         int getBloomBits() {
@@ -148,6 +150,10 @@ namespace ycsbc {
 
         bool getRangeMerge(){
             return rangeMerge_;
+        }
+
+        bool getSepBeforeFlush(){
+            return sep_before_flush_;
         }
     };
 }

@@ -2,51 +2,63 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/vlog/"
-#dbPath = "/mnt/raidstore/"
-valueSize = "1KB"
-dbSize = "100GB"
-dbfilename = dbPath+"titandb"+valueSize+dbSize
-workload = "./workloads/workload"+valueSize+dbSize+".spec"
-memtable = 256
-resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
+dbPath = "/mnt/titan/"
+valueSizes = ["1KB"]
+for valueSize in valueSizes:
+    dbSize = "10GB"
+    dbfilename = dbPath+"titandb"+valueSize+dbSize
+    workload = "./workloads/workload"+valueSize+dbSize+".spec"
+    memtable = 64
+    sepBeforeFlush = "true"
+    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
+    if sepBeforeFlush == "true":
+        resultfile = resultfile + "before"
 
 
-configs = {
-    "bloomBits":"10",
-    "seekCompaction":"false",
-    "directIO":"false",
-    "compression":"false",
-    "blockCache":str(6*1024*1024),
-    "memtable":str(memtable*1024*1024),
-    "numThreads":str(16),
-    "tiered":"false",
-    "levelMerge":"false",
-    "rangeMerge":"false"
-}
+    configs = {
+        "bloomBits":"10",
+        "seekCompaction":"false",
+        "directIO":"false",
+        "compression":"false",
+        "noCompaction":"true",
+        "blockCache":str(6*1024*1024),
+        "memtable":str(memtable*1024*1024),
+        "numThreads":str(8),
+        "tiered":"false",
+        "levelMerge":"false",
+        "rangeMerge":"false",
+        "sepBeforeFlush":sepBeforeFlush,
+    }
 
-phase = sys.argv[1]
+    phase = sys.argv[1]
 
-if __name__ == '__main__':
-    #set configs
-    os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
-    for cfg in configs:
-        funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
+    if __name__ == '__main__':
+        os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
 
-    if len(sys.argv) == 3:
-        resultfile = sys.argv[2]
+        if phase=="load":
+            configs["noCompaction"] = "false"
+        
+        #set configs
+        for cfg in configs:
+            funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 
-    if phase=="load":
-        resultfile = resultfile+"_load"
-        funcs.load("titandb",dbfilename,workload,resultfile)
+        for cfg in configs:
+            funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 
-    if phase=="run":
-        resultfile = resultfile+"_run"
-        print(resultfile)
-        funcs.run("titandb",dbfilename,workload,resultfile)
+        if len(sys.argv) == 3:
+            resultfile = sys.argv[2]
 
-    if phase=="both":
-        resultfile1 = resultfile+"_load"
-        funcs.load("titandb",dbfilename,workload,resultfile1)
-        resultfile2 = resultfile+"_run"
-        funcs.run("titandb",dbfilename,workload,resultfile2)
+        if phase=="load":
+            resultfile = resultfile+"_load"
+            funcs.load("titandb",dbfilename,workload,resultfile)
+
+        if phase=="run":
+            resultfile = resultfile+"_run"
+            print(resultfile)
+            funcs.run("titandb",dbfilename,workload,resultfile)
+
+        if phase=="both":
+            resultfile1 = resultfile+"_load"
+            funcs.load("titandb",dbfilename,workload,resultfile1)
+            resultfile2 = resultfile+"_run"
+            funcs.run("titandb",dbfilename,workload,resultfile2)

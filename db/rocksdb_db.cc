@@ -29,6 +29,8 @@ namespace ycsbc {
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
+        options.disable_auto_compactions = config.getNoCompaction();
+        options.target_file_size_base = 8<<20;
   //      options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
    //     options.level_compaction_dynamic_level_bytes = true;
         /*

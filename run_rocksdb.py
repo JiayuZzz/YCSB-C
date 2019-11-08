@@ -4,11 +4,11 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSize = "1KB"
+valueSize = "4KB"
 dbSize = "100GB"
 dbfilename = dbPath+"rocksdb"+valueSize+dbSize
 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-memtable = 256
+memtable = 64
 resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
 
 
@@ -16,10 +16,11 @@ configs = {
     "bloomBits":"10",
     "seekCompaction":"false",
     "directIO":"false",
+    "noCompaction":"true",
     "compression":"false",
-    "blockCache":str(1*1024*1024),
+    "blockCache":str(6*1024*1024),
     "memtable":str(memtable*1024*1024),
-    "numThreads":str(16),
+    "numThreads":str(8),
     "tiered":"false"
 }
 
@@ -28,6 +29,9 @@ phase = sys.argv[1]
 if __name__ == '__main__':
     #set configs
     os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
+    if phase=="load":
+        configs["noCompaction"] = "false"
+        
     for cfg in configs:
         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
 

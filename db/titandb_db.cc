@@ -47,6 +47,7 @@ namespace ycsbc {
 	    options.level_compaction_dynamic_level_bytes = true;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+        options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
