@@ -44,7 +44,7 @@ namespace ycsbc {
             cerr<<"Can't open leveldb "<<dbfilename<<endl;
             exit(0);
         }
-        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)options.exp_ops.directIO<<"\nseekCompaction:"<<(bool)options.exp_ops.seekCompaction<<endl;
+        cout<<"\nbloom bits:"<<bloomBits<<"bits"<<endl;
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
@@ -65,10 +65,9 @@ namespace ycsbc {
 
     int LevelDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
-        vector<string> keys;
-        vector<string> values;
-        db_->Scan(leveldb::ReadOptions(),key,"",keys,values,len);
-        /*
+        // vector<string> keys;
+        // vector<string> values;
+        // db_->Scan(leveldb::ReadOptions(),key,"",keys,values,len);
         auto it=db_->NewIterator(leveldb::ReadOptions());
         it->Seek(key);
         std::string val;
@@ -78,7 +77,6 @@ namespace ycsbc {
                 val = it->value().ToString();
                 it->Next();
             }
-            */
         return DB::kOK;
     }
 

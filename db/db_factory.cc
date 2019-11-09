@@ -15,7 +15,6 @@
 #include "db/tbb_rand_db.h"
 #include "db/tbb_scan_db.h"
 #include "db/leveldb_db.h"
-#include "db/rocksdb_db.h"
 
 using namespace std;
 using ycsbc::DB;
