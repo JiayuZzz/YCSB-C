@@ -4,8 +4,8 @@
 
 #include "leveldb_db.h"
 #include <iostream>
-#include "leveldb/filter_policy.h"
-#include "leveldb/cache.h"
+#include "pebblesdb/filter_policy.h"
+#include "pebblesdb/cache.h"
 
 using namespace std;
 
@@ -24,20 +24,20 @@ namespace ycsbc {
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
-        options.exp_ops.seekCompaction = config.getSeekCompaction();
-        options.exp_ops.directIO = config.getDirectIO();
-        options.exp_ops.noCompaction = config.getNoCompaction();
+        // options.exp_ops.seekCompaction = config.getSeekCompaction();
+        // options.exp_ops.directIO = config.getDirectIO();
+        // options.exp_ops.noCompaction = config.getNoCompaction();
         options.block_cache = leveldb::NewLRUCache(config.getBlockCache());
         options.write_buffer_size = config.getMemtable();
-	    options.exp_ops.numThreads = config.getNumThreads();
-	    options.exp_ops.smallThreshold = config.getSmallThresh();
-	    options.exp_ops.mediumThreshold = config.getMidThresh();
+	    // options.exp_ops.numThreads = config.getNumThreads();
+	    // options.exp_ops.smallThreshold = config.getSmallThresh();
+	    // options.exp_ops.mediumThreshold = config.getMidThresh();
         cerr<<"write buffer: "<<options.write_buffer_size<<endl;
         //options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/(4*32);
-        options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/4;
-        options.exp_ops.gcRatio = config.getGCRatio();
-        options.exp_ops.gcLevel = config.getGCLevel();
-        options.exp_ops.mergeLevel = config.getMergeLevel();
+        // options.exp_ops.baseLevelSize = options.write_buffer_size*10.0/4;
+        // options.exp_ops.gcRatio = config.getGCRatio();
+        // options.exp_ops.gcLevel = config.getGCLevel();
+        // options.exp_ops.mergeLevel = config.getMergeLevel();
 
         leveldb::Status s = leveldb::DB::Open(options,dbfilename,&db_);
         if(!s.ok()){
@@ -45,17 +45,6 @@ namespace ycsbc {
             exit(0);
         }
         cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)options.exp_ops.directIO<<"\nseekCompaction:"<<(bool)options.exp_ops.seekCompaction<<endl;
-        if(config.getPreheat()){
-            cerr<<"preheat lsm-tree ... ";
-            auto iter = db_->NewIterator(leveldb::ReadOptions());
-            iter->SeekToFirst();
-            while(iter->Valid()){
-                iter->key();
-                iter->value();
-                iter->Next();
-            }
-            cerr<<"done\n";
-        }
     }
 
     int LevelDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
