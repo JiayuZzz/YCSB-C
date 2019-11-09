@@ -7,7 +7,7 @@ valueSizes = ["ratio"]
 smallThresh = 128
 midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "100GB"
+    dbSize = "300GB"
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
