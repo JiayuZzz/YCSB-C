@@ -3,13 +3,15 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
+smallThresh = 128
+midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "10GB"
+    dbSize = "100GB"
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
-    sepBeforeFlush = "true"
+    sepBeforeFlush = "false"
     resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
@@ -28,6 +30,8 @@ for valueSize in valueSizes:
         "levelMerge":"false",
         "rangeMerge":"false",
         "sepBeforeFlush":sepBeforeFlush,
+        "smallThresh":str(smallThresh),
+        "midThresh":str(midThresh),
     }
 
     phase = sys.argv[1]

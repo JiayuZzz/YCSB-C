@@ -6,6 +6,8 @@ dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio", "4KB"]
 dbSize = "100GB"
+smallThresh = 128
+midThresh = 30000
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -27,6 +29,8 @@ for valueSize in valueSizes:
         "levelMerge":"true",
         "rangeMerge":"false",
         "sepBeforeFlush":sepBeforeFlush,
+        "midThresh":str(midThresh),
+        "smallThresh":str(smallThresh)
     }
     
     phase = sys.argv[1]

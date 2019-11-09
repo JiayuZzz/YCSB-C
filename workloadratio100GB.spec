@@ -8,7 +8,7 @@
 
 #10GB 1KB value
 
-recordcount=91663123
+recordcount=142029341
 #recordcount=30000000
 #operationcount=284058682
 operationcount=1000

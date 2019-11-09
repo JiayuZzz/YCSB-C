@@ -28,7 +28,6 @@ namespace ycsbc {
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
 	    options.max_background_gc = 6;
-        options.min_blob_size = 256;
         options.blob_file_discardable_ratio = 0.7;
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
@@ -51,6 +50,8 @@ namespace ycsbc {
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
+        options.mid_blob_size = config.getMidThresh();
+        options.min_blob_size = config.getSmallThresh();
 
         rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){
