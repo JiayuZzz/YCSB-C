@@ -27,8 +27,8 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-	    options.max_background_gc = 6;
-        options.blob_file_discardable_ratio = 0.7;
+	    options.max_background_gc = 1;
+        options.blob_file_discardable_ratio = 0.3;
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
