@@ -4,14 +4,14 @@ import os
 
 dbPath = "/mnt/titan/"
 valueSizes = ["ratio"]
-smallThresh = 128
+smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
     dbSize = "300GB"
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
-    sepBeforeFlush = "false"
+    sepBeforeFlush = "true"
     resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"

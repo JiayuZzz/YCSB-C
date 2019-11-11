@@ -4,16 +4,18 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["ratio", "4KB"]
-dbSize = "100GB"
+valueSizes = ["ratio"]
+dbSize = "300GB"
 smallThresh = 128
-midThresh = 30000
+midThresh = 4096
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
-    sepBeforeFlush = "false"
+    sepBeforeFlush = "true"
+    if sepBeforeFlush == "true":
+        resultfile = resultfile + "before"
     
     
     configs = {
@@ -21,13 +23,13 @@ for valueSize in valueSizes:
         "seekCompaction":"false",
         "directIO":"false",
         "compression":"false",
-        "noCompaction":"true",
+        "noCompaction":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(8),
         "tiered":"false",
         "levelMerge":"true",
-        "rangeMerge":"false",
+        "rangeMerge":"true",
         "sepBeforeFlush":sepBeforeFlush,
         "midThresh":str(midThresh),
         "smallThresh":str(smallThresh)

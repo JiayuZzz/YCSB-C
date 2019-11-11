@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB","ratio"]
-dbSize = "100GB"
+valueSizes = ["ratio"]
+dbSize = "300GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"rocksdb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -17,7 +17,7 @@ for valueSize in valueSizes:
         "bloomBits":"10",
         "seekCompaction":"false",
         "directIO":"false",
-        "noCompaction":"true",
+        "noCompaction":"false",
         "compression":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
