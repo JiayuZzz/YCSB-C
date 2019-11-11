@@ -5,13 +5,13 @@ import os
 dbPath = "/mnt/pebbles/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["ratio"]
+valueSizes = ["10000scan","1000scan","100scan","20scan"]
 dbSize = "300GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 16
-    dbfilename = dbPath+"pebblesdb"+valueSize+dbSize
+    dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
@@ -21,7 +21,7 @@ for valueSize in valueSizes:
         "compression":"false",
         "blockCache":str(6*1024*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "noCompaction":"false",
+        "noCompaction":"true",
         "numThreads":str(threads),
     }
 

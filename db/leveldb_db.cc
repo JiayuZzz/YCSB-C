@@ -26,7 +26,7 @@ namespace ycsbc {
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         // options.exp_ops.seekCompaction = config.getSeekCompaction();
         // options.exp_ops.directIO = config.getDirectIO();
-        // options.exp_ops.noCompaction = config.getNoCompaction();
+        options.exp_ops.noCompaction = config.getNoCompaction();
         options.block_cache = leveldb::NewLRUCache(config.getBlockCache());
         options.write_buffer_size = config.getMemtable();
 	    // options.exp_ops.numThreads = config.getNumThreads();
@@ -86,8 +86,7 @@ namespace ycsbc {
         for(KVPair &p:values){
             s = db_->Put(leveldb::WriteOptions(),key,p.second);
             if(!s.ok()){
-                cerr<<"insert error\n"<<endl;
-                exit(0);
+                cerr<<"insert error "<<s.ToString()<<endl;
             }
         }
         return DB::kOK;

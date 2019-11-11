@@ -5,13 +5,14 @@ import os
 dbPath = "/mnt/pebbles/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["ratio"]
+#valueSizes = ["corea","coreb","corec","cored","coree","coref"]
+valueSizes = ["coree"]
 dbSize = "300GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 16
-    dbfilename = dbPath+"pebblesdb"+valueSize+dbSize
+    dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
