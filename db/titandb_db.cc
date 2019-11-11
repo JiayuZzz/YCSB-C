@@ -43,7 +43,7 @@ namespace ycsbc {
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
         options.blob_file_target_size = 8<<20;
-	    options.level_compaction_dynamic_level_bytes = true;
+	    options.level_compaction_dynamic_level_bytes = false;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
         options.sep_before_flush = config.getSepBeforeFlush();
