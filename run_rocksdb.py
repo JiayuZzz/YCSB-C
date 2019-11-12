@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["ratio"]
-dbSize = "300GB"
+valueSizes = ["1KB","4KB","8KB"]
+dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"rocksdb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -17,7 +17,7 @@ for valueSize in valueSizes:
         "bloomBits":"10",
         "seekCompaction":"false",
         "directIO":"false",
-        "noCompaction":"false",
+        "noCompaction":"true",
         "compression":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
@@ -49,7 +49,5 @@ for valueSize in valueSizes:
             funcs.run("rocksdb",dbfilename,workload,resultfile)
 
         if phase=="both":
-            resultfile1 = resultfile+"_load"
-            funcs.load("rocksdb",dbfilename,workload,resultfile1)
-            resultfile2 = resultfile+"_run"
-            funcs.run("rocksdb",dbfilename,workload,resultfile2)
+            resultfile1 = resultfile+"_both"
+            funcs.both("rocksdb",dbfilename,workload,resultfile1)

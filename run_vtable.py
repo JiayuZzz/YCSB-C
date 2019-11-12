@@ -5,13 +5,13 @@ import os
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
-dbSize = "300GB"
+dbSize = "100GB"
 smallThresh = 128
 midThresh = 4096
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 64
+    memtable = 256
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
     sepBeforeFlush = "true"
     if sepBeforeFlush == "true":
@@ -29,7 +29,7 @@ for valueSize in valueSizes:
         "numThreads":str(8),
         "tiered":"false",
         "levelMerge":"true",
-        "rangeMerge":"true",
+        "rangeMerge":"false",
         "sepBeforeFlush":sepBeforeFlush,
         "midThresh":str(midThresh),
         "smallThresh":str(smallThresh)
@@ -63,8 +63,6 @@ for valueSize in valueSizes:
             funcs.run("titandb",dbfilename,workload,resultfile)
     
         if phase=="both":
-            resultfile1 = resultfile+"_load"
-            funcs.load("titandb",dbfilename,workload,resultfile1)
-            resultfile2 = resultfile+"_run"
-            funcs.run("titandb",dbfilename,workload,resultfile2)
+            resultfile1 = resultfile+"_both"
+            funcs.both("titandb",dbfilename,workload,resultfile1)
     

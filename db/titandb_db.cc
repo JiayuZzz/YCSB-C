@@ -33,7 +33,6 @@ namespace ycsbc {
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
 	    options.target_file_size_base = 8<<20;
-	//options.level0_file_num_compaction_trigger = 16;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
@@ -43,15 +42,22 @@ namespace ycsbc {
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
         options.blob_file_target_size = 8<<20;
-	    options.level_compaction_dynamic_level_bytes = false;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+        if(options.level_merge)
+	        options.level_compaction_dynamic_level_bytes = true;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
         options.mid_blob_size = config.getMidThresh();
         options.min_blob_size = config.getSmallThresh();
+        // if(options.level_merge){
+            // options.max_bytes_for_level_base = options.write_buffer_size*64;
+	        // options.level0_file_num_compaction_trigger*=4;
+            // options.level0_slowdown_writes_trigger*=4;
+            // options.level0_stop_writes_trigger*=4;
+        // }
 
         rocksdb::Status s = rocksdb::titandb::TitanDB::Open(options, dbfilename, &db_);
         if(!s.ok()){
@@ -71,8 +77,8 @@ namespace ycsbc {
             cout<<noResult<<endl;
             return DB::kOK;
         }else{
-            cerr<<"read error"<<endl;
-            exit(0);
+            cerr<<"read error"<<s.ToString()<<endl;
+            return DB::kOK;
         }
     }
 
@@ -99,7 +105,7 @@ namespace ycsbc {
             if(!s.ok()){
                 cerr<<"insert error\n";
                 cerr<<s.ToString()<<endl;
-                exit(0);
+                // exit(0);
             }
         }
         return DB::kOK;

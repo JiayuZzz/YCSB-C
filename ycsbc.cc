@@ -66,12 +66,13 @@ int main(const int argc, const char *argv[]) {
   vector<future<int>> actual_ops;
   int total_ops;
   utils::Timer timer;
-  bool skipLoad = utils::StrToBool(props["skipLoad"]);
+  // bool skipLoad = utils::StrToBool(props["skipLoad"]);
+  std::string phase = props["skipLoad"];
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
 
   // Loads data
-  if(!skipLoad) {
+  if(phase == "load" || phase == "both") {
     timer.Start();
     total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     for (int i = 0; i < num_threads; ++i) {
@@ -90,7 +91,22 @@ int main(const int argc, const char *argv[]) {
     actual_ops.clear();
     //cerr<< "done, sleep 10 minutes for compaction"<<endl;
     //sleep(600);
-  } else {
+    cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ]/1000000 << "s" <<endl;
+    cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ]/1000 << "ms" <<endl;
+    cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT]/1000000 << "s" <<endl;
+    cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
+    cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
+    cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
+    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"){
+      cout << "============================statistics==========================="<<endl;
+      db->printStats();
+    }
+    for(int i=0;i<4;i++){
+      ops_cnt[i] = 0;
+      ops_time[i] = 0;
+    }
+  } 
+  if (phase == "run" || phase == "both") {
     // Performs transactions
     total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
     timer.Start();
@@ -110,19 +126,24 @@ int main(const int argc, const char *argv[]) {
     cout << props["dbname"] << '\t' << file_name << '\t' << num_threads << '\t';
     cout << total_ops / duration / 1000000 / 1000 << endl;
     cout << "run time: " << duration << "us\n\n" << endl;
+
+    cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ]/1000000 << "s" <<endl;
+    cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ]/1000 << "ms" <<endl;
+    cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT]/1000000 << "s" <<endl;
+    cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
+    cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
+    cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
+    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"){
+      cout << "============================statistics==========================="<<endl;
+      db->printStats();
+    }
+    for(int i=0;i<4;i++){
+      ops_cnt[i] = 0;
+      ops_time[i] = 0;
+    }
   }
   
-  cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ]/1000000 << "s" <<endl;
-  cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ]/1000 << "ms" <<endl;
-  cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT]/1000000 << "s" <<endl;
-  cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
-  cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
-  cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
-  if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"){
-    cout << "============================statistics==========================="<<endl;
-    db->printStats();
-    delete db;
-  }
+  delete db;
 }
 
 string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) {
@@ -168,6 +189,14 @@ string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) 
         exit(0);
       }
       props.SetProperty("skipLoad",argv[argindex]);
+      argindex++;
+    } else if(strcmp(argv[argindex],"-phase")==0){
+      argindex++;
+      if(argindex >= argc){
+        UsageMessage(argv[0]);
+        exit(0);
+      }
+      props.SetProperty("phase",argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-slaves") == 0) {
       argindex++;

@@ -23,7 +23,7 @@ for valueSize in valueSizes:
         "seekCompaction":"false",
         "directIO":"false",
         "compression":"false",
-        "noCompaction":"false",
+        "noCompaction":"true",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(8),
