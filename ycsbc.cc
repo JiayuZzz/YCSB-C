@@ -67,7 +67,7 @@ int main(const int argc, const char *argv[]) {
   int total_ops;
   utils::Timer timer;
   // bool skipLoad = utils::StrToBool(props["skipLoad"]);
-  std::string phase = props["skipLoad"];
+  std::string phase = props["phase"];
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
 

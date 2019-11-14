@@ -2,16 +2,16 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/expdb/"
+dbPath = "/mnt/tiered/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["ratio"]
+valueSizes = ["ratio1"]
 dbSize = "300GB"
 smallThresh = 128
 midThresh = 4096
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 256
+    memtable = 64
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
     sepBeforeFlush = "true"
     if sepBeforeFlush == "true":
@@ -26,7 +26,7 @@ for valueSize in valueSizes:
         "noCompaction":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "numThreads":str(2),
+        "numThreads":str(8),
         "tiered":"false",
         "levelMerge":"true",
         "rangeMerge":"true",
