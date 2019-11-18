@@ -9,7 +9,7 @@ valueSizes = ["ratio"]
 dbSize = "300GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 64
+    memtable = 256
     threads = 16
     dbfilename = dbPath+"pebblesdb"+valueSize+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
@@ -48,8 +48,6 @@ for valueSize in valueSizes:
         funcs.run("leveldb",dbfilename,workload,resultfile)
 
     if phase=="both":
-        resultfile1 = resultfile+"_load"
-        funcs.load("leveldb",dbfilename,workload,resultfile1)
-        resultfile2 = resultfile+"_run"
-        funcs.run("leveldb",dbfilename,workload,resultfile2)
+        resultfile1 = resultfile+"_both"
+        funcs.both("leveldb",dbfilename,workload,resultfile1)
         
