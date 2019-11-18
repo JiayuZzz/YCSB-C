@@ -2,10 +2,10 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/rocksdb/"
+dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB","4KB","8KB"]
-dbSize = "100GB"
+valueSizes = ["ratio"]
+dbSize = "300GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"rocksdb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"

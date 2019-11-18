@@ -32,7 +32,7 @@ namespace ycsbc {
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
-	    options.target_file_size_base = 32<<20;
+	    options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
@@ -42,7 +42,7 @@ namespace ycsbc {
         options.min_gc_batch_size = 8<<20;
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 16<<20;
+        options.blob_file_target_size = 4<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
         if(options.level_merge)
