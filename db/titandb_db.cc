@@ -32,7 +32,7 @@ namespace ycsbc {
         options.blob_file_discardable_ratio = 0.3;
         } else {
         options.max_background_gc = 1;
-        options.blob_file_discardable_ratio = 0.05;
+        options.blob_file_discardable_ratio = 0.3;
         }
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;

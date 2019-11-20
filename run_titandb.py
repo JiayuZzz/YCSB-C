@@ -3,12 +3,12 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
-valueSizes = ["ratio"]
+valueSizes = ["1KB","4KB","8KB"]
 #valueSizes = ["8KB"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "300GB"
+    dbSize = "100GB"
     dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
