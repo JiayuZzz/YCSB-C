@@ -3,6 +3,7 @@ import sys
 import os
 
 dbPath = "/mnt/expdb/"
+backupPath = "/mnt/backup/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
@@ -10,6 +11,7 @@ smallThresh = 128
 midThresh = 4096
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+"ratio"+dbSize
+    backupfilename = backupPath+"titandb"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
@@ -58,6 +60,8 @@ for valueSize in valueSizes:
             funcs.load("titandb",dbfilename,workload,resultfile)
     
         if phase=="run":
+            os.system("sudo rm -rf {0}".format(dbfilename))
+            os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
             resultfile = resultfile+"_run"
             print(resultfile)
             funcs.run("titandb",dbfilename,workload,resultfile)

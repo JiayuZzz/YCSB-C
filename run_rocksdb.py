@@ -4,24 +4,25 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB","4KB","8KB"]
-dbSize = "100GB"
+valueSizes = ["ratio"]
+dbSize = "300GB"
 for valueSize in valueSizes:
+    thread = 16
     dbfilename = dbPath+"rocksdb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
-    resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
+    resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)+"thread"+str(thread)
 
 
     configs = {
         "bloomBits":"10",
         "seekCompaction":"false",
         "directIO":"false",
-        "noCompaction":"true",
+        "noCompaction":"false",
         "compression":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "numThreads":str(8),
+        "numThreads":str(thread),
         "tiered":"false"
     }
 

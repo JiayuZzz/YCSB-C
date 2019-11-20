@@ -4,15 +4,17 @@ import os
 
 dbPath = "/mnt/titan/"
 valueSizes = ["ratio"]
+#valueSizes = ["8KB"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
     dbSize = "300GB"
-    dbfilename = dbPath+"titandb"+valueSize+dbSize
+    dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     sepBeforeFlush = "true"
-    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
+    threads = 2
+    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"thread"+str(threads)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
 
@@ -25,7 +27,7 @@ for valueSize in valueSizes:
         "noCompaction":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "numThreads":str(8),
+        "numThreads":str(threads),
         "tiered":"false",
         "levelMerge":"false",
         "rangeMerge":"false",

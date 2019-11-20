@@ -3,15 +3,17 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
+backupPath = "/mnt/backup/"
 valueSizes = ["corea","coreb","corec","cored","coree","coref"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
     dbSize = "300GB"
-    dbfilename = dbPath+"titandb"+"ratio"+dbSize
+    dbfilename = dbPath+"titandb_original"+"ratio"+dbSize
+    backupfilename = backupPath+"titandb"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
-    sepBeforeFlush = "false"
+    sepBeforeFlush = "true"
     resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
@@ -57,6 +59,8 @@ for valueSize in valueSizes:
             funcs.load("titandb",dbfilename,workload,resultfile)
 
         if phase=="run":
+            os.system("sudo rm -rf {0}".format(dbfilename))
+            os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
             resultfile = resultfile+"_run"
             print(resultfile)
             funcs.run("titandb",dbfilename,workload,resultfile)

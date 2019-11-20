@@ -7,11 +7,11 @@ dbPath = "/mnt/expdb/"
 valueSizes = ["ratio"]
 dbSize = "300GB"
 smallThresh = 128
-midThresh = 4096
+midThresh = 8192
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
-    memtable = 256
+    memtable = 64
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
     sepBeforeFlush = "true"
     if sepBeforeFlush == "true":

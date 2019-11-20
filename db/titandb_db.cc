@@ -27,12 +27,17 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
+        if(options.level_merge) {
 	    options.max_background_gc = 1;
         options.blob_file_discardable_ratio = 0.3;
+        } else {
+        options.max_background_gc = 1;
+        options.blob_file_discardable_ratio = 0.05;
+        }
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
-	    options.target_file_size_base = 32<<20;
+	    options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
@@ -42,11 +47,11 @@ namespace ycsbc {
         options.min_gc_batch_size = 8<<20;
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 16<<20;
+        options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
-        if(options.level_merge)
-	        options.level_compaction_dynamic_level_bytes = true;
+        //if(options.level_merge)
+	    //    options.level_compaction_dynamic_level_bytes = true;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
@@ -71,6 +76,7 @@ namespace ycsbc {
     int TitanDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
                       std::vector<KVPair> &result) {
         string value;
+        static std::atomic<uint64_t> miss{0};
         rocksdb::Status s = db_->Get(rocksdb::ReadOptions(),key,&value);
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
@@ -78,7 +84,8 @@ namespace ycsbc {
             cout<<noResult<<endl;
             return DB::kOK;
         }else{
-            cerr<<"read error"<<s.ToString()<<endl;
+            miss+=1;
+            if(miss.load()%1000==0) std::cerr<<"miss "<<miss<<"values\n"<<std::endl;
             return DB::kOK;
         }
     }
@@ -90,11 +97,16 @@ namespace ycsbc {
         it->Seek(key);
         std::string val;
         std::string k;
-        for(int i=0;i<len&&it->Valid();i++){
+        // static int cnt = 0;
+        int i;
+        for(i=0;i<len&&it->Valid();i++){
+            // cnt++;
             k = it->key().ToString();
             val = it->value().ToString();
             it->Next();
+            // if(val.size()==0) std::cerr<<"invalid val "<<cnt++<<std::endl;
         }
+        // std::cerr<<i<<std::endl;
         return DB::kOK;
     }
 

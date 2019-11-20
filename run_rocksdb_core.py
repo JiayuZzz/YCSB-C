@@ -3,11 +3,12 @@ import sys
 import os
 
 dbPath = "/mnt/rocksdb/"
-#dbPath = "/mnt/raidstore/"
+backupPath = "/mnt/backup/"
 valueSizes = ["corea","coreb","corec","cored","coree","coref"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"rocksdb"+"ratio"+dbSize
+    backupfilename = backupPath+"rocksdb"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)
@@ -44,6 +45,8 @@ for valueSize in valueSizes:
             funcs.load("rocksdb",dbfilename,workload,resultfile)
 
         if phase=="run":
+            os.system("sudo rm -rf {0}".format(dbfilename))
+            os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
             resultfile = resultfile+"_run"
             print(resultfile)
             funcs.run("rocksdb",dbfilename,workload,resultfile)
