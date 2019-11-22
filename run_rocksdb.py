@@ -21,7 +21,7 @@ for valueSize in valueSizes:
         "compression":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "numThreads":str(8),
+        "numThreads":str(2),
         "tiered":"false"
     }
 

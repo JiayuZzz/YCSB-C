@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/titan/"
 valueSizes = ["ratio"]
-smallThresh = 1
+smallThresh = 128
 midThresh = 30000
 for valueSize in valueSizes:
     dbSize = "300GB"

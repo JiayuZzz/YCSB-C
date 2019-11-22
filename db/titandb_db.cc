@@ -42,11 +42,11 @@ namespace ycsbc {
         options.min_gc_batch_size = 8<<20;
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 4<<20;
+        options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
-        if(options.level_merge)
-	        options.level_compaction_dynamic_level_bytes = true;
+        //if(options.level_merge)
+	        //options.level_compaction_dynamic_level_bytes = false;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
