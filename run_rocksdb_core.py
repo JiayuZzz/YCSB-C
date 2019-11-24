@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/rocksdb/"
 backupPath = "/mnt/backup/"
 valueSizes = ["corea","coreb","corec","cored","coree","coref"]
-dbSize = "100GB"
+dbSize = "300GB"
 for valueSize in valueSizes:
     dbfilename = dbPath+"rocksdb"+"ratio"+dbSize
     backupfilename = backupPath+"rocksdb"+"ratio"+dbSize

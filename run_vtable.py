@@ -12,7 +12,8 @@ for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
-    resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)
+    threads = 8
+    resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)
     sepBeforeFlush = "true"
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
@@ -26,7 +27,7 @@ for valueSize in valueSizes:
         "noCompaction":"false",
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "numThreads":str(2),
+        "numThreads":str(threads),
         "tiered":"false",
         "levelMerge":"true",
         "rangeMerge":"true",

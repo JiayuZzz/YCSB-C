@@ -3,18 +3,18 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
-valueSizes = ["1KB","4KB","8KB"]
-#valueSizes = ["8KB"]
+#valueSizes = ["8KB","4KB","1KB"]
+valueSizes = ["ratio"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "100GB"
+    dbSize = "300GB"
     dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     sepBeforeFlush = "true"
     threads = 2
-    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"thread"+str(threads)
+    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
 

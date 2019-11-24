@@ -6,10 +6,10 @@ dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
 backupPath = "/mnt/backup/"
 valueSizes = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-dbSize = "100GB"
+dbSize = "300GB"
 for valueSize in valueSizes:
-    dbfilename = dbPath+"rocksdb"+valueSize+dbSize
-    backupfilename = backupPath+"rocksdb"+valueSize+dbSize
+    dbfilename = dbPath+"rocksdb"+"ratio"+dbSize
+    backupfilename = backupPath+"rocksdb"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     resultfile = "./resultDir/rocksdb"+valueSize+dbSize+"memtable"+str(memtable)

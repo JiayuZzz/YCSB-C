@@ -27,13 +27,6 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-        if(options.level_merge) {
-	    options.max_background_gc = 1;
-        options.blob_file_discardable_ratio = 0.3;
-        } else {
-        options.max_background_gc = 1;
-        options.blob_file_discardable_ratio = 0.3;
-        }
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
@@ -50,6 +43,15 @@ namespace ycsbc {
         options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+        if(options.level_merge) {
+	    options.max_background_gc = 1;
+        options.blob_file_discardable_ratio = 0.3;
+        options.base_level_for_dynamic_level_bytes = 4;
+        options.level_compaction_dynamic_level_bytes = true;
+        } else {
+        options.max_background_gc = 1;
+        options.blob_file_discardable_ratio = 0.1;
+        }
         //if(options.level_merge)
 	    //    options.level_compaction_dynamic_level_bytes = true;
         options.sep_before_flush = config.getSepBeforeFlush();
@@ -70,7 +72,7 @@ namespace ycsbc {
             cerr<<"Can't open titandb "<<dbfilename<<endl;
             exit(0);
         }
-        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<endl;
+        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<"dynamic level:"<<options.level_compaction_dynamic_level_bytes<<endl;
     }
 
     int TitanDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
