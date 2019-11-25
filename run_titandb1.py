@@ -8,7 +8,7 @@ smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
     dbSize = "100GB"
-    dbfilename = dbPath+"titandb"+valueSize+dbSize
+    dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     sepBeforeFlush = "true"
