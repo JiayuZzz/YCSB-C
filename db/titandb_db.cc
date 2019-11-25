@@ -43,6 +43,7 @@ namespace ycsbc {
         options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+		options.max_gc_batch_size = 1<<28;
         if(options.level_merge) {
 	    options.max_background_gc = 4;
         options.blob_file_discardable_ratio = 0.3;
