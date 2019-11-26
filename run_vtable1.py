@@ -6,8 +6,8 @@ dbPath = "/mnt/tiered/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio1"]
 dbSize = "300GB"
-smallThresh = 128
-midThresh = 4096
+smallThresh = 64
+midThresh = 8192
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"

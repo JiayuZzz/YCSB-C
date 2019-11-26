@@ -7,8 +7,8 @@ dbPath = "/mnt/expdb/"
 backupPath = "/mnt/backup/"
 valueSizes = ["corea","coreb","corec","cored","coree","coref"]
 dbSize = "300GB"
-smallThresh = 128
-midThresh = 4096
+smallThresh = 64
+midThresh = 8192
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenolarge"+"ratio"+dbSize
     backupfilename = backupPath+"titandb_vtablenolarge"+"ratio"+dbSize

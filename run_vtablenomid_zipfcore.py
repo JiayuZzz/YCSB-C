@@ -7,7 +7,7 @@ backupPath = "/mnt/backup/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
-smallThresh = 128
+smallThresh = 64
 midThresh = 128
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenomid"+"ratio"+dbSize

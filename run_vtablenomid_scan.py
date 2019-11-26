@@ -6,7 +6,7 @@ dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["20scan","100scan","1000scan","10000scan"]
 dbSize = "300GB"
-smallThresh = 128
+smallThresh = 64
 midThresh = 128
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenomid"+"ratio"+dbSize

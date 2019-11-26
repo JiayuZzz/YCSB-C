@@ -6,8 +6,8 @@ dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["20scan","100scan","1000scan","10000scan"]
 dbSize = "300GB"
-smallThresh = 128
-midThresh = 4096
+smallThresh = 64
+midThresh = 8192
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
