@@ -52,7 +52,7 @@ namespace ycsbc {
 	    options.num_foreground_builders = 8;
         } else {
         options.max_background_gc = 1;
-        options.blob_file_discardable_ratio = 0.3;
+        options.blob_file_discardable_ratio = 0.01;
         }
         //if(options.level_merge)
 	    //    options.level_compaction_dynamic_level_bytes = true;
