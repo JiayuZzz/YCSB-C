@@ -3,6 +3,7 @@ import sys
 import os
 
 dbPath = "/mnt/pebbles/"
+backupPath = "/mnt/backup/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
 valueSizes = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
@@ -13,6 +14,7 @@ for valueSize in valueSizes:
     memtable = 64
     threads = 16
     dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
+    backupfilename = backupPath+"titandb"+"ratio"+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
@@ -44,6 +46,8 @@ for valueSize in valueSizes:
         funcs.load("leveldb",dbfilename,workload,resultfile)
 
     if phase=="run":
+        os.system("sudo rm -rf {0}".format(dbfilename))
+        os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
         resultfile = resultfile+"_run"
         print(resultfile)
         funcs.run("leveldb",dbfilename,workload,resultfile)

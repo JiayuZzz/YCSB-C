@@ -6,7 +6,7 @@ dbPath = "/mnt/pebbles/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
 valueSizes = ["ratio"]
-dbSize = "100GB"
+dbSize = "300GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64

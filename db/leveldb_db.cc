@@ -20,6 +20,7 @@ namespace ycsbc {
         //set options
         leveldb::Options options;
         options.create_if_missing = true;
+	options.max_open_files = 20000;
         if(!compression)
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
@@ -72,11 +73,14 @@ namespace ycsbc {
         it->Seek(key);
         std::string val;
         std::string k;
-        for(int i=0;i<len&&it->Valid();i++){
+        int i;
+        for(i=0;i<len&&it->Valid();i++){
                 k = it->key().ToString();
                 val = it->value().ToString();
                 it->Next();
             }
+        // std::cerr<<i<<std::endl;
+        delete it;
         return DB::kOK;
     }
 

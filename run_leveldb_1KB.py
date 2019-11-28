@@ -3,18 +3,15 @@ import sys
 import os
 
 dbPath = "/mnt/pebbles/"
-backupPath = "/mnt/backup/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["corea","coreb","corec","cored","coree","coref"]
-#valueSizes = ["coree"]
-dbSize = "300GB"
+valueSizes = ["1KB"]
+dbSize = "100GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 16
-    dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
-    backupfilename = backupPath+"titandb"+"ratio"+dbSize
+    dbfilename = dbPath+"pebblesdb"+valueSize+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
@@ -46,15 +43,11 @@ for valueSize in valueSizes:
         funcs.load("leveldb",dbfilename,workload,resultfile)
 
     if phase=="run":
-        os.system("sudo rm -rf {0}".format(dbfilename))
-        os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
         resultfile = resultfile+"_run"
         print(resultfile)
         funcs.run("leveldb",dbfilename,workload,resultfile)
 
     if phase=="both":
-        resultfile1 = resultfile+"_load"
-        funcs.load("leveldb",dbfilename,workload,resultfile1)
-        resultfile2 = resultfile+"_run"
-        funcs.run("leveldb",dbfilename,workload,resultfile2)
+        resultfile1 = resultfile+"_both"
+        funcs.both("leveldb",dbfilename,workload,resultfile1)
         

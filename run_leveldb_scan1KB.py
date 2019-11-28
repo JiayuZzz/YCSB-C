@@ -3,18 +3,15 @@ import sys
 import os
 
 dbPath = "/mnt/pebbles/"
-backupPath = "/mnt/backup/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["corea","coreb","corec","cored","coree","coref"]
-#valueSizes = ["coree"]
-dbSize = "300GB"
+valueSizes = ["10000scan","100scan","20scan","1000scan"]
+dbSize = "100GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 16
-    dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
-    backupfilename = backupPath+"titandb"+"ratio"+dbSize
+    dbfilename = dbPath+"pebblesdb"+"1KB"+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
@@ -24,7 +21,7 @@ for valueSize in valueSizes:
         "compression":"false",
         "blockCache":str(6*1024*1024*1024),
         "memtable":str(memtable*1024*1024),
-        "noCompaction":"false",
+        "noCompaction":"true",
         "numThreads":str(threads),
     }
 
@@ -46,8 +43,6 @@ for valueSize in valueSizes:
         funcs.load("leveldb",dbfilename,workload,resultfile)
 
     if phase=="run":
-        os.system("sudo rm -rf {0}".format(dbfilename))
-        os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
         resultfile = resultfile+"_run"
         print(resultfile)
         funcs.run("leveldb",dbfilename,workload,resultfile)
