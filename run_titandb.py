@@ -2,13 +2,13 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/expdb/"
+dbPath = "/mnt/titan/"
 #valueSizes = ["ratio"]
 valueSizes = ["ratio"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "100GB"
+    dbSize = "300GB"
     dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64

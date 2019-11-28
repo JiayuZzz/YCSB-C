@@ -101,14 +101,17 @@ namespace ycsbc {
         it->Seek(key);
         std::string val;
         std::string k;
-        // static int cnt = 0;
+        int cnt = 0;
         int i;
         for(i=0;i<len&&it->Valid();i++){
             // cnt++;
             k = it->key().ToString();
             val = it->value().ToString();
             it->Next();
-            // if(val.size()==0) std::cerr<<"invalid val "<<cnt++<<std::endl;
+            if(val.size()==0) cnt++;
+        }
+        if(cnt>0){
+            std::cerr<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;
         }
         // std::cerr<<i<<std::endl;
         return DB::kOK;
