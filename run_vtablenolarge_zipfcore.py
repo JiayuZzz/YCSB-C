@@ -8,7 +8,7 @@ backupPath = "/mnt/backup/"
 valueSizes = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
 smallThresh = 64
-midThresh = 8192
+midThresh = 30000
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenolarge"+"ratio"+dbSize
     backupfilename = backupPath+"titandb_vtablenolarge"+"ratio"+dbSize

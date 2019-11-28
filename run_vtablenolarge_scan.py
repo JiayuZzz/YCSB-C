@@ -7,7 +7,7 @@ dbPath = "/mnt/expdb/"
 valueSizes = ["20scan","100scan","1000scan","10000scan"]
 dbSize = "300GB"
 smallThresh = 64
-midThresh = 8192
+midThresh = 30000
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenolarge"+"ratio"+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"

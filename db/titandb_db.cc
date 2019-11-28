@@ -89,7 +89,10 @@ namespace ycsbc {
             return DB::kOK;
         }else{
             miss+=1;
-            if(miss.load()%1000==0) std::cerr<<"miss "<<miss<<"values\n"<<std::endl;
+            if(miss.load()%1000==0) {
+                std::cerr<<"miss "<<miss<<"values"<<std::endl;
+                std::cerr<<"last reason: "<<s.ToString()<<std::endl;
+            }
             return DB::kOK;
         }
     }

@@ -8,7 +8,7 @@ backupPath = "/mnt/backup/"
 valueSizes = ["corea","coreb","corec","cored","coree","coref"]
 dbSize = "300GB"
 smallThresh = 64
-midThresh = 8192
+midThresh = 30000
 for valueSize in valueSizes:
     dbfilename = dbPath+"titandb_vtablenolarge"+"ratio"+dbSize
     backupfilename = backupPath+"titandb_vtablenolarge"+"ratio"+dbSize
