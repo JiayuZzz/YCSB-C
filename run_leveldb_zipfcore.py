@@ -14,7 +14,7 @@ for valueSize in valueSizes:
     memtable = 64
     threads = 16
     dbfilename = dbPath+"pebblesdb"+"ratio"+dbSize
-    backupfilename = backupPath+"titandb"+"ratio"+dbSize
+    backupfilename = backupPath+"pebblesdb"+"ratio"+dbSize
     resultfile = "./resultDir/pebblesdb"+valueSize+dbSize+"memtable"+str(memtable)
     print(dbfilename)
 
