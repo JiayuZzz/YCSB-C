@@ -5,7 +5,7 @@ disks = {"vtable":"/dev/sdd1","titan":"/dev/sdc1","rocksdb":"/dev/sdb1"}
 paths = {"vtable":"/mnt/expdb","titan":"/mnt/titan","rocksdb":"/mnt/rocksdb"}
 backupPath = "/mnt/backup/"
 
-for db,disk in disks：
+for db,disk in disks.items():
     os.system("umount {0}".format(disk))
     os.system("mkfs.ext4 {0} -F".format(disk))
     os.system("mount {0} {1}".format(disk, paths[db]))
