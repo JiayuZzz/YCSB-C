@@ -2,7 +2,7 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/expdb/"
+dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
 dbSize = "300GB"

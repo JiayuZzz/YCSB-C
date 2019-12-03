@@ -45,3 +45,4 @@ redis/sample
 ycsbc
 resultDir
 *latencies*
+db_size
