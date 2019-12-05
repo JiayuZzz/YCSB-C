@@ -15,4 +15,4 @@ for db,disk in disks.items():
         os.system("python run_{0}.py both && python run_{0}_scan.py run".format(db))
     os.system("rm -rf {0}".format(backupPath+"*"))
     os.system("cp -r {0} {1}".format(paths[db]+"/*", backupPath))
-    os.system("python run_{0}_core.py run && python run_{0}_zipfcore.py run".format(db))
+    os.system("python run_{0}_core.py run".format(db))

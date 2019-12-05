@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/titan/"
 #valueSizes = ["ratio"]
-valueSizes = ["ratio"]
+valueSizes = ["1KB"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:

@@ -9,7 +9,7 @@ dbSize = "300GB"
 smallThresh = 64
 midThresh = 64
 for valueSize in valueSizes:
-    dbfilename = dbPath+"titandb_vtablenomid"+"ratio"+dbSize
+    dbfilename = dbPath+"titandb_vtablenomid"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     resultfile = "./resultDir/vtablenomid"+valueSize+dbSize+"memtable"+str(memtable)
