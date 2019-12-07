@@ -85,13 +85,15 @@ namespace ycsbc {
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
             noResult++;
-            cout<<noResult<<endl;
+            if(noResult%1000==0){
+                cout<<noResult<<endl;
+            }
             return DB::kOK;
         }else{
             miss+=1;
             if(miss.load()%1000==0) {
-                std::cerr<<"miss "<<miss<<"values"<<std::endl;
-                std::cerr<<"last reason: "<<s.ToString()<<std::endl;
+                std::cout<<"miss "<<miss<<"values"<<std::endl;
+                std::cout<<"last reason: "<<s.ToString()<<std::endl;
             }
             return DB::kOK;
         }
@@ -114,9 +116,12 @@ namespace ycsbc {
             if(val.size()==0) cnt++;
         }
         if(cnt>0){
+            std::cout<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;
             std::cerr<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;
+        } else if(i<len) {
+            std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
+            std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        // std::cerr<<i<<std::endl;
         return DB::kOK;
     }
 

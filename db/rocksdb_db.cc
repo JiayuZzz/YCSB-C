@@ -86,10 +86,15 @@ namespace ycsbc {
         it->Seek(key);
         std::string val;
         std::string k;
-        for(int i=0;i<len&&it->Valid();i++){
+        int i;
+        for(i=0;i<len&&it->Valid();i++){
             k = it->key().ToString();
             val = it->value().ToString();
             it->Next();
+        }
+        if(i<len) {
+            std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
+            std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
         return DB::kOK;
     }

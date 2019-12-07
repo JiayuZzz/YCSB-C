@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
-dbSize = "100GB"
+dbSize = "300GB"
 smallThresh = 64
 midThresh = 8192
 for valueSize in valueSizes:
