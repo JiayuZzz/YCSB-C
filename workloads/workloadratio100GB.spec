@@ -23,7 +23,7 @@ insertproportion=0
 
 fieldlength=4072
 field_len_dist=ratio
-requestdistribution=uniform
+requestdistribution=zipfian
 scanlengthdistribution=constant
 maxscanlength=2000
 

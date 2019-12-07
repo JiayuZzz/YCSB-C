@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB"]
-dbSize = "300GB"
+valueSizes = ["ratio"]
+dbSize = "100GB"
 smallThresh = 64
 midThresh = 8192
 for valueSize in valueSizes:
@@ -25,7 +25,7 @@ for valueSize in valueSizes:
         "directIO":"false",
         "compression":"false",
         "noCompaction":"false",
-        "blockCache":str(8*1024*1024),
+        "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(threads),
         "tiered":"false",
