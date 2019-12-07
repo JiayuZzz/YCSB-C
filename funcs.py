@@ -21,16 +21,16 @@ def load(db,dbfilename,workload,resultfile="-1"):
     if resultfile=="-1":
         os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -phase load".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads 16 -P {2} -phase load > {3}".format(db,dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -phase load > {3}".format(db,dbfilename,workload,resultfile))
 
 def run(db,dbfilename,workload,resultfile="-1"):
     if resultfile=="-1":
         os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -phase run".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads 16 -P {2} -phase run > {3}".format(db,dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 32 -P {2} -phase run > {3}".format(db,dbfilename,workload,resultfile))
 
 def both(db,dbfilename,workload,resultfile="-1"):
     if resultfile=="-1":
         os.system("./ycsbc -db {0} -dbfilename {1} -threads 1 -P {2} -phase both".format(db,dbfilename,workload))
     else:
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads 16 -P {2} -phase both > {3}".format(db,dbfilename,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads 32 -P {2} -phase both > {3}".format(db,dbfilename,workload,resultfile))
