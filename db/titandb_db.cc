@@ -37,15 +37,15 @@ namespace ycsbc {
         if(bloomBits>0) {
             bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 8<<20;
+        options.min_gc_batch_size = 1<<30;
+        options.max_gc_batch_size = 128<<20;
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
         options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
-		options.max_gc_batch_size = 1<<28;
         if(options.level_merge) {
-	options.max_background_gc = 4;
+	    options.max_background_gc = 4;
         options.blob_file_discardable_ratio = 0.3;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
