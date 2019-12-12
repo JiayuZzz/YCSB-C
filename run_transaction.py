@@ -3,8 +3,8 @@ import os
 
 #disks = {"titandb":"/dev/sdc1","vtable":"/dev/sdd1"}
 #paths = {"titandb":"/mnt/titan","vtable":"/mnt/expdb"}
-disks = {"rocksdbuni":"/dev/sdb1"}
-paths = {"rocksdbuni":"/mnt/rocksdb"}
+disks = {"pebblesdb":"/dev/sdc1"}
+paths = {"pebblesdb":"/mnt/pebbles"}
 
 backupPath = "/mnt/backup/"
 

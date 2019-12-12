@@ -5,7 +5,7 @@
 #ifndef YCSB_C_LEVELDB_DB_H
 #define YCSB_C_LEVELDB_DB_H
 
-#include "leveldb/db.h"
+#include "pebblesdb/db.h"
 #include "core/db.h"
 #include <string>
 #include <boost/property_tree/ptree.hpp>

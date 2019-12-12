@@ -31,18 +31,6 @@ namespace ycsbc {
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
         options.target_file_size_base = 8<<20;
-  //      options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-  //      options.level_compaction_dynamic_level_bytes = true;
-        /*
-        options.max_write_buffer_number = 2;
-        options.min_write_buffer_number_to_merge = options.max_write_buffer_number - 1;
-        options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-        options.max_bytes_for_level_base = options.target_file_size_base*4;
-         */
-        //    options.max_write_buffer_number = 1;
-         //   options.min_write_buffer_number_to_merge = 1;
-          //  options.target_file_size_base = memtable*options.min_write_buffer_number_to_merge;
-           // options.max_bytes_for_level_base = options.target_file_size_base*4;
         cerr<<"write buffer size"<<options.write_buffer_size<<endl;
         cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
         cerr<<"num compaction trigger"<<options.level0_file_num_compaction_trigger<<endl;
