@@ -1,7 +1,8 @@
 import sys
 import os
 
-disks = {"vtable":"/dev/sdd1","titandb":"/dev/sdc1","rocksdb":"/dev/sdb1"}
+#disks = {"vtable":"/dev/sdd1","titandb":"/dev/sdc1","rocksdb":"/dev/sdb1"}
+disks = {"titandb":"/dev/sdc1"}
 paths = {"vtable":"/mnt/expdb","titandb":"/mnt/titan","rocksdb":"/mnt/rocksdb"}
 backupPath = "/mnt/backup/"
 
