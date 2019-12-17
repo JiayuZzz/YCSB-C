@@ -5,6 +5,7 @@ import os
 dbPath = "/mnt/pebbles/"
 backupPath = "/mnt/backup/"
 valueSizes = ["1KB"]
+#workloads = ["coreb"]
 workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
 for valueSize in valueSizes:

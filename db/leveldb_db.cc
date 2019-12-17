@@ -21,13 +21,13 @@ namespace ycsbc {
         leveldb::Options options;
         options.create_if_missing = true;
 	options.max_open_files = 20000;
+        options.exp_ops.noCompaction = config.getNoCompaction();
         if(!compression)
             options.compression = leveldb::kNoCompression;
         if(bloomBits>0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(bloomBits);
         // options.exp_ops.seekCompaction = config.getSeekCompaction();
         // options.exp_ops.directIO = config.getDirectIO();
-        options.exp_ops.noCompaction = config.getNoCompaction();
         options.block_cache = leveldb::NewLRUCache(config.getBlockCache());
         options.write_buffer_size = config.getMemtable();
 	    // options.exp_ops.numThreads = config.getNumThreads();
