@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-workloads = ["20scan","100scan","1000scan","10000scan"]
+workloads = ["20scan","100scan","1000scan","10000scan","zipf20sca","zipf100scan","zipf1000scan","zipf10000scan"]
 valueSizes = ["1KB"]
 dbSize = "300GB"
 for valueSize in valueSizes:
