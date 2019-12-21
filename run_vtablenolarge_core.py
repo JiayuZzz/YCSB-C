@@ -4,14 +4,16 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-workloads = ["20scan","100scan","1000scan","10000scan","zipf20sca","zipf100scan","zipf1000scan","zipf10000scan"]
+backupPath = "/mnt/backup/"
 valueSizes = ["1KB"]
+workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 30000
 for valueSize in valueSizes:
     for wl in workloads:
         dbfilename = dbPath+"titandb_vtablenolarge"+valueSize+dbSize
+        backupfilename = backupPath+"titandb_vtablenolarge"+valueSize+dbSize
         workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
         memtable = 64
         resultfile = "./resultDir/vtablenolarge"+valueSize+wl+dbSize+"memtable"+str(memtable)
@@ -25,7 +27,7 @@ for valueSize in valueSizes:
             "seekCompaction":"false",
             "directIO":"false",
             "compression":"false",
-            "noCompaction":"true",
+            "noCompaction":"false",
             "blockCache":str(8*1024*1024),
             "memtable":str(memtable*1024*1024),
             "numThreads":str(8),
@@ -60,6 +62,8 @@ for valueSize in valueSizes:
                 funcs.load("titandb",dbfilename,workload,resultfile)
 
             if phase=="run":
+                os.system("sudo rm -rf {0}".format(dbfilename))
+                os.system("sudo cp -r {0} {1}".format(backupfilename, dbPath))
                 resultfile = resultfile+"_run"
                 print(resultfile)
                 funcs.run("titandb",dbfilename,workload,resultfile)
