@@ -17,7 +17,7 @@ for valueSize in valueSizes:
         workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
         memtable = 64
         resultfile = "./resultDir/vtable"+valueSize+wl+dbSize+"memtable"+str(memtable)
-        sepBeforeFlush = "true"
+        sepBeforeFlush = "false"
         if sepBeforeFlush == "true":
             resultfile = resultfile + "before"
 

@@ -46,7 +46,7 @@ namespace ycsbc {
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
         if(options.level_merge) {
-	    options.max_background_gc = 4;
+	    options.max_background_gc = 2;
         options.blob_file_discardable_ratio = 0.3;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
@@ -54,6 +54,7 @@ namespace ycsbc {
         } else {
         options.max_background_gc = 1;
         options.blob_file_discardable_ratio = 0.01;
+		options.num_foreground_builders = 8;
         }
         //if(options.level_merge)
 	    //    options.level_compaction_dynamic_level_bytes = true;
