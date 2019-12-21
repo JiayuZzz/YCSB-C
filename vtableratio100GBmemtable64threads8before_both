@@ -2,7 +2,7 @@
 bloom bits:10bits
 directIO:0
 seekCompaction:0dynamic level:1
-# Loading records:	91663123
+# Loading records:	89627865
 Load time: 710.439s
 Read ops： 0
 Total read time: 0s
@@ -164,7 +164,7 @@ run time: 2.68739e+09us
 Read ops： 0
 Total read time: 0s
 Time per read: -nanms
-Insert ops: 274989369
+Insert ops: 268883595
 Total insert time: 2674.8s
 Time per insert: 0.00972692ms
 Scan ops: 0

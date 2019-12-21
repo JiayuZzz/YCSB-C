@@ -8,7 +8,7 @@
 
 #10GB 1KB value
 
-recordcount=274989369
+recordcount=268883595
 #recordcount=30000000
 operationcount=50000000
 #operationcount=200000000
@@ -28,9 +28,9 @@ requestdistribution=zipfian
 scanlengthdistribution=constant
 maxscanlength=1000
 
-largeproportion=0.1
-midproportion=0.5
+largeproportion=0.05
+midproportion=0.55
 smallproportion=0.4
-largesize=16384
+largesize=32768
 midsize=1024
 smallsize=100

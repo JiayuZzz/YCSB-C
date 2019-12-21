@@ -8,7 +8,7 @@
 
 #10GB 1KB value
 
-recordcount=274989369
+recordcount=268883595
 #recordcount=30000000
 #operationcount=284058682
 operationcount=1000000
@@ -27,9 +27,9 @@ requestdistribution=uniform
 scanlengthdistribution=constant
 maxscanlength=100
 
-largeproportion=0.1
-midproportion=0.5
+largeproportion=0.05
+midproportion=0.55
 smallproportion=0.4
-largesize=16384
+largesize=32768
 midsize=1024
 smallsize=100

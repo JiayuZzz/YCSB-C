@@ -30,7 +30,7 @@ maxscanlength=500000
 largeproportion=0.2
 midproportion=0.7
 smallproportion=0.2
-largesize=16384
+largesize=32768
 midsize=2048
 smallsize=100
 
