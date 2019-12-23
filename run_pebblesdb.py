@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/pebbles/"
 #dbPath = "/mnt/HDD/"
 #valueSizes = ["8KB","6KB","4KB","2KB","1KB","512B","128B"]
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 dbSize = "100GB"
 for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"

@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/titan/"
 #valueSizes = ["ratio"]
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
@@ -14,7 +14,8 @@ for valueSize in valueSizes:
     memtable = 64
     sepBeforeFlush = "true"
     threads = 8
-    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)
+    gcThreads = 1
+    resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
 
@@ -28,6 +29,7 @@ for valueSize in valueSizes:
         "blockCache":str(8*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(threads),
+        "gcThreads":str(gcThreads),
         "tiered":"false",
         "levelMerge":"false",
         "rangeMerge":"false",

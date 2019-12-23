@@ -26,6 +26,7 @@ for valueSize in valueSizes:
         "directIO":"false",
         "compression":"false",
         "noCompaction":"false",
+        "gcThreads":str(gcThreads),
         "blockCache":str(8*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(8),

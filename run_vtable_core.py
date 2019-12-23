@@ -16,7 +16,9 @@ for valueSize in valueSizes:
         backupfilename = backupPath+"titandb"+valueSize+dbSize
         workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
         memtable = 64
-        resultfile = "./resultDir/vtable"+valueSize+wl+dbSize+"memtable"+str(memtable)
+        threads = 8
+        gcThreads = 2
+        resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
         sepBeforeFlush = "false"
         if sepBeforeFlush == "true":
             resultfile = resultfile + "before"
@@ -31,6 +33,7 @@ for valueSize in valueSizes:
             "blockCache":str(8*1024*1024),
             "memtable":str(memtable*1024*1024),
             "numThreads":str(8),
+            "gcThreads":str(gcThreads),
             "tiered":"false",
             "levelMerge":"true",
             "rangeMerge":"true",

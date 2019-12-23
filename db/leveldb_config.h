@@ -24,6 +24,7 @@ namespace ycsbc {
         bool directIO_;
         bool noCompaction_;
         int numThreads_;
+        int gcThreads_;
         int sizeRatio_;
         size_t blockCache_;
         size_t gcSize_;
@@ -66,10 +67,15 @@ namespace ycsbc {
             levelMerge_ = pt_.get<bool>("config.levelMerge");
             rangeMerge_ = pt_.get<bool>("config.rangeMerge");
             sep_before_flush_ = pt_.get<bool>("config.sepBeforeFlush");
+            gcThreads_ = pt_.get<int>("config.gcThreads");
         }
 
         int getBloomBits() {
             return bloomBits_;
+        }
+
+        int getGCThreads() {
+            return gcThreads_;
         }
 
         bool getSeekCompaction() {

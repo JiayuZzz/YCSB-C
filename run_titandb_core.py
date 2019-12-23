@@ -8,6 +8,8 @@ valueSizes = ["1KB"]
 workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 smallThresh = 1
 midThresh = 30000
+gcThreads = 1
+threads = 8
 for valueSize in valueSizes:
     for wl in workloads:
         dbSize = "300GB"
@@ -16,7 +18,7 @@ for valueSize in valueSizes:
         workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
         memtable = 64
         sepBeforeFlush = "true"
-        resultfile = "./resultDir/titandb"+valueSize+wl+dbSize+"memtable"+str(memtable)
+        resultfile = "./resultDir/titandb"+valueSize+wl+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
         if sepBeforeFlush == "true":
             resultfile = resultfile + "before"
 
@@ -30,6 +32,7 @@ for valueSize in valueSizes:
             "blockCache":str(8*1024*1024),
             "memtable":str(memtable*1024*1024),
             "numThreads":str(8),
+            "gcThreads":str(gcThreads)
             "tiered":"false",
             "levelMerge":"false",
             "rangeMerge":"false",

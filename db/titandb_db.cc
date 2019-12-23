@@ -45,16 +45,15 @@ namespace ycsbc {
         options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+        options.max_background_gc = config.getGCThreads();
         if(options.level_merge) {
-	    options.max_background_gc = 2;
         options.blob_file_discardable_ratio = 0.3;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
 	    options.num_foreground_builders = 8;
         } else {
-        options.max_background_gc = 1;
         options.blob_file_discardable_ratio = 0.01;
-		options.num_foreground_builders = 8;
+		options.num_foreground_builders = 1;
         }
         //if(options.level_merge)
 	    //    options.level_compaction_dynamic_level_bytes = true;

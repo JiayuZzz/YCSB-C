@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
-dbSize = "300GB"
+dbSize = "100GB"
 smallThresh = 64
 midThresh = 30000
 for valueSize in valueSizes:
@@ -13,7 +13,8 @@ for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 8
-    resultfile = "./resultDir/vtablenolarge"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)
+    gcThreads = 2
+    resultfile = "./resultDir/vtablenolarge"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gc"+str(gcThreads)
     sepBeforeFlush = "false"
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
@@ -28,6 +29,7 @@ for valueSize in valueSizes:
         "blockCache":str(6*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(threads),
+        "gcThreads":str(gcThreads),
         "tiered":"false",
         "levelMerge":"true",
         "rangeMerge":"true",
