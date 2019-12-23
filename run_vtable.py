@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["1KB"]
-dbSize = "300GB"
+dbSize = "100GB"
 smallThresh = 64
 midThresh = 8192
 for valueSize in valueSizes:
@@ -57,7 +57,7 @@ for valueSize in valueSizes:
         if phase=="load":
             resultfile = resultfile+"_load"
             funcs.load("titandb",dbfilename,workload,resultfile)
-            os.system("du -sh {0} >> db_size".format(dbfilename))
+            os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
     
         if phase=="run":
             resultfile = resultfile+"_run"
@@ -67,4 +67,4 @@ for valueSize in valueSizes:
         if phase=="both":
             resultfile1 = resultfile+"_both"
             funcs.both("titandb",dbfilename,workload,resultfile1)
-            os.system("du -sh {0} >> db_size".format(dbfilename)) 
+            os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename)) 

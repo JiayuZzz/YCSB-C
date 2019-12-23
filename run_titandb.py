@@ -8,7 +8,7 @@ valueSizes = ["1KB"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
-    dbSize = "300GB"
+    dbSize = "100GB"
     dbfilename = dbPath+"titandb_original"+valueSize+dbSize
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
@@ -57,7 +57,7 @@ for valueSize in valueSizes:
         if phase=="load":
             resultfile = resultfile+"_load"
             funcs.load("titandb",dbfilename,workload,resultfile)
-            os.system("du -sh {0} >> db_size".format(dbfilename))
+            os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
         if phase=="run":
             resultfile = resultfile+"_run"
@@ -67,4 +67,4 @@ for valueSize in valueSizes:
         if phase=="both":
             resultfile1 = resultfile+"_both"
             funcs.both("titandb",dbfilename,workload,resultfile1)
-            os.system("du -sh {0} >> db_size".format(dbfilename))
+            os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
