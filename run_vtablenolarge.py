@@ -4,9 +4,9 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["ratio"]
+valueSizes = ["1KB"]
 maxSortedRuns = [1,5,10,15,20]
-dbSize = "100GB"
+dbSize = "300GB"
 smallThresh = 64
 midThresh = 30000
 for msr in maxSortedRuns:
@@ -73,3 +73,13 @@ for msr in maxSortedRuns:
                 resultfile1 = resultfile+"_both"
                 funcs.both("titandb",dbfilename,workload,resultfile1)
                 os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
+
+                workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+                for wl in workloads:
+                    workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
+                    resultfile1 = "./resultDir/vtablenolarge"+valueSize+wl+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gc"+str(gcThreads)+"sortedrun"+str(msr)
+                    funcs.run("titandb",dbfilename,workload,resultfile1)
+                    
+
+                    
+

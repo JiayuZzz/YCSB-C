@@ -4,8 +4,8 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["ratio"]
-dbSize = "100GB"
+valueSizes = ["1KB"]
+dbSize = "300GB"
 for valueSize in valueSizes:
     thread = 8
     dbfilename = dbPath+"rocksdb"+valueSize+dbSize

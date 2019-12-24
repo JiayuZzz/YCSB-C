@@ -3,7 +3,7 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
-workloads = ["20scan","100scan","1000scan","10000scan","zipf20sca","zipf100scan","zipf1000scan","zipf10000scan"]
+workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
 valueSizes = ["1KB"]
 smallThresh = 1
 midThresh = 30000

@@ -4,17 +4,19 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
 valueSizes = ["1KB"]
+maxSortedRuns = [1,5,10,15,20]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 30000
-for valueSize in valueSizes:
-    for wl in workloads:
+for msr in maxSortedRuns:
+    for valueSize in valueSizes:
         dbfilename = dbPath+"titandb_vtablenolarge"+valueSize+dbSize
-        workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
+        workload = "./workloads/workload"+valueSize+dbSize+".spec"
         memtable = 64
-        resultfile = "./resultDir/vtablenolarge"+valueSize+wl+dbSize+"memtable"+str(memtable)
+        threads = 8
+        gcThreads = 2
+        resultfile = "./resultDir/vtablenolarge"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gc"+str(gcThreads)+"sortedrun"+str(msr)
         sepBeforeFlush = "false"
         if sepBeforeFlush == "true":
             resultfile = resultfile + "before"
@@ -25,16 +27,18 @@ for valueSize in valueSizes:
             "seekCompaction":"false",
             "directIO":"false",
             "compression":"false",
-            "noCompaction":"true",
+            "noCompaction":"false",
             "blockCache":str(8*1024*1024),
             "memtable":str(memtable*1024*1024),
-            "numThreads":str(8),
+            "numThreads":str(threads),
+            "gcThreads":str(gcThreads),
             "tiered":"false",
             "levelMerge":"true",
             "rangeMerge":"true",
             "sepBeforeFlush":sepBeforeFlush,
             "midThresh":str(midThresh),
-            "smallThresh":str(smallThresh)
+            "smallThresh":str(smallThresh),
+            "maxSortedRuns":str(msr),
         }
 
         phase = sys.argv[1]
@@ -58,6 +62,7 @@ for valueSize in valueSizes:
             if phase=="load":
                 resultfile = resultfile+"_load"
                 funcs.load("titandb",dbfilename,workload,resultfile)
+                os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
             if phase=="run":
                 resultfile = resultfile+"_run"
@@ -65,8 +70,6 @@ for valueSize in valueSizes:
                 funcs.run("titandb",dbfilename,workload,resultfile)
 
             if phase=="both":
-                resultfile1 = resultfile+"_load"
-                funcs.load("titandb",dbfilename,workload,resultfile1)
-                resultfile2 = resultfile+"_run"
-                funcs.run("titandb",dbfilename,workload,resultfile2)
-
+                resultfile1 = resultfile+"_both"
+                funcs.both("titandb",dbfilename,workload,resultfile1)
+                os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
