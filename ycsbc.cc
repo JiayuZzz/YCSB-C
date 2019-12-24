@@ -137,13 +137,13 @@ int main(const int argc, const char *argv[]) {
       cout << "============================statistics==========================="<<endl;
       db->printStats();
     }
-	/*
+	///*
     if(phase=="both"){
       cout<<"sleep 10m for compaction complete"<<endl;
       sleep(600);
       db->printStats();
     }
-	*/
+	//*/
     for(int i=0;i<4;i++){
       ops_cnt[i] = 0;
       ops_time[i] = 0;
