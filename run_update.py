@@ -1,8 +1,8 @@
 import sys
 import os
 
-#disks = {"vtable":"/dev/sdd1","titandb":"/dev/sdc1","rocksdb":"/dev/sdb1"}
-disks = {"vtablenolarge":"/dev/md0","titandb":"/dev/md0","vtable":"/dev/md0","pebblesdb":"/dev/md0","rocksdb":"/dev/md0"}
+disks = {"vtable":"/dev/md0"}
+#disks = {"vtablenolarge":"/dev/md0","titandb":"/dev/md0","vtable":"/dev/md0","rocksdb":"/dev/md0"}
 paths = {"vtablenolarge":"/mnt/expdb","pebblesdb":"/mnt/pebbles","vtable":"/mnt/expdb","titandb":"/mnt/titan","rocksdb":"/mnt/rocksdb"}
 backupPath = "/mnt/backup/"
 

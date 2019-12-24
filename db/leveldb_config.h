@@ -25,6 +25,7 @@ namespace ycsbc {
         bool noCompaction_;
         int numThreads_;
         int gcThreads_;
+        int maxSortedRuns_;
         int sizeRatio_;
         size_t blockCache_;
         size_t gcSize_;
@@ -68,10 +69,15 @@ namespace ycsbc {
             rangeMerge_ = pt_.get<bool>("config.rangeMerge");
             sep_before_flush_ = pt_.get<bool>("config.sepBeforeFlush");
             gcThreads_ = pt_.get<int>("config.gcThreads");
+            maxSortedRuns_ = pt_.get<int>("config.maxSortedRuns");
         }
 
         int getBloomBits() {
             return bloomBits_;
+        }
+
+        int getMaxSortedRuns() {
+            return maxSortedRuns_;
         }
 
         int getGCThreads() {

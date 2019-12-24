@@ -39,7 +39,8 @@ for valueSize in valueSizes:
             "rangeMerge":"true",
             "sepBeforeFlush":sepBeforeFlush,
             "midThresh":str(midThresh),
-            "smallThresh":str(smallThresh)
+            "smallThresh":str(smallThresh),
+            "maxSortedRuns":str(10),
         }
 
         phase = sys.argv[1]

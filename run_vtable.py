@@ -13,7 +13,7 @@ for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     threads = 8
-    gcThreads = 2
+    gcThreads = 4
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
     sepBeforeFlush = "true"
     if sepBeforeFlush == "true":
@@ -26,7 +26,7 @@ for valueSize in valueSizes:
         "directIO":"false",
         "compression":"false",
         "noCompaction":"false",
-        "blockCache":str(6*1024*1024),
+        "blockCache":str(8*1024*1024),
         "memtable":str(memtable*1024*1024),
         "numThreads":str(threads),
         "gcThreads":str(gcThreads),
@@ -35,7 +35,8 @@ for valueSize in valueSizes:
         "rangeMerge":"true",
         "sepBeforeFlush":sepBeforeFlush,
         "midThresh":str(midThresh),
-        "smallThresh":str(smallThresh)
+        "smallThresh":str(smallThresh),
+        "maxSortedRuns":str(10),
     }
     
     phase = sys.argv[1]

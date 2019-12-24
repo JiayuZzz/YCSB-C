@@ -39,7 +39,7 @@ namespace ycsbc {
         }
         options.min_gc_batch_size = 8<<20;
         options.max_gc_batch_size = 256<<20;
-		options.max_sorted_runs = 10;
+		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
         options.blob_file_target_size = 8<<20;
