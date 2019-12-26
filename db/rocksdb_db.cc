@@ -26,11 +26,12 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
+	    options.target_file_size_base = 16<<20;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
-        options.target_file_size_base = 8<<20;
+        //options.target_file_size_base = 8<<20;
         cerr<<"write buffer size"<<options.write_buffer_size<<endl;
         cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
         cerr<<"num compaction trigger"<<options.level0_file_num_compaction_trigger<<endl;

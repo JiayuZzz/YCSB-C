@@ -139,8 +139,8 @@ int main(const int argc, const char *argv[]) {
     }
 	///*
     if(phase=="both"){
-      cout<<"sleep 10m for compaction complete"<<endl;
-      sleep(600);
+      cout<<"sleep 20m for compaction complete"<<endl;
+      sleep(1200);
       db->printStats();
     }
 	//*/

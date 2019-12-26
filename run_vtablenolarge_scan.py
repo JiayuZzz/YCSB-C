@@ -5,7 +5,7 @@ import os
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
 workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 30000

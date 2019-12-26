@@ -37,7 +37,7 @@ namespace ycsbc {
         if(bloomBits>0) {
             bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 8<<20;
+        options.min_gc_batch_size = 16<<20;
         options.max_gc_batch_size = 256<<20;
 		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);

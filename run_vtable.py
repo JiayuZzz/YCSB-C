@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/expdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 8192
@@ -15,7 +15,7 @@ for valueSize in valueSizes:
     threads = 8
     gcThreads = 4
     resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
-    sepBeforeFlush = "false"
+    sepBeforeFlush = "true"
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
     

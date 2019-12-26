@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 backupPath = "/mnt/backup/"
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
 dbSize = "300GB"
 for valueSize in valueSizes:

@@ -4,7 +4,7 @@ import os
 
 dbPath = "/mnt/expdb/"
 workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-valueSizes = ["1KB"]
+valueSizes = ["ratio"]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 8192
@@ -15,7 +15,7 @@ for valueSize in valueSizes:
             workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
             memtable = 64
             resultfile = "./resultDir/vtable"+valueSize+wl+dbSize+"memtable"+str(memtable)+"round"+str(i)
-            sepBeforeFlush = "false"
+            sepBeforeFlush = "true"
             if sepBeforeFlush == "true":
                 resultfile = resultfile + "before"
 
