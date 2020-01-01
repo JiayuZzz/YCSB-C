@@ -68,11 +68,13 @@ int main(const int argc, const char *argv[]) {
   utils::Timer timer;
   // bool skipLoad = utils::StrToBool(props["skipLoad"]);
   std::string phase = props["phase"];
+  std::cerr<<"threads "<<props["threadcount"]<<std::endl;
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
 
   // Loads data
   if(phase == "load" || phase == "both") {
+    int s = stoi(props["sleep"]);
     timer.Start();
     total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     for (int i = 0; i < num_threads; ++i) {
@@ -90,7 +92,6 @@ int main(const int argc, const char *argv[]) {
     cout << "Load time: "<<timer.End()/1000000<<"s"<<endl;
     actual_ops.clear();
     //cerr<< "done, sleep 10 minutes for compaction"<<endl;
-    //sleep(600);
     cout << "Read ops： " << ops_cnt[ycsbc::READ] << "\nTotal read time: " << ops_time[ycsbc::READ]/1000000 << "s" <<endl;
     cout << "Time per read: " << ops_time[ycsbc::READ]/ops_cnt[ycsbc::READ]/1000 << "ms" <<endl;
     cout << "Insert ops: " << ops_cnt[ycsbc::INSERT] << "\nTotal insert time: " << ops_time[ycsbc::INSERT]/1000000 << "s" <<endl;
@@ -104,6 +105,11 @@ int main(const int argc, const char *argv[]) {
     for(int i=0;i<4;i++){
       ops_cnt[i] = 0;
       ops_time[i] = 0;
+    }
+    if(s>0){
+	    std::cout<<"sleep "<<s<<"s for compaction"<<std::endl;
+      sleep(s);
+      db->printStats();
     }
   } 
   if (phase == "run" || phase == "both") {
@@ -137,13 +143,13 @@ int main(const int argc, const char *argv[]) {
       cout << "============================statistics==========================="<<endl;
       db->printStats();
     }
-	///*
+	/*
     if(phase=="both"){
       cout<<"sleep 20m for compaction complete"<<endl;
       sleep(1200);
       db->printStats();
     }
-	//*/
+	*/
     for(int i=0;i<4;i++){
       ops_cnt[i] = 0;
       ops_time[i] = 0;
@@ -204,6 +210,14 @@ string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) 
         exit(0);
       }
       props.SetProperty("phase",argv[argindex]);
+      argindex++;
+    } else if(strcmp(argv[argindex],"-sleep")==0){
+      argindex++;
+      if(argindex >= argc){
+        UsageMessage(argv[0]);
+        exit(0);
+      }
+      props.SetProperty("sleep",argv[argindex]);
       argindex++;
     } else if (strcmp(argv[argindex], "-slaves") == 0) {
       argindex++;

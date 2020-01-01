@@ -4,13 +4,13 @@ import os
 
 dbPath = "/mnt/expdb/"
 workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-valueSizes = ["ratio"]
+valueSizes = ["1KB"]
 dbSize = "300GB"
 smallThresh = 64
 midThresh = 8192
 for valueSize in valueSizes:
     for wl in workloads:
-        for i in range (1,10):
+        for i in range (1,2):
             dbfilename = dbPath+"titandb"+valueSize+dbSize
             workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
             memtable = 64

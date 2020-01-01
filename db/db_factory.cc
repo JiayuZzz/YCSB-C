@@ -39,7 +39,7 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
     return new LevelDB(props["dbfilename"].c_str());
   } else if (props["dbname"] == "rocksdb") {
     return new RocksDB(props["dbfilename"].c_str());
-  } else if (props["dbname"] == "titandb") {
+  } else if (props["dbname"] == "titandb"||props["dbname"]=="vtable"||props["dbname"]=="vtablenolarge") {
     return new TitanDB(props["dbfilename"].c_str());
   }
   else return NULL;

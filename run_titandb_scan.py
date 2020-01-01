@@ -4,12 +4,12 @@ import os
 
 dbPath = "/mnt/titan/"
 workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-valueSizes = ["ratio"]
+valueSizes = ["1KB"]
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
     for wl in workloads:
-        for i in range (1,10):
+        for i in range (1,2):
             dbSize = "300GB"
             dbfilename = dbPath+"titandb_original"+valueSize+dbSize
             workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"

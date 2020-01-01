@@ -7,7 +7,7 @@ disk = "/dev/md0"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
 maxSortedRuns = [10]
-dbSize = "300GB"
+dbSize = "100GB"
 smallThresh = 64
 midThresh = 30000
 for msr in maxSortedRuns:

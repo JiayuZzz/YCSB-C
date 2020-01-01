@@ -3,8 +3,9 @@ import sys
 import os
 
 dbPath = "/mnt/titan/"
-#valueSizes = ["ratio"]
-valueSizes = ["1KB"]
+valueSizes = ["16KB"]
+#valueSizes = ["4KB","8KB","16KB","512B"]
+disk = "/dev/md0"
 smallThresh = 1
 midThresh = 30000
 for valueSize in valueSizes:
@@ -13,8 +14,8 @@ for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     sepBeforeFlush = "true"
-    threads = 4
-    gcThreads = 4
+    threads = 8
+    gcThreads = 1
     resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
     if sepBeforeFlush == "true":
         resultfile = resultfile + "before"
@@ -58,15 +59,19 @@ for valueSize in valueSizes:
 
         if phase=="load":
             resultfile = resultfile+"_load"
-            funcs.load("titandb",dbfilename,workload,8,resultfile)
+            funcs.load("titandb",dbfilename,workload,resultfile)
             os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
         if phase=="run":
-            resultfile = resultfile+"_run"
-            print(resultfile)
-            funcs.run("titandb",dbfilename,workload,resultfile)
+            for i in range(1,5):
+                resultfile = resultfile+"_run"+"round"+str(i)
+                print(resultfile)
+                funcs.run("titandb",dbfilename,workload,resultfile)
 
         if phase=="both":
+            os.system("umount {0}".format(disk))
+            os.system("mkfs.ext4 -b 4096 -E stride=128,stripe-width=512 {0} -F".format(disk))
+            os.system("mount {0} {1}".format(disk, dbPath))
             resultfile1 = resultfile+"_both"
             funcs.both("titandb",dbfilename,workload,resultfile1)
             os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))

@@ -4,7 +4,8 @@ import os
 
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB"]
+disk = "/dev/md0"
+valueSizes = ["4KB","8KB","16KB","512B"]
 dbSize = "300GB"
 for valueSize in valueSizes:
     thread = 8
@@ -42,15 +43,22 @@ for valueSize in valueSizes:
 
         if phase=="load":
             resultfile = resultfile+"_load"
+            os.system("umount {0}".format(disk))
+            os.system("mkfs.ext4 -b 4096 -E stride=128,stripe-width=512 {0} -F".format(disk))
+            os.system("mount {0} {1}".format(disk, dbPath))
             funcs.load("rocksdb",dbfilename,workload,resultfile)
             os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
         if phase=="run":
-            resultfile = resultfile+"_run"
-            print(resultfile)
-            funcs.run("rocksdb",dbfilename,workload,resultfile)
+            for i in range(1,5):
+                resultfile = resultfile+"_run"+"round"+str(i)
+                print(resultfile)
+                funcs.run("rocksdb",dbfilename,workload,resultfile)
 
         if phase=="both":
+            os.system("umount {0}".format(disk))
+            os.system("mkfs.ext4 -b 4096 -E stride=128,stripe-width=512 {0} -F".format(disk))
+            os.system("mount {0} {1}".format(disk, dbPath))
             resultfile1 = resultfile+"_both"
             funcs.both("rocksdb",dbfilename,workload,resultfile1)
             os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))

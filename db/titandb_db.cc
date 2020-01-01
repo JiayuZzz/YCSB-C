@@ -30,7 +30,7 @@ namespace ycsbc {
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
-	    options.target_file_size_base = 16<<20;
+	   // options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
@@ -42,7 +42,7 @@ namespace ycsbc {
 		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 8<<20;
+        options.blob_file_target_size = 16<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
         options.max_background_gc = config.getGCThreads();
@@ -50,7 +50,7 @@ namespace ycsbc {
         options.blob_file_discardable_ratio = 0.3;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
-	    options.num_foreground_builders = 8;
+	    options.num_foreground_builders = 4;
         } else {
         options.blob_file_discardable_ratio = 0.01;
 		options.num_foreground_builders = 1;
@@ -103,7 +103,7 @@ namespace ycsbc {
 
     int TitanDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
-                        //   /*
+                           /*
         auto it=db_->NewIterator(rocksdb::ReadOptions());
         it->Seek(key);
         std::string val;
@@ -124,8 +124,8 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        // */
-       /*
+        */
+    //    /*
         std::vector<std::string> keys;
         std::vector<std::string> vals;
         int i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
@@ -142,7 +142,7 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        */
+        // */
         return DB::kOK;
     }
 

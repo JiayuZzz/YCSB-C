@@ -26,7 +26,7 @@ namespace ycsbc {
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
-	    options.target_file_size_base = 16<<20;
+//	    options.target_file_size_base = 16<<20;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
@@ -85,6 +85,7 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
+        delete it;
         return DB::kOK;
     }
 

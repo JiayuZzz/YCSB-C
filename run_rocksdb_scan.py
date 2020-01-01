@@ -5,11 +5,11 @@ import os
 dbPath = "/mnt/rocksdb/"
 #dbPath = "/mnt/raidstore/"
 workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-valueSizes = ["ratio"]
+valueSizes = ["1KB"]
 dbSize = "300GB"
 for valueSize in valueSizes:
     for wl in workloads:
-        for i in range (1,10):
+        for i in range (1,2):
             dbfilename = dbPath+"rocksdb"+valueSize+dbSize
             workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
             memtable = 64
