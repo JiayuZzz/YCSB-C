@@ -5,9 +5,9 @@ import os
 dbPath = "/mnt/expdb/"
 disk = "/dev/md0"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["1KB"]
+valueSizes = ["4KB"]
 maxSortedRuns = [10]
-dbSize = "100GB"
+dbSize = "300GB"
 smallThresh = 64
 midThresh = 8192
 for msr in maxSortedRuns:
@@ -15,7 +15,7 @@ for msr in maxSortedRuns:
         dbfilename = dbPath+"titandb"+valueSize+dbSize
         workload = "./workloads/workload"+valueSize+dbSize+".spec"
         memtable = 64
-        threads = 4
+        threads = 8
         gcThreads = 4
         resultfile = "./resultDir/vtable"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gc"+str(gcThreads)+"sortedrun"+str(msr)
         sepBeforeFlush = "true"
@@ -62,7 +62,7 @@ for msr in maxSortedRuns:
 
             if phase=="load":
                 resultfile = resultfile+"_load"
-                funcs.load("titandb",dbfilename,workload,resultfile,8,600)
+                funcs.load("titandb",dbfilename,workload,resultfile,8,0)
                 os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
             if phase=="run":
@@ -72,7 +72,7 @@ for msr in maxSortedRuns:
 
             if phase=="both":
                 resultfile1 = resultfile+"_both"
-                funcs.both("titandb",dbfilename,workload,resultfile1,8)
+                funcs.both("titandb",dbfilename,workload,resultfile1,8,0)
                 os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
                     
 

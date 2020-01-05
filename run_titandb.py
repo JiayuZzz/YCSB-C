@@ -2,7 +2,7 @@ import funcs
 import sys
 import os
 
-dbPath = "/mnt/titan/"
+dbPath = "/mnt/expdb/"
 #valueSizes = ["ratio"]
 valueSizes = ["1KB"]
 smallThresh = 1
@@ -13,7 +13,7 @@ for valueSize in valueSizes:
     workload = "./workloads/workload"+valueSize+dbSize+".spec"
     memtable = 64
     sepBeforeFlush = "true"
-    threads = 4
+    threads = 8
     gcThreads = 4
     resultfile = "./resultDir/titandb"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gcthreads"+str(gcThreads)
     if sepBeforeFlush == "true":
@@ -58,7 +58,7 @@ for valueSize in valueSizes:
 
         if phase=="load":
             resultfile = resultfile+"_load"
-            funcs.load("titandb",dbfilename,workload,8,resultfile)
+            funcs.load("titandb",dbfilename,workload,resultfile,16)
             os.system("du -sh {0} >> db_size && date >> db_size".format(dbfilename))
 
         if phase=="run":

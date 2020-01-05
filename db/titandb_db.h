@@ -38,6 +38,7 @@ namespace ycsbc {
     private:
         rocksdb::titandb::TitanDB *db_;
         unsigned noResult;
+        bool nowal{false};
     };
 }
 

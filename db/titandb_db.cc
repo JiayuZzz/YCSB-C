@@ -30,33 +30,35 @@ namespace ycsbc {
 	    options.disable_background_gc = false;
         options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
-	   // options.target_file_size_base = 16<<20;
+	    options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
         if(bloomBits>0) {
-            bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
+        bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 16<<20;
-        options.max_gc_batch_size = 256<<20;
+        options.min_gc_batch_size = 32<<20;
+        options.max_gc_batch_size = 64<<20;
 		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 16<<20;
+        options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
+        nowal = !options.level_merge;
         options.max_background_gc = config.getGCThreads();
         if(options.level_merge) {
         options.blob_file_discardable_ratio = 0.3;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
 	    options.num_foreground_builders = 4;
+		options.intra_compact_small_l0 = true;
         } else {
         options.blob_file_discardable_ratio = 0.01;
 		options.num_foreground_builders = 1;
         }
-        //if(options.level_merge)
-	    //    options.level_compaction_dynamic_level_bytes = true;
+        if(options.level_merge)
+	        options.level_compaction_dynamic_level_bytes = true;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
@@ -149,8 +151,10 @@ namespace ycsbc {
     int TitanDB::Insert(const std::string &table, const std::string &key,
                         std::vector<KVPair> &values){
         rocksdb::Status s;
+        auto op = rocksdb::WriteOptions();
+        op.disableWAL = nowal;
         for(KVPair &p:values){
-            s = db_->Put(rocksdb::WriteOptions(),key,p.second);
+            s = db_->Put(op,key,p.second);
             if(!s.ok()){
                 cerr<<"insert error\n";
                 cerr<<s.ToString()<<endl;

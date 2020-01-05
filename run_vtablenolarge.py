@@ -7,7 +7,7 @@ disk = "/dev/md0"
 #dbPath = "/mnt/raidstore/"
 valueSizes = ["ratio"]
 maxSortedRuns = [10]
-dbSize = "100GB"
+dbSize = "300GB"
 smallThresh = 64
 midThresh = 30000
 for msr in maxSortedRuns:
@@ -15,7 +15,7 @@ for msr in maxSortedRuns:
         dbfilename = dbPath+"titandb_vtablenolarge"+valueSize+dbSize
         workload = "./workloads/workload"+valueSize+dbSize+".spec"
         memtable = 64
-        threads = 8
+        threads = 4
         gcThreads = 2
         resultfile = "./resultDir/vtablenolarge"+valueSize+dbSize+"memtable"+str(memtable)+"threads"+str(threads)+"gc"+str(gcThreads)+"sortedrun"+str(msr)
         sepBeforeFlush = "false"

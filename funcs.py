@@ -1,5 +1,6 @@
 import configparser
 import os
+import time
 
 # repair case problem in configparser package
 class MyConfigParser(configparser.ConfigParser):
@@ -30,6 +31,11 @@ def remount(disk, path, israid):
         os.system("mkfs.ext4 {0} -F".format(disk))
     os.system("mount {0} {1}".format(disk, path))
 
+def getsize(dir,output):
+    while True:
+        time.sleep(10)
+        os.system("du -sk {0} >> {1}".format(dir,output))
+
 
 def load(db,dbfilename,workload,resultfile="-1",threads=8,sleep=0):
     os.system("sudo rm -rf {0}".format(dbfilename))
@@ -44,9 +50,9 @@ def run(db,dbfilename,workload,resultfile="-1",threads=8):
     else:
         os.system("./ycsbc -db {0} -dbfilename {1} -threads {4} -P {2} -phase run > {3}".format(db,dbfilename,workload,resultfile,threads))
 
-def both(db,dbfilename,workload,resultfile="-1",threads=8):
+def both(db,dbfilename,workload,resultfile="-1",threads=8,sleep=0):
     os.system("sudo rm -rf {0}".format(dbfilename))
     if resultfile=="-1":
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads {3} -P {2} -phase both -sleep 0".format(db,dbfilename,workload,threads))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads {3} -P {2} -phase both -sleep {4}".format(db,dbfilename,workload,threads,sleep))
     else:
-        os.system("./ycsbc -db {0} -dbfilename {1} -threads {2} -P {3} -phase both -sleep 0 > {4}".format(db,dbfilename,threads,workload,resultfile))
+        os.system("./ycsbc -db {0} -dbfilename {1} -threads {2} -P {3} -phase both -sleep {4} > {5}".format(db,dbfilename,threads,workload,sleep,resultfile))

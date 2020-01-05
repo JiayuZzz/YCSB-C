@@ -71,10 +71,10 @@ int main(const int argc, const char *argv[]) {
   std::cerr<<"threads "<<props["threadcount"]<<std::endl;
 
   const int num_threads = stoi(props.GetProperty("threadcount", "1"));
+  const int s = stoi(props.GetProperty("sleep", "0"));
 
   // Loads data
   if(phase == "load" || phase == "both") {
-    int s = stoi(props["sleep"]);
     timer.Start();
     total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     for (int i = 0; i < num_threads; ++i) {
@@ -98,18 +98,13 @@ int main(const int argc, const char *argv[]) {
     cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
     cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
     cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
-    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"){
+    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"||props["dbname"]=="vtable"){
       cout << "============================statistics==========================="<<endl;
       db->printStats();
     }
     for(int i=0;i<4;i++){
       ops_cnt[i] = 0;
       ops_time[i] = 0;
-    }
-    if(s>0){
-	    std::cout<<"sleep "<<s<<"s for compaction"<<std::endl;
-      sleep(s);
-      db->printStats();
     }
   } 
   if (phase == "run" || phase == "both") {
@@ -139,7 +134,7 @@ int main(const int argc, const char *argv[]) {
     cout << "Time per insert: " << ops_time[ycsbc::INSERT]/ops_cnt[ycsbc::INSERT]/1000 << "ms" <<endl;
     cout << "Scan ops: " << ops_cnt[ycsbc::SCAN] << "\nTotal scan time: "<< ops_time[ycsbc::SCAN]/1000000 << "s" <<endl;
     cout << "Time per scan: " << ops_time[ycsbc::SCAN]/ops_cnt[ycsbc::SCAN]/1000 << "ms" <<endl;
-    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"){
+    if (props["dbname"] == "leveldb"||props["dbname"] == "vlog"||props["dbname"]=="expdb"||props["dbname"]=="rocksdb"||props["dbname"]=="titandb"||props["dbname"]=="vtable"){
       cout << "============================statistics==========================="<<endl;
       db->printStats();
     }
@@ -155,8 +150,15 @@ int main(const int argc, const char *argv[]) {
       ops_time[i] = 0;
     }
   }
+    if(s>0){
+	  std::cout<<"sleep "<<s<<"s for compaction"<<std::endl;
+      sleep(s);
+      db->printStats();
+    }
   
+  std::cerr<<"delete db"<<std::endl;
   delete db;
+  std::cerr<<"deleted db"<<std::endl;
 }
 
 string ParseCommandLine(int argc, const char *argv[], utils::Properties &props) {
