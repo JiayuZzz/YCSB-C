@@ -4,7 +4,7 @@ import os
 import time
 from multiprocessing import Process
 
-dbs = ["titandb","vtable"]
+dbs = ["titandb","vtable","rocksdb"]
 #dbs = ["vtable"]
 disk = "/dev/md0"
 isRaid = True
@@ -16,7 +16,7 @@ backupPath = "/mnt/backup/"
 memtable = 64
 compactionThreads = 4
 gcThreads = 4
-foregroundThreads = 8
+foregroundThreads = 16
 
 msr=10
 gcratio = 0.3
@@ -56,22 +56,26 @@ def run_exp(exp):
     round = 1
     waitCompaction = 0
     if exp == 1: # overall fix
+        dbs = ["rocksdb"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        round = 5
+        round = 1
+        skipLoad = True
         backup = True
-        waitCompaction = 1200
+        # useBackup = True
+        waitCompaction = 1500
     if exp == 2:
         waitCompaction = 1200
         backup = True
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
+        dbs = ["titandb"]
+        valueSizes = ["4KB","8KB","16KB","1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
-        skipLoad = True
-        printSize = True
+        skipLoad = False
         round = 1
     for db in dbs:
         if db == "titandb":
@@ -107,14 +111,27 @@ def run_exp(exp):
                     else:
                         os.system("rm -rf {0}".format(backupPath+db+"*"))
                         os.system("cp -r {0} {1}".format(dbfilename, backupPath))
+            if skipLoad and useBackup and exp!=2:
+                funcs.remount(disk, paths[db], isRaid)
+                if db == "rocksdb":
+                    os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
+                else:
+                    os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
             for wl in workloads:
                 sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                 p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                 workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
+                if exp == 1:
+                    configs["noCompaction"] = "true"
+                for cfg in configs:
+                    funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                 for r in range(0,round):
-                    if useBackup:
+                    if useBackup and exp==2:
                         funcs.remount(disk, paths[db], isRaid)
-                        os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
+                        if db == "rocksdb":
+                            os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
+                        else:
+                            os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     resultfile_wl = resultfile+"_"+wl+"round"+str(r)
                     if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":
                         p.start()

@@ -44,6 +44,7 @@ namespace ycsbc {
     private:
         rocksdb::DB *db_;
         unsigned noResult;
+        rocksdb::Iterator* it{nullptr};
     };
 }
 

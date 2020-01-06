@@ -131,11 +131,13 @@ namespace ycsbc {
         std::vector<std::string> keys;
         std::vector<std::string> vals;
         int i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
-        return DB::kOK;
+        // return DB::kOK;
         int cnt = 0;
+        // std::cerr<<vals.size()<<std::endl;
         for(auto& v:vals){
             if(v.empty()) cnt++;
             // std::cerr<<k<<k.size()<<std::endl;
+            // else std::cerr<<v.size()<<v<<std::endl;
         }
         if(cnt>0){
             std::cout<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;

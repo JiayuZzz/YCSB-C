@@ -39,6 +39,7 @@ namespace ycsbc {
         rocksdb::titandb::TitanDB *db_;
         unsigned noResult;
         bool nowal{false};
+        rocksdb::Iterator* it{nullptr};
     };
 }
 
