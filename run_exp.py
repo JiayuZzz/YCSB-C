@@ -4,7 +4,6 @@ import os
 import time
 from multiprocessing import Process
 
-dbs = ["titandb","vtable","rocksdb"]
 #dbs = ["vtable"]
 disk = "/dev/md0"
 isRaid = True
@@ -20,7 +19,7 @@ gcThreads = 4
 msr=10
 gcratio = 0.3
 
-midThresh = 8096
+midThresh = 32000
 smallThresh = 64
 
 configs = {
@@ -43,6 +42,7 @@ configs = {
 }
 
 def run_exp(exp):
+    dbs = ["titandb","vtable","rocksdb"]
     foregroundThreadses = [16]
     valueSizes = ["1KB"]
     dbSize = "300GB"
@@ -62,7 +62,7 @@ def run_exp(exp):
         round = 5
         skipLoad = True
         backup = True
-        # useBackup = True
+        useBackup = True
         waitCompaction = 1500
         if skipLoad:
             foregroundThreadses = [8,16,32,64]
@@ -72,14 +72,15 @@ def run_exp(exp):
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
-        dbs = ["titandb"]
-        valueSizes = ["4KB","8KB","16KB","1KB"]
+        dbs = ["vtable"]
+        valueSizes = ["16KB","8KB","4KB","1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
-        skipLoad = False
+        skipLoad = True
         round = 1
+        printSize=True
     for db in dbs:
         for foregroundThreads in foregroundThreadses:
             if db == "titandb":

@@ -52,13 +52,13 @@ namespace ycsbc {
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
 	    options.num_foreground_builders = 4;
+		std::cerr<<"set intro compaction true"<<std::endl;
 		options.intra_compact_small_l0 = true;
         } else {
         options.blob_file_discardable_ratio = 0.01;
 		options.num_foreground_builders = 1;
         }
-        if(options.level_merge)
-	        options.level_compaction_dynamic_level_bytes = true;
+		std::cerr<<"intro compaction "<<options.intra_compact_small_l0<<std::endl;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
