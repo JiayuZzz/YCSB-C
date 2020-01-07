@@ -4,9 +4,8 @@ import os
 import time
 from multiprocessing import Process
 
-dbs = ["titandb","vtable","rocksdb"]
 #dbs = ["vtable"]
-disk = "/dev/md0"
+disk = "/dev/md127"
 isRaid = True
 paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
 
@@ -20,7 +19,7 @@ gcThreads = 4
 msr=10
 gcratio = 0.3
 
-midThresh = 8096
+midThresh = 32000
 smallThresh = 64
 
 configs = {
@@ -43,6 +42,7 @@ configs = {
 }
 
 def run_exp(exp):
+    dbs = ["titandb","vtable","rocksdb"]
     foregroundThreadses = [16]
     valueSizes = ["1KB"]
     dbSize = "300GB"
@@ -57,29 +57,35 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["rocksdb"]
+        dbs = ["vtable"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 5
         skipLoad = True
         backup = True
-        # useBackup = True
+        useBackup = True
         waitCompaction = 1500
         if skipLoad:
-            foregroundThreadses = [64]
+            foregroundThreadses = [8,16,32,64]
     if exp == 2:
+	dbs = ["rocksdb"]
         waitCompaction = 1200
+        valueSizes = ["1KB","ratio"]
         backup = True
+        useBackup = True
+        skipLoad = False
         round = 1
-        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        #workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
-        dbs = ["titandb"]
-        valueSizes = ["4KB","8KB","16KB","1KB"]
+        dbs = ["rocksdb"]
+        valueSizes = ["16KB","8KB","4KB","1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
-        skipLoad = False
+        skipLoad = True
         round = 1
+        printSize=True
     for db in dbs:
         for foregroundThreads in foregroundThreadses:
             if db == "titandb":
@@ -98,7 +104,7 @@ def run_exp(exp):
                 for cfg in configs:
                     funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                 if not skipLoad:
-                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
+                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     if db!="titandb" and db!="vtable" and db!="vtablenolarge":
                         p.start()
@@ -123,7 +129,7 @@ def run_exp(exp):
                         os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     backupUsed = True
                 for wl in workloads:
-                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
+                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
                     if exp == 1:
