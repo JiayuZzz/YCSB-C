@@ -42,10 +42,10 @@ configs = {
 }
 
 def run_exp(exp):
-    dbs = ["titandb","vtable","rocksdb"]
+    dbs = ["titandb","vtable"]
     foregroundThreadses = [16]
     valueSizes = ["1KB"]
-    dbSize = "300GB"
+    dbSize = "100GB"
     skipLoad = False
     bothPhase = False
     needRemount = False
@@ -60,15 +60,18 @@ def run_exp(exp):
         dbs = ["vtable"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 5
-        skipLoad = True
+        skipLoad = False
         backup = True
         useBackup = True
-        waitCompaction = 1500
+        waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [8,16,32,64]
     if exp == 2:
+        dbs = ["vtable","titandb"]
         waitCompaction = 1200
         backup = True
+        skipLoad = True
+        useBackup = True
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:

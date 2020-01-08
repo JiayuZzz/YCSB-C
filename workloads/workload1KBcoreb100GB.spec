@@ -1,4 +1,4 @@
-recordcount=314578200
+recordcount=104857600
 #recordcount=30000000
 #operationcount=284058682
 operationcount=90000000
