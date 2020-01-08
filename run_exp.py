@@ -7,7 +7,7 @@ from multiprocessing import Process
 #dbs = ["vtable"]
 disk = "/dev/md127"
 isRaid = True
-paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
+paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
@@ -57,25 +57,25 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["rocksdb"]
+        dbs = ["pebblesdb"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        round = 5
-        skipLoad = True
+        round = 1
+        skipLoad = False
         backup = True
         useBackup = True
-        waitCompaction = 1500
+        waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [8,16,32,64]
     if exp == 2:
-	dbs = ["rocksdb"]
+	dbs = ["pebblesdb"]
         waitCompaction = 1200
         valueSizes = ["1KB"]
         backup = True
         useBackup = True
-        skipLoad = False
+        skipLoad = True
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-        #workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        #workloads = ["zipfcorec","zipfcoree","corec","coree"]
     if exp == 3:
         dbs = ["rocksdb"]
         valueSizes = ["16KB","8KB","4KB","1KB"]
