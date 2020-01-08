@@ -8,20 +8,21 @@
 
 #10GB 1KB value
 
-recordcount=26214400
-#operationcount=26214400
-operationcount=78643200
+recordcount=104857600
+#recordcount=30000000
+#operationcount=284058682
+operationcount=90000000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true
 
-readproportion=0
-updateproportion=1.0
+readproportion=0.5
+updateproportion=0
 scanproportion=0
 insertproportion=0
+readmodifywriteproportion=0.5
 
-fieldlength=4072
+fieldlength=1000
 requestdistribution=zipfian
 scanlengthdistribution=constant
-maxscanlength=1000
-
+maxscanlength=20

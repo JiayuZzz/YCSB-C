@@ -1,7 +1,7 @@
-recordcount=314572800
+recordcount=104857600
 #recordcount=30000000
 #operationcount=284058682
-operationcount=30000000
+operationcount=90000000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true

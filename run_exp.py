@@ -45,7 +45,7 @@ def run_exp(exp):
     dbs = ["titandb","vtable","rocksdb"]
     foregroundThreadses = [16]
     valueSizes = ["1KB"]
-    dbSize = "300GB"
+    dbSize = "100GB"
     skipLoad = False
     bothPhase = False
     needRemount = False
@@ -57,7 +57,7 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["vtable"]
+        dbs = ["rocksdb"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 5
         skipLoad = True
@@ -69,13 +69,13 @@ def run_exp(exp):
     if exp == 2:
 	dbs = ["rocksdb"]
         waitCompaction = 1200
-        valueSizes = ["1KB","ratio"]
+        valueSizes = ["1KB"]
         backup = True
         useBackup = True
         skipLoad = False
         round = 1
-        #workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-        workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        #workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
         dbs = ["rocksdb"]
         valueSizes = ["16KB","8KB","4KB","1KB"]
