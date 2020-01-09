@@ -5,8 +5,8 @@ import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/md127"
-isRaid = True
+disk = "/dev/sdb1"
+isRaid = False
 paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
@@ -57,15 +57,15 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["pebblesdb"]
+        dbs = ["rocksdb"]
         workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 1
-        skipLoad = False
+        skipLoad = True
         backup = True
         useBackup = True
         waitCompaction = 1200
         if skipLoad:
-            foregroundThreadses = [8,16,32,64]
+            foregroundThreadses = [16]
     if exp == 2:
 	dbs = ["pebblesdb"]
         waitCompaction = 1200
@@ -78,7 +78,8 @@ def run_exp(exp):
         #workloads = ["zipfcorec","zipfcoree","corec","coree"]
     if exp == 3:
         dbs = ["rocksdb"]
-        valueSizes = ["16KB","8KB","4KB","1KB"]
+        #valueSizes = ["16KB","8KB","4KB","1KB"]
+        valueSizes = ["1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"

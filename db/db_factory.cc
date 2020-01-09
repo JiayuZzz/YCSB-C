@@ -34,7 +34,7 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
     return new TbbRandDB;
   } else if (props["dbname"] == "tbb_scan") {
     return new TbbScanDB;
-  } else if (props["dbname"] == "leveldb") {
+  } else if (props["dbname"] == "leveldb" || props["dbname"]=="pebblesdb") {
     return new LevelDB(props["dbfilename"].c_str());
   } else if (props["dbname"] == "rocksdb") {
     return new RocksDB(props["dbfilename"].c_str());
