@@ -105,13 +105,14 @@ namespace ycsbc {
 
     int TitanDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
+        int i;
+        int cnt = 0;
                             /*
         auto it=db_->NewIterator(rocksdb::ReadOptions());
         it->Seek(key);
+		return DB::kOK;
         std::string val;
         std::string k;
-        int cnt = 0;
-        int i;
         for(i=0;i<len&&it->Valid();i++){
             // cnt++;
             k = it->key().ToString();
@@ -126,23 +127,20 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
+        return DB::kOK;
          */
        ///*
         std::vector<std::string> keys;
         std::vector<std::string> vals;
-        int i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
-        // return DB::kOK;
-        int cnt = 0;
+        i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
+         return DB::kOK;
         // std::cerr<<vals.size()<<std::endl;
         for(auto& v:vals){
             if(v.empty()) cnt++;
             // std::cerr<<k<<k.size()<<std::endl;
             // else std::cerr<<v.size()<<v<<std::endl;
         }
-        if(cnt>0){
-            std::cout<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;
-            std::cerr<<"missed "<<cnt<<" vals for length "<<len<<"."<<std::endl;
-        } else if(i<len) {
+        if(i<len) {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }

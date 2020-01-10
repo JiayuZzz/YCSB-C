@@ -1,12 +1,12 @@
-import funcs
-import sys
 import os
+import sys
+import funcs
 import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/md0"
-isRaid = True
+disk = "/dev/sde1"
+isRaid = False
 paths = {"vtablenolarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
@@ -28,7 +28,7 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "noCompaction":"false",
-    "blockCache":str(8*1024*1024),
+    "blockCache":str(8*1024*1024*1024),
     "memtable":str(memtable*1024*1024),
     "numThreads":str(compactionThreads),
     "gcThreads":str(gcThreads),
@@ -57,17 +57,17 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["titandb"]
-        valueSizes = ["4KB","8KB","16KB"]
+        dbs = ["vtable"]
+        valueSizes = ["1KB"]
         workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        #workloads = ["1000scan"]
+        #workloads = ["20scan","10000scan"]
         round = 1
-        skipLoad = False
+        skipLoad = True
         backup = False
         useBackup = False
         waitCompaction = 1000
         if skipLoad:
-            foregroundThreadses = [16]
+            foregroundThreadses = [1,8,32,64]
     if exp == 2:
         dbs = ["titandb", "vtable"]
         waitCompaction = 1200
@@ -78,7 +78,7 @@ def run_exp(exp):
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
         dbs = ["vtable"]
-        valueSizes = ["16KB"]
+        valueSizes = ["8KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
@@ -87,8 +87,8 @@ def run_exp(exp):
         round = 1
         printSize=False
     if exp == 4:
-        dbs = ["vtable","titandb"]
-        valueSizes = ["4KB","8KB","16KB"]
+        dbs = ["vtable"]
+        valueSizes = ["8KB"]
         workloads = ["1000scan","read","zipfread","zipf1000scan"]
         round = 3
         skipLoad = False
