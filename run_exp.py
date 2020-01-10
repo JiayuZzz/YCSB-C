@@ -7,7 +7,7 @@ from multiprocessing import Process
 #dbs = ["vtable"]
 disk = "/dev/md0"
 isRaid = True
-paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
+paths = {"vtablenolarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
@@ -57,34 +57,46 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["vtable"]
-        workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        round = 5
+        dbs = ["titandb"]
+        valueSizes = ["4KB","8KB","16KB"]
+        workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        #workloads = ["1000scan"]
+        round = 1
         skipLoad = False
-        backup = True
-        useBackup = True
-        waitCompaction = 1200
+        backup = False
+        useBackup = False
+        waitCompaction = 1000
         if skipLoad:
-            foregroundThreadses = [8,16,32,64]
+            foregroundThreadses = [16]
     if exp == 2:
-        dbs = ["vtable","titandb"]
+        dbs = ["titandb", "vtable"]
         waitCompaction = 1200
-        backup = True
+        backup = False
         skipLoad = True
         useBackup = True
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
         dbs = ["vtable"]
-        valueSizes = ["16KB","8KB","4KB","1KB"]
+        valueSizes = ["16KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
         skipLoad = True
         round = 1
-        printSize=True
+        printSize=False
+    if exp == 4:
+        dbs = ["vtable","titandb"]
+        valueSizes = ["4KB","8KB","16KB"]
+        workloads = ["1000scan","read","zipfread","zipf1000scan"]
+        round = 3
+        skipLoad = False
+        backup = False
+        useBackup = False
+        waitCompaction = 600
     for db in dbs:
+        backupUsed = False
         for foregroundThreads in foregroundThreadses:
             if db == "titandb":
                 configs["sepBeforeFlush"] = "true"
@@ -130,7 +142,7 @@ def run_exp(exp):
                     sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
-                    if exp == 1:
+                    if exp == 1 or exp == 4:
                         configs["noCompaction"] = "true"
                     for cfg in configs:
                         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])

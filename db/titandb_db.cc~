@@ -28,7 +28,7 @@ namespace ycsbc {
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
 	    options.disable_background_gc = false;
-//        options.compaction_pri = rocksdb::kMinOverlappingRatio;
+        options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
 	    options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
@@ -77,7 +77,7 @@ namespace ycsbc {
             cerr<<"Can't open titandb "<<dbfilename<<endl;
             exit(0);
         }
-        cout<<"dbname "<<dbfilename<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<"dynamic level:"<<options.level_compaction_dynamic_level_bytes<<endl;
+        cout<<"\nbloom bits:"<<bloomBits<<"bits\ndirectIO:"<<(bool)directIO<<"\nseekCompaction:"<<(bool)seekCompaction<<"dynamic level:"<<options.level_compaction_dynamic_level_bytes<<endl;
     }
 
     int TitanDB::Read(const std::string &table, const std::string &key, const std::vector<std::string> *fields,
@@ -105,7 +105,7 @@ namespace ycsbc {
 
     int TitanDB::Scan(const std::string &table, const std::string &key, int len, const std::vector<std::string> *fields,
                       std::vector<std::vector<KVPair>> &result) {
-                            /*
+                           /*
         auto it=db_->NewIterator(rocksdb::ReadOptions());
         it->Seek(key);
         std::string val;
@@ -126,8 +126,8 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-         */
-       ///*
+        */
+    //    /*
         std::vector<std::string> keys;
         std::vector<std::string> vals;
         int i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
@@ -146,7 +146,7 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        //*/
+        // */
         return DB::kOK;
     }
 

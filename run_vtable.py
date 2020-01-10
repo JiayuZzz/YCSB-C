@@ -5,9 +5,9 @@ import os
 dbPath = "/mnt/expdb/"
 disk = "/dev/md0"
 #dbPath = "/mnt/raidstore/"
-valueSizes = ["4KB"]
+valueSizes = ["1KB"]
 maxSortedRuns = [10]
-dbSize = "300GB"
+dbSize = "10GB"
 smallThresh = 64
 midThresh = 8192
 for msr in maxSortedRuns:
