@@ -5,8 +5,8 @@ import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/sdb1"
-isRaid = False
+disk = "/dev/sdc1"
+isRaid = True
 paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
@@ -58,16 +58,18 @@ def run_exp(exp):
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["rocksdb"]
-        workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        #workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        workloads = [""]
+	valueSizes = ["64B","128B","256B"]
         round = 1
-        skipLoad = True
+        skipLoad = False
         backup = True
-        useBackup = True
-        waitCompaction = 1200
+        useBackup = False
+        waitCompaction = 600
         if skipLoad:
             foregroundThreadses = [16]
     if exp == 2:
-	dbs = ["pebblesdb"]
+	dbs = ["rocksdb"]
         waitCompaction = 1200
         valueSizes = ["1KB"]
         backup = True
@@ -79,7 +81,7 @@ def run_exp(exp):
     if exp == 3:
         dbs = ["rocksdb"]
         #valueSizes = ["16KB","8KB","4KB","1KB"]
-        valueSizes = ["1KB"]
+        valueSizes = ["16KB","8KB","4KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
@@ -116,18 +118,11 @@ def run_exp(exp):
                         p.terminate()
                     os.system("echo load >> db_size && du -sh {0} >> db_size && date >> db_size".format(dbfilename))
                     if backup:
-                        if db == "rocksdb":
-                            os.system("rm -rf /mnt/rocksbackup/"+db+"*")
-                            os.system("cp -r {0} /mnt/rocksbackup".format(dbfilename))
-                        else:
-                            os.system("rm -rf {0}".format(backupPath+db+"*"))
-                            os.system("cp -r {0} {1}".format(dbfilename, backupPath))
+                        os.system("rm -rf {0}".format(backupfilename)
+                        os.system("cp -r {0} {1}".format(dbfilename, backupPath))
                 if not backupUsed and skipLoad and useBackup and exp!=2:
                     funcs.remount(disk, paths[db], isRaid)
-                    if db == "rocksdb":
-                        os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
-                    else:
-                        os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
+                    os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     backupUsed = True
                 for wl in workloads:
                     sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
@@ -140,10 +135,7 @@ def run_exp(exp):
                     for r in range(0,round):
                         if useBackup and exp==2:
                             funcs.remount(disk, paths[db], isRaid)
-                            if db == "rocksdb":
-                                os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
-                            else:
-                                os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
+                            os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                         os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
                         resultfile_wl = resultfile+"_"+wl+"round"+str(r)
                         if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":

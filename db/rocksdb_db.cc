@@ -31,6 +31,7 @@ namespace ycsbc {
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
+	//options.level_compaction_dynamic_level_bytes = true;
         //options.target_file_size_base = 8<<20;
         cerr<<"write buffer size"<<options.write_buffer_size<<endl;
         cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
