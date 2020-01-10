@@ -65,7 +65,6 @@ def run_exp(exp):
         skipLoad = False
         backup = True
         useBackup = False
-        waitCompaction = 600
         if skipLoad:
             foregroundThreadses = [16]
     if exp == 2:
