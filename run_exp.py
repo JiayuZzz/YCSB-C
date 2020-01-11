@@ -1,13 +1,13 @@
-import funcs
-import sys
 import os
+import sys
+import funcs
 import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/sdc1"
+disk = "/dev/sdq1"
 isRaid = True
-paths = {"vtablenolarge":"/mnt/expdb/","vtable":"/mnt/expdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
+paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
@@ -20,7 +20,27 @@ msr=10
 gcratio = 0.3
 
 midThresh = 32000
-smallThresh = 64
+smallThresh = 1
+
+def resetconfig(c):
+    c = {
+    "bloomBits":"10",
+    "seekCompaction":"false",
+    "directIO":"false",
+    "compression":"false",
+    "noCompaction":"false",
+    "blockCache":str(8*1024*1024*1024),
+    "memtable":str(memtable*1024*1024),
+    "numThreads":str(compactionThreads),
+    "gcThreads":str(gcThreads),
+    "tiered":"false",
+    "levelMerge":"true",
+    "rangeMerge":"true",
+    "sepBeforeFlush":"true",
+    "midThresh":str(midThresh),
+    "smallThresh":str(smallThresh),
+    "maxSortedRuns":str(msr),
+    }
 
 configs = {
     "bloomBits":"10",
@@ -28,7 +48,7 @@ configs = {
     "directIO":"false",
     "compression":"false",
     "noCompaction":"false",
-    "blockCache":str(8*1024*1024),
+    "blockCache":str(8*1024*1024*1024),
     "memtable":str(memtable*1024*1024),
     "numThreads":str(compactionThreads),
     "gcThreads":str(gcThreads),
@@ -42,7 +62,7 @@ configs = {
 }
 
 def run_exp(exp):
-    dbs = ["titandb","vtable","rocksdb"]
+    dbs = ["titandb","vtable"]
     foregroundThreadses = [16]
     valueSizes = ["1KB"]
     dbSize = "100GB"
@@ -54,53 +74,75 @@ def run_exp(exp):
     useBackup = False
     workloads = []
     round = 1
-    waitCompaction = 1200
+    waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["rocksdb"]
-        #workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        #workloads = [""]
-	#valueSizes = ["64B","128B","256B","32B"]
-        valueSizes = ["128B"]
-        dbSize = "10GB"
+        valueSizes = ["ratio"]
+        workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        #workloads = ["20scan","10000scan"]
         round = 1
         skipLoad = False
-        backup = False
+        backup = True
         useBackup = False
+        waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [16]
     if exp == 2:
-	dbs = ["pebblesdb"]
+        dbs = ["pebblesdb"]
         waitCompaction = 1200
-        valueSizes = ["1KB"]
-        backup = True
-        useBackup = True
-        skipLoad = True
-        round = 1
-        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-        #workloads = ["zipfcorec","zipfcoree","corec","coree"]
-    if exp == 3:
-        dbs = ["rocksdb"]
-        #valueSizes = ["16KB","8KB","4KB","1KB"]
-        valueSizes = ["16KB","8KB","4KB"]
-        waitCompaction = 0
         backup = False
+        skipLoad = True
+        useBackup = True
+        round = 1
+        #workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+    if exp == 3:
+        dbs = ["titandb","vtable"]
+        valueSizes = ["1KB"]
+        waitCompaction = 0
+        backup = True
         dbSize = "100GB"
         workloads = [""]
         skipLoad = True
         round = 1
         printSize=True
+    if exp == 4:
+        dbs = ["vtablelarge","vtable"]
+        valueSizes = ["8KB","16KB","4KB"]
+        workloads = ["1000scan","read","zipfread","zipf1000scan",""]
+        round = 1
+        skipLoad = False
+        backup = False
+        useBackup = False
+        waitCompaction = 600
+    if exp == 5:
+        dbs = ["rocksdb"]
+        valueSizes = ["128B","256B","192B"]
+        #valueSizes = ["64B"]
+        dbSize = "100GB"
+        workloads = [""]
+        round = 1
+        skipLoad = False
+        backup = True
+        useBackup = False
+        waitCompaction = 600
     for db in dbs:
+        backupUsed = False
         for foregroundThreads in foregroundThreadses:
-            if db == "titandb":
-                configs["sepBeforeFlush"] = "true"
-                configs["levelMerge"] = "false"
-                configs["rangeMerge"] = "false"
-            if db == "vtable":
-                configs["sepBeforeFlush"] = "true"
-                configs["levelMerge"] = "true"
-                configs["rangeMerge"] = "true"
             for valueSize in valueSizes:
+                resetconfig(configs)
+                if db == "titandb":
+                    configs["sepBeforeFlush"] = "true"
+                    configs["levelMerge"] = "false"
+                    configs["rangeMerge"] = "false"
+                if db == "vtable":
+                    configs["sepBeforeFlush"] = "true"
+                    configs["levelMerge"] = "true"
+                    configs["rangeMerge"] = "true"
+                if db == "vtablelarge":
+                    configs["midThresh"] = "128"
+
                 dbfilename = paths[db] + db + valueSize +dbSize
                 backupfilename = backupPath + db + valueSize +dbSize
                 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -108,14 +150,14 @@ def run_exp(exp):
                 for cfg in configs:
                     funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                 if not skipLoad:
-                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
+                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
-                    if db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                    if db!="titandb" and db!="vtable" and db!="vtablelarge":
                         p.start()
                     funcs.remount(disk, paths[db], isRaid)
                     resultfile_load = resultfile + "_load"
                     funcs.load(db,dbfilename,workload,resultfile_load,foregroundThreads,waitCompaction)
-                    if db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                    if db!="titandb" and db!="vtable" and db!="vtablelarge":
                         p.terminate()
                     os.system("echo load >> db_size && du -sh {0} >> db_size && date >> db_size".format(dbfilename))
                     if backup:
@@ -126,11 +168,18 @@ def run_exp(exp):
                     os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     backupUsed = True
                 for wl in workloads:
-                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
+                    if exp == 4 and wl == "":
+                        printSize=True
+                    if exp == 4 and wl != "":
+                        printSize=False
+                        configs["noCompaction"] = "true"
+                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
-                    if exp == 1:
+                    if exp == 1 or exp == 4 or exp==5:
                         configs["noCompaction"] = "true"
+                    if exp == 4 and wl == "":
+                        configs["noCompaction"] = "false"
                     for cfg in configs:
                         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                     for r in range(0,round):
@@ -139,7 +188,7 @@ def run_exp(exp):
                             os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                         os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
                         resultfile_wl = resultfile+"_"+wl+"round"+str(r)
-                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablelarge":
                             p.start()
                         if exp == 3:
                             funcs.remount(disk, paths[db], isRaid)
@@ -148,7 +197,7 @@ def run_exp(exp):
                             funcs.run(db,dbfilename,workload, resultfile_wl,foregroundThreads)
                         if printSize:
                             os.system("echo workload{0} >> db_size && du -sh {1} >> db_size && date >> db_size".format(wl,dbfilename))
-                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablelarge":
                             p.terminate()
 
 

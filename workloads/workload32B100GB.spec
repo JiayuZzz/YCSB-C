@@ -8,7 +8,7 @@
 
 #10GB 1KB value
 
-recordcount=335544320
+recordcount=3355443200
 operationcount=10000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
