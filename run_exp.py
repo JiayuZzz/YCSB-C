@@ -20,7 +20,27 @@ msr=10
 gcratio = 0.3
 
 midThresh = 32000
-smallThresh = 64
+smallThresh = 1
+
+def resetconfig(c):
+    c = {
+    "bloomBits":"10",
+    "seekCompaction":"false",
+    "directIO":"false",
+    "compression":"false",
+    "noCompaction":"false",
+    "blockCache":str(8*1024*1024*1024),
+    "memtable":str(memtable*1024*1024),
+    "numThreads":str(compactionThreads),
+    "gcThreads":str(gcThreads),
+    "tiered":"false",
+    "levelMerge":"true",
+    "rangeMerge":"true",
+    "sepBeforeFlush":"true",
+    "midThresh":str(midThresh),
+    "smallThresh":str(smallThresh),
+    "maxSortedRuns":str(msr),
+    }
 
 configs = {
     "bloomBits":"10",
@@ -97,7 +117,9 @@ def run_exp(exp):
         waitCompaction = 600
     if exp == 5:
         dbs = ["vtable"]
-        valueSizes = ["128B","64B","256B","32B"]
+        valueSizes = ["64B","128B","256B","192B"]
+        #valueSizes = ["64B"]
+        dbSize = "100GB"
         workloads = [""]
         round = 1
         skipLoad = False
@@ -107,17 +129,19 @@ def run_exp(exp):
     for db in dbs:
         backupUsed = False
         for foregroundThreads in foregroundThreadses:
-            if db == "titandb":
-                configs["sepBeforeFlush"] = "true"
-                configs["levelMerge"] = "false"
-                configs["rangeMerge"] = "false"
-            if db == "vtable":
-                configs["sepBeforeFlush"] = "true"
-                configs["levelMerge"] = "true"
-                configs["rangeMerge"] = "true"
-            if db == "vtablelarge":
-                configs["midThresh"] = "128"
             for valueSize in valueSizes:
+                resetconfig(configs)
+                if db == "titandb":
+                    configs["sepBeforeFlush"] = "true"
+                    configs["levelMerge"] = "false"
+                    configs["rangeMerge"] = "false"
+                if db == "vtable":
+                    configs["sepBeforeFlush"] = "true"
+                    configs["levelMerge"] = "true"
+                    configs["rangeMerge"] = "true"
+                if db == "vtablelarge":
+                    configs["midThresh"] = "128"
+
                 dbfilename = paths[db] + db + valueSize +dbSize
                 backupfilename = backupPath + db + valueSize +dbSize
                 workload = "./workloads/workload"+valueSize+dbSize+".spec"
@@ -127,50 +151,43 @@ def run_exp(exp):
                 if not skipLoad:
                     sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
-                    if db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                    if db!="titandb" and db!="vtable" and db!="vtablelarge":
                         p.start()
                     funcs.remount(disk, paths[db], isRaid)
                     resultfile_load = resultfile + "_load"
                     funcs.load(db,dbfilename,workload,resultfile_load,foregroundThreads,waitCompaction)
-                    if db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                    if db!="titandb" and db!="vtable" and db!="vtablelarge":
                         p.terminate()
                     os.system("echo load >> db_size && du -sh {0} >> db_size && date >> db_size".format(dbfilename))
                     if backup:
-                        if db == "rocksdb":
-                            os.system("rm -rf /mnt/rocksbackup/"+db+"*")
-                            os.system("cp -r {0} /mnt/rocksbackup".format(dbfilename))
-                        else:
-                            os.system("rm -rf {0}".format(backupPath+db+"*"))
-                            os.system("cp -r {0} {1}".format(dbfilename, backupPath))
+                        os.system("rm -rf {0}".format(backupfilename))
+                        os.system("cp -r {0} {1}".format(dbfilename, backupPath))
                 if not backupUsed and skipLoad and useBackup and exp!=2:
                     funcs.remount(disk, paths[db], isRaid)
-                    if db == "rocksdb":
-                        os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
-                    else:
-                        os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
+                    os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     backupUsed = True
                 for wl in workloads:
                     if exp == 4 and wl == "":
                         printSize=True
                     if exp == 4 and wl != "":
                         printSize=False
+                        configs["noCompaction"] = "true"
                     sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
                     if exp == 1 or exp == 4 or exp==5:
                         configs["noCompaction"] = "true"
+                    if exp == 4 and wl == "":
+                        configs["noCompaction"] = "false"
                     for cfg in configs:
                         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                     for r in range(0,round):
                         if useBackup and exp==2:
                             funcs.remount(disk, paths[db], isRaid)
-                            if db == "rocksdb":
-                                os.system("sudo cp -r {0} {1}".format("/mnt/rocksbackup/"+ db + valueSize +dbSize, paths[db]))
-                            else:
-                                os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
+                            os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                         os.system("sync && echo 3 > /proc/sys/vm/drop_caches")
                         resultfile_wl = resultfile+"_"+wl+"round"+str(r)
-                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablelarge":
                             p.start()
                         if exp == 3:
                             funcs.remount(disk, paths[db], isRaid)
@@ -179,7 +196,7 @@ def run_exp(exp):
                             funcs.run(db,dbfilename,workload, resultfile_wl,foregroundThreads)
                         if printSize:
                             os.system("echo workload{0} >> db_size && du -sh {1} >> db_size && date >> db_size".format(wl,dbfilename))
-                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablenolarge":
+                        if exp == 3 and db!="titandb" and db!="vtable" and db!="vtablelarge":
                             p.terminate()
 
 
