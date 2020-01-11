@@ -54,21 +54,23 @@ def run_exp(exp):
     useBackup = False
     workloads = []
     round = 1
-    waitCompaction = 0
+    waitCompaction = 1200
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["rocksdb"]
         #workloads = ["20scan","100scan","1000scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-        workloads = [""]
-	valueSizes = ["64B","128B","256B"]
+        #workloads = [""]
+	#valueSizes = ["64B","128B","256B","32B"]
+        valueSizes = ["128B"]
+        dbSize = "10GB"
         round = 1
         skipLoad = False
-        backup = True
+        backup = False
         useBackup = False
         if skipLoad:
             foregroundThreadses = [16]
     if exp == 2:
-	dbs = ["rocksdb"]
+	dbs = ["pebblesdb"]
         waitCompaction = 1200
         valueSizes = ["1KB"]
         backup = True
@@ -117,7 +119,7 @@ def run_exp(exp):
                         p.terminate()
                     os.system("echo load >> db_size && du -sh {0} >> db_size && date >> db_size".format(dbfilename))
                     if backup:
-                        os.system("rm -rf {0}".format(backupfilename)
+                        os.system("rm -rf {0}".format(backupfilename))
                         os.system("cp -r {0} {1}".format(dbfilename, backupPath))
                 if not backupUsed and skipLoad and useBackup and exp!=2:
                     funcs.remount(disk, paths[db], isRaid)
