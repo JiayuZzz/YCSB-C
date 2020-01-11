@@ -5,7 +5,7 @@ import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/sdq1"
+disk = "/dev/sdc1"
 isRaid = True
 paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
@@ -150,7 +150,7 @@ def run_exp(exp):
                 for cfg in configs:
                     funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                 if not skipLoad:
-                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
+                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_load"
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     if db!="titandb" and db!="vtable" and db!="vtablelarge":
                         p.start()
@@ -173,7 +173,7 @@ def run_exp(exp):
                     if exp == 4 and wl != "":
                         printSize=False
                         configs["noCompaction"] = "true"
-                    sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
+                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
                     if exp == 1 or exp == 4 or exp==5:
