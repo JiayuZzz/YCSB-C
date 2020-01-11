@@ -9,7 +9,7 @@
 #10GB 1KB value
 
 recordcount=6553600
-operationcount=650000
+operationcount=6500000
 workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true

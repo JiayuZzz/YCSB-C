@@ -6,8 +6,8 @@ from multiprocessing import Process
 
 #dbs = ["vtable"]
 disk = "/dev/sde1"
-isRaid = False
-paths = {"vtablenolarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
+isRaid = True
+paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb/":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
@@ -57,7 +57,7 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["vtable"]
+        dbs = ["titandb"]
         valueSizes = ["1KB"]
         workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         #workloads = ["20scan","10000scan"]
@@ -69,7 +69,7 @@ def run_exp(exp):
         if skipLoad:
             foregroundThreadses = [1,8,32,64]
     if exp == 2:
-        dbs = ["titandb", "vtable"]
+        dbs = ["titandb"]
         waitCompaction = 1200
         backup = False
         skipLoad = True
@@ -77,22 +77,31 @@ def run_exp(exp):
         round = 1
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
-        dbs = ["vtable"]
-        valueSizes = ["8KB"]
+        dbs = ["titandb","vtable"]
+        valueSizes = ["1KB"]
         waitCompaction = 0
-        backup = False
+        backup = True
         dbSize = "100GB"
         workloads = [""]
         skipLoad = True
         round = 1
-        printSize=False
+        printSize=True
     if exp == 4:
-        dbs = ["vtable"]
-        valueSizes = ["8KB"]
-        workloads = ["1000scan","read","zipfread","zipf1000scan"]
-        round = 3
+        dbs = ["vtablelarge","vtable"]
+        valueSizes = ["8KB","16KB","4KB"]
+        workloads = ["1000scan","read","zipfread","zipf1000scan",""]
+        round = 1
         skipLoad = False
         backup = False
+        useBackup = False
+        waitCompaction = 600
+    if exp == 5:
+        dbs = ["vtable"]
+        valueSizes = ["128B","64B","256B","32B"]
+        workloads = [""]
+        round = 1
+        skipLoad = False
+        backup = True
         useBackup = False
         waitCompaction = 600
     for db in dbs:
@@ -106,6 +115,8 @@ def run_exp(exp):
                 configs["sepBeforeFlush"] = "true"
                 configs["levelMerge"] = "true"
                 configs["rangeMerge"] = "true"
+            if db == "vtablelarge":
+                configs["midThresh"] = "128"
             for valueSize in valueSizes:
                 dbfilename = paths[db] + db + valueSize +dbSize
                 backupfilename = backupPath + db + valueSize +dbSize
@@ -139,10 +150,14 @@ def run_exp(exp):
                         os.system("sudo cp -r {0} {1}".format(backupfilename, paths[db]))
                     backupUsed = True
                 for wl in workloads:
+                    if exp == 4 and wl == "":
+                        printSize=True
+                    if exp == 4 and wl != "":
+                        printSize=False
                     sizefile = "/home/wujy/workspace/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
-                    if exp == 1 or exp == 4:
+                    if exp == 1 or exp == 4 or exp==5:
                         configs["noCompaction"] = "true"
                     for cfg in configs:
                         funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
