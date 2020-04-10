@@ -7,7 +7,7 @@ from multiprocessing import Process
 #dbs = ["vtable"]
 disk = "/dev/sdc1"
 isRaid = True
-paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb_tiered":"/mnt/rocksdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
+paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
@@ -66,7 +66,7 @@ def resetconfig():
 
 def run_exp(exp):
     dbs = ["titandb","vtable"]
-    foregroundThreadses = [1]
+    foregroundThreadses = [16]
     valueSizes = ["1KB"]
     dbSize = "100GB"
     skipLoad = False
@@ -77,35 +77,35 @@ def run_exp(exp):
     useBackup = False
     workloads = []
     round = 1
-    waitCompaction = 600
+    waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["rocksdb"]
-        valueSizes = ["64B","128B","192B","256B"]
+        dbs = ["pebblesdb"]
+        valueSizes = ["1KB"]
         #workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-	workloads = [""]
+	workloads = []
         round = 1
         skipLoad = False
-        backup = True
+        backup = False
         useBackup = False
-        waitCompaction = 1200
+        waitCompaction = 600
         if skipLoad:
-            foregroundThreadses = [16]
+            foregroundThreadses = [8,16,32,64]
     if exp == 2:
-        dbs = ["rocksdb_tiered"]
+        dbs = ["pebblesdb"]
         valueSizes = ["1KB"] 
         waitCompaction = 1200
         backup = False
         skipLoad = True
         useBackup = True
         round = 1
-        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-        #workloads = ["zipfcorec"]
+        #workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        workloads = ["coreb","corec","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
     if exp == 3:
-        dbs = ["rocksdb"]
-        valueSizes = ["4KB"]
+        dbs = ["titandb","vtable"]
+        valueSizes = ["1KB"]
         waitCompaction = 0
-        backup = False
+        backup = True
         dbSize = "100GB"
         workloads = [""]
         skipLoad = True
@@ -146,8 +146,6 @@ def run_exp(exp):
                     configs["rangeMerge"] = "true"
                 if db == "vtablelarge":
                     configs["midThresh"] = "128"
-		if db == "rocksdb_tiered":
-		    configs["tiered"] = "true"
 
                 dbfilename = paths[db] + db + valueSize +dbSize
                 backupfilename = backupPath + db + valueSize +dbSize

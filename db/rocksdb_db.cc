@@ -77,15 +77,18 @@ namespace ycsbc {
         std::string val;
         std::string k;
         int i;
+        int cnt = 0;
         for(i=0;i<len&&it->Valid();i++){
             k = it->key().ToString();
             val = it->value().ToString();
             it->Next();
+            if(val.empty()) cnt++;
         }
         if(i<len) {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
+        if(cnt>0) std::cout<<cnt<<std::endl;
         delete it;
         return DB::kOK;
     }
