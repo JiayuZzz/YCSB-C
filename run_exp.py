@@ -13,7 +13,7 @@ backupPath = "/mnt/backup/"
 
 
 memtable = 64
-compactionThreads = 4
+compactionThreads = 8
 gcThreads = 4
 
 msr=10
@@ -81,12 +81,12 @@ def run_exp(exp):
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["vtable"]
-        valueSizes = ["64B","128B","192B","256B"]
-        #workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        valueSizes = ["pareto1KB"]
+        workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
 
         workloads = [""]
         round = 1
-        skipLoad = False
+        skipLoad = True
         backup = True
         useBackup = False
         waitCompaction = 1200
@@ -95,13 +95,13 @@ def run_exp(exp):
     if exp == 2:
         dbs = ["titandb","vtable"]
         waitCompaction = 1200
-        valueSizes = ["1KB"]
+        valueSizes = ["pareto1KB"]
         backup = False
         skipLoad = True
         useBackup = True
         round = 1
-        #workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
-        workloads = ["zipfcorec"]
+        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        #workloads = ["zipfcorec"]
     if exp == 3:
         dbs = ["vtable"]
         valueSizes = ["4KB"]

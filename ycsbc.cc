@@ -61,8 +61,6 @@ int main(const int argc, const char *argv[]) {
     exit(0);
   }
 
-  ycsbc::CoreWorkload wl;
-  wl.Init(props);
   vector<future<int>> actual_ops;
   int total_ops;
   utils::Timer timer;
@@ -75,6 +73,8 @@ int main(const int argc, const char *argv[]) {
 
   // Loads data
   if(phase == "load" || phase == "both") {
+    ycsbc::CoreWorkload wl;
+    wl.Init(props);
     timer.Start();
     total_ops = stoi(props[ycsbc::CoreWorkload::RECORD_COUNT_PROPERTY]);
     for (int i = 0; i < num_threads; ++i) {
@@ -108,6 +108,8 @@ int main(const int argc, const char *argv[]) {
     }
   } 
   if (phase == "run" || phase == "both") {
+    ycsbc::CoreWorkload wl;
+    wl.Init(props, true/*run_phase*/);
     // Performs transactions
     total_ops = stoi(props[ycsbc::CoreWorkload::OPERATION_COUNT_PROPERTY]);
     timer.Start();

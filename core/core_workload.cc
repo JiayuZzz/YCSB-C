@@ -13,6 +13,7 @@
 #include "const_generator.h"
 #include "core_workload.h"
 #include "ratio_generator.h"
+#include "pareto_generator.h"
 
 #include <string>
 
@@ -60,6 +61,10 @@ const string CoreWorkload::LARGE_VALUE_SIZE_PROPERTY = "largesize";
 const string CoreWorkload::MID_VALUE_SIZE_PROPERTY = "midsize";
 const string CoreWorkload::SMALL_VALUE_SIZE_PROPERTY = "smallsize";
 
+const string CoreWorkload::PARETO_K = "pareto_k";
+const string CoreWorkload::PARETO_THETA = "pareto_theta";
+const string CoreWorkload::PARETO_SIGMA = "pareto_sigma";
+
 
 const string CoreWorkload::READMODIFYWRITE_PROPORTION_PROPERTY =
     "readmodifywriteproportion";
@@ -85,11 +90,15 @@ const string CoreWorkload::INSERT_START_DEFAULT = "0";
 const string CoreWorkload::RECORD_COUNT_PROPERTY = "recordcount";
 const string CoreWorkload::OPERATION_COUNT_PROPERTY = "operationcount";
 
-void CoreWorkload::Init(const utils::Properties &p) {
+void CoreWorkload::Init(const utils::Properties &p, bool run_phase) {
+  if(run_phase) is_run_phase_ = true;
   table_name_ = p.GetProperty(TABLENAME_PROPERTY,TABLENAME_DEFAULT);
   
-  field_count_ = std::stoi(p.GetProperty(FIELD_COUNT_PROPERTY,
+  field_count_ = std::stoul(p.GetProperty(FIELD_COUNT_PROPERTY,
                                          FIELD_COUNT_DEFAULT));
+  record_count_ = std::stoul(p.GetProperty(RECORD_COUNT_PROPERTY));
+  operation_count_ = std::stoul(p.GetProperty(OPERATION_COUNT_PROPERTY));
+
   field_len_generator_ = GetFieldLenGenerator(p);
   
   double read_proportion = std::stod(p.GetProperty(READ_PROPORTION_PROPERTY,
@@ -103,7 +112,6 @@ void CoreWorkload::Init(const utils::Properties &p) {
   double readmodifywrite_proportion = std::stod(p.GetProperty(
       READMODIFYWRITE_PROPORTION_PROPERTY, READMODIFYWRITE_PROPORTION_DEFAULT));
   
-  record_count_ = std::stoi(p.GetProperty(RECORD_COUNT_PROPERTY));
   std::string request_dist = p.GetProperty(REQUEST_DISTRIBUTION_PROPERTY,
                                            REQUEST_DISTRIBUTION_DEFAULT);
   int max_scan_len = std::stoi(p.GetProperty(MAX_SCAN_LENGTH_PROPERTY,
@@ -200,6 +208,22 @@ ycsbc::Generator<uint64_t> *CoreWorkload::GetFieldLenGenerator(
     int mid_size = std::stoi(p.GetProperty(MID_VALUE_SIZE_PROPERTY));
     int large_size = std::stoi(p.GetProperty(LARGE_VALUE_SIZE_PROPERTY));
     return new RatioGenerator(small_ratio, mid_ratio, large_ratio, small_size, mid_size, large_size);
+  } else if(field_len_dist == "pareto") {
+    double k = std::stod(p.GetProperty(PARETO_K));
+    double theta = std::stod(p.GetProperty(PARETO_THETA));
+    double sigma = std::stod(p.GetProperty(PARETO_SIGMA));
+    uint64_t num = 0;
+    if(is_run_phase_){
+      double update_proportion = std::stod(p.GetProperty(UPDATE_PROPORTION_PROPERTY,
+                                                     UPDATE_PROPORTION_DEFAULT));
+      double insert_proportion = std::stod(p.GetProperty(INSERT_PROPORTION_PROPERTY,
+                                                     INSERT_PROPORTION_DEFAULT));
+      num = operation_count_*(update_proportion+insert_proportion);
+      num = num==0?record_count_:num;
+    } else {
+      num = record_count_;
+    }
+    return new ParetoGenerator(num, theta, k, sigma);
   }
   else {
     throw utils::Exception("Unknown field length distribution: " +
