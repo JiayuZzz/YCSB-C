@@ -81,14 +81,14 @@ def run_exp(exp):
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["vtable"]
-        valueSizes = ["pareto1KB"]
-        workloads = ["read","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        valueSizes = ["pareto4KB","pareto512B","pareto128B"]
+        workloads = ["read","zipf1000scan"]
         #workloads = ["read"]
 
         round = 1
-        skipLoad = False
-        backup = True
-        useBackup = False
+        skipLoad = True
+        backup = False
+        useBackup = True
         waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [16]
