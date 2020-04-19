@@ -6,7 +6,7 @@ from multiprocessing import Process
 
 #dbs = ["vtable"]
 disk = "/dev/sdb1"
-isRaid = True
+isRaid = False
 paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
@@ -19,8 +19,8 @@ gcThreads = 4
 msr=10
 gcratio = 0.3
 
-midThresh = 32000
-smallThresh = 1
+midThresh = 8192
+smallThresh = 128
 
 
 configs = {
@@ -82,18 +82,18 @@ def run_exp(exp):
     if exp == 1: # overall fix
         dbs = ["vtable"]
         valueSizes = ["pareto1KB"]
-        workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        workloads = ["read","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        #workloads = ["read"]
 
-        workloads = [""]
         round = 1
-        skipLoad = True
+        skipLoad = False
         backup = True
         useBackup = False
         waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [16]
     if exp == 2:
-        dbs = ["titandb","vtable"]
+        dbs = ["titandb"]
         waitCompaction = 1200
         valueSizes = ["pareto1KB"]
         backup = False
@@ -104,12 +104,12 @@ def run_exp(exp):
         #workloads = ["zipfcorec"]
     if exp == 3:
         dbs = ["vtable"]
-        valueSizes = ["4KB"]
+        valueSizes = ["pareto1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
-        skipLoad = True
+        skipLoad = False
         round = 1
         printSize=True
     if exp == 4:
@@ -146,12 +146,12 @@ def run_exp(exp):
                     configs["levelMerge"] = "true"
                     configs["rangeMerge"] = "true"
                 if db == "vtablelarge":
-                    configs["midThresh"] = "4096"
+                    configs["midThresh"] = "32000"
 
                 dbfilename = paths[db] + db + valueSize +dbSize
                 backupfilename = backupPath + db + valueSize +dbSize
                 workload = "./workloads/workload"+valueSize+dbSize+".spec"
-                resultfile = "./resultDir/"+db+valueSize+dbSize+"memtable"+str(memtable)+"forethreads"+str(foregroundThreads)+"compactionthreads"+str(compactionThreads)+"gcThreads"+str(gcThreads)+"sortedrun"+str(msr)+"gcratio"+str(gcratio)
+                resultfile = "./resultDir/"+db+valueSize+dbSize+"memtable"+str(memtable)+"forethreads"+str(foregroundThreads)+"compactionthreads"+str(compactionThreads)+"gcThreads"+str(gcThreads)+"sortedrun"+str(msr)+"gcratio"+str(gcratio)+"midthresh"+str(midThresh)
                 for cfg in configs:
                     funcs.modifyConfig("./configDir/leveldb_config.ini","config",cfg,configs[cfg])
                 if not skipLoad:
@@ -178,7 +178,7 @@ def run_exp(exp):
                     if exp == 4 and wl != "":
                         printSize=False
                         configs["noCompaction"] = "true"
-                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+db + valueSize +dbSize+"_exp"+str(exp)
+                    sizefile = "/home/kvgroup/wujiayu/YCSB-C/resultDir/sizefiles/"+ db + valueSize +dbSize+"_exp"+str(exp)
                     p = Process(target=funcs.getsize,args=(dbfilename, sizefile,))
                     workload = "./workloads/workload"+valueSize+wl+dbSize+".spec"
                     if exp == 1 or exp == 4 or exp==5:
