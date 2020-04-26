@@ -14,7 +14,7 @@ backupPath = "/mnt/backup/"
 
 memtable = 64
 compactionThreads = 8
-gcThreads = 4
+gcThreads = 8
 
 msr=10
 gcratio = 0.3
@@ -103,13 +103,13 @@ def run_exp(exp):
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
         #workloads = ["zipfcorec"]
     if exp == 3:
-        dbs = ["vtable"]
+        dbs = ["titandb"]
         valueSizes = ["1KB"]
         #valueSizes = ["pareto1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
-        workloads = ["uniformupdate"]
+        workloads = [""]
         skipLoad = False
         round = 1
         printSize=True
