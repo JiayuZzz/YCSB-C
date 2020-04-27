@@ -23,22 +23,23 @@ namespace ycsbc {
         bool directIO = config.getDirectIO();
         size_t memtable = config.getMemtable();
         //set optionssc
+        std::cerr<<"start"<<std::endl;
         rocksdb::titandb::TitanOptions options;
         rocksdb::BlockBasedTableOptions bbto;
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
 	    options.disable_background_gc = false;
        options.compaction_pri = rocksdb::kMinOverlappingRatio;
-        options.max_bytes_for_level_base = memtable;
-	    options.target_file_size_base = 16<<20;
+        //options.max_bytes_for_level_base = memtable;
+	    //options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
         if(!compression)
             options.compression = rocksdb::kNoCompression;
         if(bloomBits>0) {
         bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 32<<20;
-        options.max_gc_batch_size = 64<<20;
+        //options.min_gc_batch_size = 32<<20;
+        //options.max_gc_batch_size = 64<<20;
 		options.max_sorted_runs = config.getMaxSortedRuns();
 		std::cerr<<"sorted run "<<options.max_sorted_runs<<std::endl;
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
@@ -46,25 +47,25 @@ namespace ycsbc {
         options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
-        nowal = !options.level_merge;
+        nowal = false;
         options.max_background_gc = config.getGCThreads();
-        if(options.level_merge) {
+        //if(options.level_merge) {
         options.blob_file_discardable_ratio = 0.3;
-        options.base_level_for_dynamic_level_bytes = 4;
-        options.level_compaction_dynamic_level_bytes = true;
-	    options.num_foreground_builders = 4;
-		std::cerr<<"set intro compaction true"<<std::endl;
-		options.intra_compact_small_l0 = true;
-        } else {
-        options.blob_file_discardable_ratio = 0.01;
-		options.num_foreground_builders = 1;
-        }
-		std::cerr<<"intro compaction "<<options.intra_compact_small_l0<<std::endl;
-        options.sep_before_flush = config.getSepBeforeFlush();
+        //options.base_level_for_dynamic_level_bytes = 4;
+        //options.level_compaction_dynamic_level_bytes = true;
+	   // options.num_foreground_builders = 4;
+	//	std::cerr<<"set intro compaction true"<<std::endl;
+	//	options.intra_compact_small_l0 = true;
+        //} else {
+        //options.blob_file_discardable_ratio = 0.01;
+	//	options.num_foreground_builders = 1;
+        //}
+	//	std::cerr<<"intro compaction "<<options.intra_compact_small_l0<<std::endl;
+        //options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
-        options.mid_blob_size = config.getMidThresh();
+        //options.mid_blob_size = config.getMidThresh();
         options.min_blob_size = config.getSmallThresh();
         // if(options.level_merge){
             // options.max_bytes_for_level_base = options.write_buffer_size*64;
@@ -108,7 +109,7 @@ namespace ycsbc {
                       std::vector<std::vector<KVPair>> &result) {
         int i;
         int cnt = 0;
-                            /*
+                            
         auto it=db_->NewIterator(rocksdb::ReadOptions());
         it->Seek(key);
 		return DB::kOK;
@@ -129,8 +130,8 @@ namespace ycsbc {
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
         return DB::kOK;
-         */
-       ///*
+         
+       /*
         std::vector<std::string> keys;
         std::vector<std::string> vals;
         i = db_->Scan(rocksdb::ReadOptions(),key,len,keys,vals);
@@ -145,7 +146,7 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        //*/
+        */
         return DB::kOK;
     }
 

@@ -5,7 +5,7 @@ import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/sdb1"
+disk = "/dev/sdc1"
 isRaid = False
 paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
@@ -13,7 +13,7 @@ backupPath = "/mnt/backup/"
 
 
 memtable = 64
-compactionThreads = 8
+compactionThreads = 4
 gcThreads = 4
 
 msr=10
@@ -66,7 +66,7 @@ def resetconfig():
 
 def run_exp(exp):
     dbs = ["titandb","vtable"]
-    foregroundThreadses = [16]
+    foregroundThreadses = [1]
     valueSizes = ["1KB"]
     dbSize = "100GB"
     skipLoad = False
@@ -80,15 +80,15 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["vtable"]
-        valueSizes = ["pareto512B"]
+        dbs = ["titandb","vtable"]
+        valueSizes = ["1KB"]
         #workloads = ["read","zipf1000scan","zipf20scan","zipf100scan","zipf1000scan"]
         workloads = ["read","zipf1000scan"]
 
         round = 1
-        skipLoad = True
+        skipLoad = False
         backup = False
-        useBackup = True
+        useBackup = False
         waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [16]
