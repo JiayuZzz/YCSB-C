@@ -80,8 +80,8 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["titandb","vtable"]
-        valueSizes = ["1KB"]
+        dbs = ["titandb"]
+        valueSizes = ["4KB"]
         #workloads = ["read","zipf1000scan","zipf20scan","zipf100scan","zipf1000scan"]
         workloads = ["read","zipf1000scan"]
 
