@@ -143,11 +143,14 @@ class CoreWorkload {
   static const std::string MID_VALUE_SIZE_PROPERTY;
   static const std::string SMALL_VALUE_SIZE_PROPERTY;
 
+  static const std::string PARETO_K;
+  static const std::string PARETO_THETA;
+  static const std::string PARETO_SIGMA;
   ///
   /// Initialize the scenario.
   /// Called once, in the main client thread, before any operations are started.
   ///
-  virtual void Init(const utils::Properties &p);
+  virtual void Init(const utils::Properties &p, bool run_phase = false);
   
   virtual void BuildValues(std::vector<ycsbc::DB::KVPair> &values);
   virtual void BuildUpdate(std::vector<ycsbc::DB::KVPair> &update);
@@ -166,7 +169,7 @@ class CoreWorkload {
       field_count_(0), read_all_fields_(false), write_all_fields_(false),
       field_len_generator_(NULL), key_generator_(NULL), key_chooser_(NULL),
       field_chooser_(NULL), scan_len_chooser_(NULL), insert_key_sequence_(3),
-      ordered_inserts_(true), record_count_(0) {
+      ordered_inserts_(true), record_count_(0), is_run_phase_(false) {
   }
   
   virtual ~CoreWorkload() {
@@ -178,7 +181,7 @@ class CoreWorkload {
   }
   
  protected:
-  static Generator<uint64_t> *GetFieldLenGenerator(const utils::Properties &p);
+  Generator<uint64_t> *GetFieldLenGenerator(const utils::Properties &p);
   std::string BuildKeyName(uint64_t key_num);
 
   std::string table_name_;
@@ -194,6 +197,8 @@ class CoreWorkload {
   CounterGenerator insert_key_sequence_;
   bool ordered_inserts_;
   size_t record_count_;
+  size_t operation_count_;
+  bool is_run_phase_;
 };
 
 inline std::string CoreWorkload::NextSequenceKey() {

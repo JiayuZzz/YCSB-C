@@ -61,7 +61,7 @@ namespace ycsbc {
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
             noResult++;
-            cout<<noResult<<endl;
+            cout<<noResult<<"not found"<<endl;
             return DB::kOK;
         }else{
             cerr<<"read error"<<endl;
@@ -88,7 +88,9 @@ namespace ycsbc {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
         }
-        if(cnt>0) std::cout<<cnt<<std::endl;
+        if(cnt>0) {
+            std::cout<<cnt<<"empty values"<<std::endl;
+        }
         delete it;
         return DB::kOK;
     }
@@ -99,7 +101,7 @@ namespace ycsbc {
         for(KVPair &p:values){
             s = db_->Put(rocksdb::WriteOptions(),key,p.second);
             if(!s.ok()){
-                cerr<<"insert error\n"<<endl;
+                cerr<<"insert error"<<s.ToString()<<"\n"<<endl;
                 exit(0);
             }
         }

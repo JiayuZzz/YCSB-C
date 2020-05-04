@@ -6,14 +6,14 @@ from multiprocessing import Process
 
 #dbs = ["vtable"]
 disk = "/dev/sdc1"
-isRaid = True
+isRaid = False
 paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb_tiered":"/mnt/rocksdb/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/"}
 
 backupPath = "/mnt/backup/"
 
 
 memtable = 64
-compactionThreads = 4
+compactionThreads = 8
 gcThreads = 4
 
 msr=10
@@ -65,8 +65,8 @@ def resetconfig():
     }
 
 def run_exp(exp):
-    dbs = ["titandb","vtable"]
-    foregroundThreadses = [1]
+    dbs = ["rocksdb"]
+    foregroundThreadses = [16]
     valueSizes = ["1KB"]
     dbSize = "100GB"
     skipLoad = False
@@ -81,34 +81,36 @@ def run_exp(exp):
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["rocksdb"]
-        valueSizes = ["64B","128B","192B","256B"]
-        #workloads = ["1000scan","20scan","100scan","10000scan","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
-	workloads = [""]
+        valueSizes = ["224B"]
+        dbSize = "100GB"
+        workloads = ["zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+	#workloads = [""]
         round = 1
-        skipLoad = False
-        backup = True
-        useBackup = False
+        skipLoad = True
+        backup = False
+        useBackup = True
         waitCompaction = 1200
         if skipLoad:
-            foregroundThreadses = [16]
+            foregroundThreadses = [1]
     if exp == 2:
-        dbs = ["rocksdb_tiered"]
-        valueSizes = ["1KB"] 
+        dbs = ["pebblesdb"]
+        valueSizes = ["pareto1KB"] 
         waitCompaction = 1200
         backup = False
         skipLoad = True
         useBackup = True
         round = 1
-        workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+        workloads = ["zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
+	#workloads = [""]
         #workloads = ["zipfcorec"]
     if exp == 3:
-        dbs = ["rocksdb"]
-        valueSizes = ["4KB"]
+        dbs = ["pebblesdb","rocksdb"]
+        valueSizes = ["pareto512B","pareto4KB","pareto128B"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
         workloads = [""]
-        skipLoad = True
+        skipLoad = False
         round = 1
         printSize=True
     if exp == 4:
