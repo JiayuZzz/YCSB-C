@@ -81,14 +81,14 @@ def run_exp(exp):
     backupUsed = False
     if exp == 1: # overall fix
         dbs = ["vtable"]
-        valueSizes = ["pareto512B"]
-        #workloads = ["read","zipf1000scan","zipf20scan","zipf100scan","zipf1000scan"]
-        workloads = ["read","zipf1000scan"]
-
+        valueSizes = ["1KB"]
+        workloads = ["read"]
+        #valueSizes = ["pareto1KB"]
+        #workloads = ["zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 1
-        skipLoad = True
+        skipLoad = False
         backup = False
-        useBackup = True
+        useBackup = False
         waitCompaction = 1200
         if skipLoad:
             foregroundThreadses = [16]
@@ -103,13 +103,13 @@ def run_exp(exp):
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
         #workloads = ["zipfcorec"]
     if exp == 3:
-        dbs = ["vtable"]
+        dbs = ["titandb"]
         valueSizes = ["1KB"]
         #valueSizes = ["pareto1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"
-        workloads = ["uniformupdate"]
+        workloads = [""]
         skipLoad = False
         round = 1
         printSize=True

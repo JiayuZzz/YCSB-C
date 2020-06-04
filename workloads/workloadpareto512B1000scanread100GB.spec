@@ -14,9 +14,9 @@ workload=com.yahoo.ycsb.workloads.CoreWorkload
 
 readallfields=true
 field_len_dist=pareto
-pareto_k=0.87
+pareto_k=0.61
 pareto_theta=0
-pareto_sigma=113
+pareto_sigma=207
 
 readproportion=0
 updateproportion=1.0
