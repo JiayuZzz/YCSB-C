@@ -14,7 +14,7 @@ backupPath = "/mnt/backup/"
 
 memtable = 64
 compactionThreads = 8
-gcThreads = 4
+gcThreads = 8
 
 msr=10
 gcratio = 0.3
@@ -40,6 +40,7 @@ configs = {
     "midThresh":str(midThresh),
     "smallThresh":str(smallThresh),
     "maxSortedRuns":str(msr),
+    "gcRatio":str(gcratio),
 }
 
 def resetconfig():
@@ -66,7 +67,7 @@ def resetconfig():
 
 def run_exp(exp):
     dbs = ["titandb","vtable"]
-    foregroundThreadses = [16]
+    foregroundThreadses = [8]
     valueSizes = ["1KB"]
     dbSize = "100GB"
     skipLoad = False
@@ -80,18 +81,18 @@ def run_exp(exp):
     waitCompaction = 0
     backupUsed = False
     if exp == 1: # overall fix
-        dbs = ["vtable"]
-        valueSizes = ["1KB"]
-        workloads = ["read"]
-        #valueSizes = ["pareto1KB"]
-        #workloads = ["zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
+        dbs = ["vtable","titandb"]
+        #valueSizes = ["1KB"]
+        #workloads = ["read"]
+        valueSizes = ["pareto1KB"]
+        workloads = ["read","zipf20scan","zipf100scan","zipf1000scan","zipf10000scan"]
         round = 1
         skipLoad = False
         backup = False
         useBackup = False
         waitCompaction = 1200
         if skipLoad:
-            foregroundThreadses = [16]
+            foregroundThreadses = [1]
     if exp == 2:
         dbs = ["titandb"]
         waitCompaction = 1200
@@ -103,9 +104,9 @@ def run_exp(exp):
         workloads = ["corea","coreb","corec","cored","coree","coref","zipfcorea","zipfcoreb","zipfcorec","zipfcored","zipfcoree","zipfcoref"]
         #workloads = ["zipfcorec"]
     if exp == 3:
-        dbs = ["titandb"]
-        valueSizes = ["1KB"]
-        #valueSizes = ["pareto1KB"]
+        dbs = ["vtable","titandb"]
+        #valueSizes = ["1KB"]
+        valueSizes = ["pareto1KB"]
         waitCompaction = 0
         backup = False
         dbSize = "100GB"

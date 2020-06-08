@@ -32,7 +32,6 @@ namespace ycsbc {
         size_t memtable_;
         size_t smallThresh_;
         size_t midThresh_;
-        double gcRatio_;
         bool preheat_;
         int gcLevel_;
         int mergeLevel_;
@@ -42,6 +41,7 @@ namespace ycsbc {
         bool levelMerge_;
         bool rangeMerge_;
         bool sep_before_flush_;
+        double GCRatio_;
 
     public:
         ConfigLevelDB() {
@@ -58,7 +58,6 @@ namespace ycsbc {
             numThreads_ = pt_.get<int>("config.numThreads");
             smallThresh_ = pt_.get<size_t>("config.smallThresh");
             midThresh_ = pt_.get<size_t >("config.midThresh");
-            gcRatio_ = pt_.get<double>("config.gcRatio");
             preheat_ = pt_.get<bool>("config.preheat");
             gcLevel_ = pt_.get<int>("config.gcLevel");
             mergeLevel_ = pt_.get<int>("config.mergeLevel");
@@ -70,6 +69,7 @@ namespace ycsbc {
             sep_before_flush_ = pt_.get<bool>("config.sepBeforeFlush");
             gcThreads_ = pt_.get<int>("config.gcThreads");
             maxSortedRuns_ = pt_.get<int>("config.maxSortedRuns");
+            GCRatio_ = pt_.get<double>("config.gcRatio");
         }
 
         int getBloomBits() {
@@ -129,7 +129,7 @@ namespace ycsbc {
         }
 
         double getGCRatio(){
-            return gcRatio_;
+            return GCRatio_;
         }
 
         bool getPreheat(){
