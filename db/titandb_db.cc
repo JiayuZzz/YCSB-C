@@ -23,6 +23,7 @@ namespace ycsbc {
         bool directIO = config.getDirectIO();
         size_t memtable = config.getMemtable();
         double gcRatio = config.getGCRatio();
+        uint64_t blockWriteSize = config.getBlockWriteSize();
         //set optionssc
         rocksdb::titandb::TitanOptions options;
         rocksdb::BlockBasedTableOptions bbto;
@@ -38,29 +39,30 @@ namespace ycsbc {
         if(bloomBits>0) {
         bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 256<<20;
-        options.max_gc_batch_size = 1024<<20;
+        options.min_gc_batch_size = 64<<20;
+        options.max_gc_batch_size = 128<<20;
 		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
-        options.blob_file_target_size = 4<<20;
+        options.blob_file_target_size = 8<<20;
         options.level_merge = config.getLevelMerge();
 	    options.range_merge = config.getRangeMerge();
         nowal = !options.level_merge;
         options.max_background_gc = config.getGCThreads();
-	uint64_t tmp = (uint64_t)0<<30;
-	options.block_write_size = tmp;
-        if(options.level_merge) {
+	    options.block_write_size = blockWriteSize;
+        std::cerr<<"block write size "<<options.block_write_size<<std::endl;
         options.blob_file_discardable_ratio = gcRatio;
+        if(options.level_merge) {
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
-	    options.num_foreground_builders = 4;
+	    // options.num_foreground_builders = 1;
 		std::cerr<<"set intro compaction true"<<std::endl;
 		options.intra_compact_small_l0 = true;
-        } else {
-        options.blob_file_discardable_ratio = gcRatio;
-		options.num_foreground_builders = 1;
         }
+        // else {
+        // options.blob_file_discardable_ratio = gcRatio;
+		// options.num_foreground_builders = 1;
+        // }
 		std::cerr<<"intro compaction "<<options.intra_compact_small_l0<<std::endl;
         options.sep_before_flush = config.getSepBeforeFlush();
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;

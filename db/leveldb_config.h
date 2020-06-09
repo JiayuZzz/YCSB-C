@@ -42,6 +42,7 @@ namespace ycsbc {
         bool rangeMerge_;
         bool sep_before_flush_;
         double GCRatio_;
+        uint64_t blockWriteSize_;
 
     public:
         ConfigLevelDB() {
@@ -70,10 +71,15 @@ namespace ycsbc {
             gcThreads_ = pt_.get<int>("config.gcThreads");
             maxSortedRuns_ = pt_.get<int>("config.maxSortedRuns");
             GCRatio_ = pt_.get<double>("config.gcRatio");
+            blockWriteSize_ = pt_.get<uint64_t>("config.blockWriteSize");
         }
 
         int getBloomBits() {
             return bloomBits_;
+        }
+
+        uint64_t getBlockWriteSize() {
+            return blockWriteSize_;
         }
 
         int getMaxSortedRuns() {

@@ -35,9 +35,9 @@ DB* DBFactory::CreateDB(utils::Properties &props) {
     return new TbbRandDB;
   } else if (props["dbname"] == "tbb_scan") {
     return new TbbScanDB;
-  } else if (props["dbname"] == "leveldb") {
+  } else if (props["dbname"] == "leveldb" || props["dbname"]=="pebblesdb") {
     return new LevelDB(props["dbfilename"].c_str());
-  } else if (props["dbname"] == "rocksdb") {
+  } else if (props["dbname"] == "rocksdb" || props["dbname"]=="rocksdb_tiered") {
     return new RocksDB(props["dbfilename"].c_str());
   } else if (props["dbname"] == "titandb"||props["dbname"]=="vtable"||props["dbname"]=="vtablelarge"||props["dbname"]=="vtablemid") {
     return new TitanDB(props["dbfilename"].c_str());

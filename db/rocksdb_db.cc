@@ -27,10 +27,11 @@ namespace ycsbc {
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
 	    options.target_file_size_base = 16<<20;
-        options.compaction_pri = rocksdb::kMinOverlappingRatio;
+        //options.compaction_pri = rocksdb::kMinOverlappingRatio;
         if(config.getTiered()) options.compaction_style = rocksdb::kCompactionStyleUniversal;
         options.max_background_jobs = config.getNumThreads();
         options.disable_auto_compactions = config.getNoCompaction();
+	//options.level_compaction_dynamic_level_bytes = true;
         //options.target_file_size_base = 8<<20;
         cerr<<"write buffer size"<<options.write_buffer_size<<endl;
         cerr<<"write buffer number"<<options.max_write_buffer_number<<endl;
@@ -60,7 +61,7 @@ namespace ycsbc {
         if(s.ok()) return DB::kOK;
         if(s.IsNotFound()){
             noResult++;
-            cout<<noResult<<endl;
+            cout<<noResult<<"not found"<<endl;
             return DB::kOK;
         }else{
             cerr<<"read error"<<endl;
@@ -76,14 +77,19 @@ namespace ycsbc {
         std::string val;
         std::string k;
         int i;
+        int cnt = 0;
         for(i=0;i<len&&it->Valid();i++){
             k = it->key().ToString();
             val = it->value().ToString();
             it->Next();
+            if(val.empty()) cnt++;
         }
         if(i<len) {
             std::cout<<" get "<<i<<" for length "<<len<<"."<<std::endl;
             std::cerr<<" get "<<i<<" for length "<<len<<"."<<std::endl;
+        }
+        if(cnt>0) {
+            std::cout<<cnt<<"empty values"<<std::endl;
         }
         delete it;
         return DB::kOK;
@@ -95,7 +101,7 @@ namespace ycsbc {
         for(KVPair &p:values){
             s = db_->Put(rocksdb::WriteOptions(),key,p.second);
             if(!s.ok()){
-                cerr<<"insert error\n"<<endl;
+                cerr<<"insert error"<<s.ToString()<<"\n"<<endl;
                 exit(0);
             }
         }
