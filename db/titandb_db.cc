@@ -30,7 +30,7 @@ namespace ycsbc {
         options.create_if_missing = true;
         options.write_buffer_size = memtable;
 	    options.disable_background_gc = false;
-//        options.compaction_pri = rocksdb::kMinOverlappingRatio;
+        options.compaction_pri = rocksdb::kMinOverlappingRatio;
         options.max_bytes_for_level_base = memtable;
 	    options.target_file_size_base = 16<<20;
         options.statistics = rocksdb::CreateDBStatistics();
@@ -39,8 +39,8 @@ namespace ycsbc {
         if(bloomBits>0) {
         bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(bloomBits));
         }
-        options.min_gc_batch_size = 64<<20;
-        options.max_gc_batch_size = 128<<20;
+        options.min_gc_batch_size = 32<<20;
+        options.max_gc_batch_size = 64<<20;
 		options.max_sorted_runs = config.getMaxSortedRuns();
         bbto.block_cache = rocksdb::NewLRUCache(blockCache);
         options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(bbto));
@@ -53,6 +53,7 @@ namespace ycsbc {
         std::cerr<<"block write size "<<options.block_write_size<<std::endl;
         options.blob_file_discardable_ratio = gcRatio;
         if(options.level_merge) {
+        options.num_foreground_builders = 4;
         options.base_level_for_dynamic_level_bytes = 4;
         options.level_compaction_dynamic_level_bytes = true;
 	    // options.num_foreground_builders = 1;

@@ -5,7 +5,7 @@ import time
 from multiprocessing import Process
 
 #dbs = ["vtable"]
-disk = "/dev/sdb1"
+disk = "/dev/sdc1"
 isRaid = False
 paths = {"vtablelarge":"/mnt/vtable/","vtable":"/mnt/vtable/","rocksdb":"/mnt/rocksdb/","titandb":"/mnt/titan/","pebblesdb":"/mnt/pebbles/","rocksdb_tiered":"/mnt/rocksdb/"}
 
@@ -18,7 +18,7 @@ gcThreads = 4       # backgroud gc threads
 
 msr=10              # max sorted run
 gcRatio = 0.3       # gc_threshold
-blockWriteSize = 160 # GB. Block foreground write after values reach this size
+blockWriteSize = 0 # GB. Block foreground write after values reach this size
 
 midThresh = 8192
 smallThresh = 128
@@ -89,7 +89,7 @@ def run_exp(exp):
         round = 1
         waitCompaction = 600
     if exp == 3:   # use this to run update workload
-        dbs = ["titandb"]
+        dbs = ["vtable","titandb"]
         valueSizes = ["pareto1KB"]
         workloads = [""] # means update
         waitCompaction = 0
